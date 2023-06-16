@@ -2,9 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+const helmet = require("helmet");
 const mongoose = require("mongoose");
 
 // Config libs
+app.use(helmet());
 mongoose.set("strictQuery", true);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,5 +20,5 @@ const routes = require("./src/routes");
 app.use("/", routes);
 
 app.listen(port, () => {
-    console.log(`Server is starting at port ${port}`);
+    console.log(`Server is running at port ${port}`);
 })
