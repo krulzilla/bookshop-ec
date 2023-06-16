@@ -1,12 +1,12 @@
-const categoryModel = require("../../models/category.model");
+const publisherModel = require("../../models/publisher.model");
 const response = require("../../utils/apiResponse");
 
-class Category {
+class Publisher {
     async getAll(req, res) {
         try {
-            const categories = await categoryModel.find({});
+            const publishers = await publisherModel.find({});
 
-            return response(res, true, "Get categories successfully", 200, categories);
+            return response(res, true, "Get publishers successfully", 200, publishers);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -16,9 +16,9 @@ class Category {
         try {
             const {id} = req.params;
 
-            const category = await categoryModel.findOne({_id: id});
+            const publisher = await publisherModel.findOne({_id: id});
 
-            return response(res, true, "Get category successfully", 200, category);
+            return response(res, true, "Get publisher successfully", 200, publisher);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -28,11 +28,11 @@ class Category {
         try {
             const {name, description} = req.body;
 
-            const newCategory = await categoryModel.create({
+            const newPublisher = await publisherModel.create({
                 name, description
             });
 
-            return response(res, true, "New category is created", 201, newCategory);
+            return response(res, true, "New publisher is created", 201, newPublisher);
         } catch (e) {
             if (e.name === "ValidationError") {
                 let errMsg;
@@ -51,11 +51,11 @@ class Category {
             const {id} = req.params;
             const {name, description} = req.body;
 
-            const updateCategory = await categoryModel.findByIdAndUpdate(id, {
+            const updatePublisher = await publisherModel.findByIdAndUpdate(id, {
                 name, description
             }, {new: true, runValidators: true});
 
-            return response(res, true, "Category is updated", 200, updateCategory);
+            return response(res, true, "Publisher is updated", 200, updatePublisher);
         } catch (e) {
             if (e.name === "ValidationError") {
                 let errMsg;
@@ -72,15 +72,15 @@ class Category {
         try {
             const {id} = req.params;
 
-            const deleteCategory = await categoryModel.findByIdAndUpdate(id, {
+            const deletePublisher = await publisherModel.findByIdAndUpdate(id, {
                 isDeleted: true
             }, {new: true});
 
-            return response(res, true, "Category is deleted", 200, deleteCategory);
+            return response(res, true, "Publisher is deleted", 200, deletePublisher);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
     }
 }
 
-module.exports = new Category();
+module.exports = new Publisher();
