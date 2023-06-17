@@ -1,5 +1,5 @@
 const roleModel = require("../../models/role.model");
-const response = require("../../utils/apiResponse");
+const {apiResponse:response} = require("../../utils/customResponse");
 
 class Role {
     async getAll(req, res) {

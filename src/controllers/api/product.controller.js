@@ -1,5 +1,5 @@
 const productModel = require("../../models/product.model");
-const response = require("../../utils/apiResponse");
+const {apiResponse:response} = require("../../utils/customResponse");
 const {Types} = require("mongoose");
 
 class Product {

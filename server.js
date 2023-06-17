@@ -25,8 +25,9 @@ const connectDb = require("./src/config/connectDB.config");
 connectDb();
 
 // Routes
+const {uiRender} = require("./src/utils/customResponse");
 app.get("/test", (req, res) => {
-    return res.render("client-landing", {layout: false})
+    return uiRender(res, "client-landing");
 })
 
 const routes = require("./src/routes");

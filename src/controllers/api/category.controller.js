@@ -1,5 +1,5 @@
 const categoryModel = require("../../models/category.model");
-const response = require("../../utils/apiResponse");
+const {apiResponse:response} = require("../../utils/customResponse");
 
 class Category {
     async getAll(req, res) {

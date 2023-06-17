@@ -1,5 +1,5 @@
 const authorModel = require("../../models/author.model");
-const response = require("../../utils/apiResponse");
+const {apiResponse:response} = require("../../utils/customResponse");
 
 class Author {
     async getAll(req, res) {

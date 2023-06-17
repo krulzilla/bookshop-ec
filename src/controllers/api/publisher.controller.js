@@ -1,5 +1,5 @@
 const publisherModel = require("../../models/publisher.model");
-const response = require("../../utils/apiResponse");
+const {apiResponse:response} = require("../../utils/customResponse");
 
 class Publisher {
     async getAll(req, res) {
