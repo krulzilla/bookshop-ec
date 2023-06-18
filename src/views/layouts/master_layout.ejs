@@ -1,14 +1,15 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Master layout</title>
-</head>
-<body>
-    <h1>Extends layout</h1>
-    <%- body %>
+<%- include('./master_partials/header.ejs') %>
+
+<!-- Wrapper content -->
+<%- include('./master_partials/top_navbar.ejs') %>
+
+<%- body %>
+
+<%- include('./master_partials/right_sidebar.ejs') %>
+
+<%- include('./master_partials/footer.ejs') %>
+
+<%- defineContent('js') %>
+
 </body>
 </html>

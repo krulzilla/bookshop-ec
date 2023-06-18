@@ -25,11 +25,6 @@ const connectDb = require("./src/config/connectDB.config");
 connectDb();
 
 // Routes
-const {uiRender} = require("./src/utils/customResponse");
-app.get("/test", (req, res) => {
-    return uiRender(res, "client-landing");
-})
-
 const routes = require("./src/routes");
 app.use("/", routes);
 

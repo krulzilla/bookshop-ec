@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 // Import routes
+const clientRoutes = require("./client");
 const apiRoutes = require("./api");
 
 // Manage routes
+router.use("/", clientRoutes);
 router.use("/api/", apiRoutes);
 
 // Handle err & page not found
