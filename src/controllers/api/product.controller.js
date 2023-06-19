@@ -25,6 +25,18 @@ class Product {
         }
     }
 
+    async pagination(req, res) {
+        const products = await productModel.find()
+            .populate("idCategory", "name -_id")
+            .populate("idAuthor", "name -_id")
+            .populate("idPublisher", "name -_id")
+            .select("name amount price image")
+            .skip(2)
+            .limit(3);
+
+        return response(res, true, "Action success", 200, products);
+    }
+
     async create(req, res) {
         try {
             const {name,

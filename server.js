@@ -9,7 +9,14 @@ const mongoose = require("mongoose");
 const expressLayouts = require('express-ejs-layouts');
 
 // Config libs
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            "script-src": ["'self'", "'unsafe-inline'"],
+        },
+    },
+}));
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set('layout', 'layouts/master_layout');

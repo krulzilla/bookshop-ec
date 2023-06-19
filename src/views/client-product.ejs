@@ -33,15 +33,19 @@
                         <span>Category</span>
                     </div>
                 </li>
-                <li class="side-nav-item">
-                    <div>
-                        <% data.category.forEach(ele => { %>
-                            <div class="custom-control custom-checkbox mx-3 my-3">
-                                <input type="checkbox" class="custom-control-input" id="<%= ele._id %>">
-                                <label class="custom-control-label" for="<%= ele._id %>"><%= ele.name %></label>
-                            </div>
-                        <% }) %>
-                    </div>
+                <li class="side-nav-item" id="filter-category">
+                    <form action="/products" method="get">
+                        <div>
+                            <% data.category.forEach(ele => { %>
+                                <div class="custom-control custom-checkbox mx-3 my-3">
+                                    <input type="checkbox" class="custom-control-input" id="<%= ele._id %>" name="category" value="<%= ele._id %>"
+                                        <% if ("" == ele._id) { %> <%= "checked" %> <% } %>
+                                    >
+                                    <label class="custom-control-label" for="<%= ele._id %>"><%= ele.name %></label>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </form>
                 </li>
                 <li class="side-nav-item">
                     <hr>
@@ -77,224 +81,65 @@
                 </div>
                 <!-- end row-->
 
-                <div class="row">
-                    <div class="col-md-6 col-xl-3">
-                        <!-- project card -->
-                        <div class="card d-block ribbon-box">
-                            <div class="ribbon-two ribbon-two-success"><span>Success</span></div>
+                <%
+                let count = 0;
+                data.products.forEach(ele => {
+                    let name = ele.name.split(" ");
+                    if (name.length > 7) name = name.slice(0, 7).join(" ") + "...";
+                    else name = name.join(" ");
+                    const date = new Date(ele.publishedAt);
+                    const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+                    if (count++ == 0) {
+                %>
+                    <div class="row">
+                <% } %>
+                        <div class="col-md-6 col-xl-3">
+                            <!-- project card -->
+                            <div class="card d-block ribbon-box">
+                                <div class="ribbon-two ribbon-two-success"><span>In stock</span></div>
 
-                            <!-- project-thumbnail -->
-                            <img class="card-img-top" src="/public/resources/images/1.jpg"
-                                 alt="project image cap">
+                                <!-- project-thumbnail -->
+                                <img class="card-img-top" src="/public/resources/images/<%= ele.image %>"
+                                     alt="project image cap">
 
-                            <div class="card-body position-relative">
-                                <!-- project title-->
-                                <h4 class="mt-0">
-                                    <a href="apps-projects-details.html" class="text-title">Flowers, feathers</a>
-                                </h4>
+                                <div class="card-body position-relative">
+                                    <!-- project title-->
+                                    <h4 class="mt-0">
+                                        <a href="apps-projects-details.html" class="text-title" data-toggle="tooltip" data-placement="top" title=""
+                                           data-original-title="<%= ele.name %>"><%= name %></a>
+                                    </h4>
 
-                                <!-- project detail-->
-                                <p class="mb-2">
+                                    <!-- project detail-->
+                                    <p class="mb-2">
                                     <span class="pr-2 text-nowrap">
-                                        100.000 đ
+                                        <%= ele.price.toLocaleString() %> đ
                                     </span>
-                                </p>
-                                <div class="mb-2">
-                                    <div class="badge badge-info p-1">Education</div>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="pr-1">by</span>
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Mat Helme" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-3.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-                                    <span class="pl-1 text-nowrap">
-                                        | in Sep 12, 2021
+                                    </p>
+                                    <div class="mb-2">
+                                        <% ele.category.forEach(subEle => { %>
+                                        <div class="badge badge-info p-1"><%= subEle.name %></div>
+                                        <% }) %>
+                                    </div>
+                                    <div class="mb-3">
+                                        <span class="pr-1">by</span>
+                                        <% ele.author.forEach(subEle => { %>
+                                            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
+                                               data-original-title="<%= subEle.name %>" class="d-inline-block">
+                                                <img src="/public/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs"
+                                                     alt="friend">
+                                            </a>
+                                        <% }) %>
+                                        <span class="pl-1 text-nowrap">
+                                        | in <%= dateFormatted %>
                                     </span>
-                                </div>
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
-
-                    <div class="col-md-6 col-xl-3">
-                        <!-- project card -->
-                        <div class="card d-block">
-                            <!-- project-thumbnail -->
-                            <img class="card-img-top" src="/public/assets/images/projects/project-2.jpg"
-                                 alt="project image cap">
-                            <div class="card-img-overlay">
-                                <div class="badge badge-success p-1">Finished</div>
-                            </div>
-
-                            <div class="card-body position-relative">
-                                <!-- project title-->
-                                <h4 class="mt-0">
-                                    <a href="apps-projects-details.html" class="text-title">Landing page design -
-                                        Home</a>
-                                </h4>
-
-                                <!-- project detail-->
-                                <p class="mb-3">
-                                            <span class="pr-2 text-nowrap">
-                                                <i class="mdi mdi-format-list-bulleted-type"></i>
-                                                <b>11</b> Tasks
-                                            </span>
-                                    <span class="text-nowrap">
-                                                <i class="mdi mdi-comment-multiple-outline"></i>
-                                                <b>254</b> Comments
-                                            </span>
-                                </p>
-                                <div class="mb-3">
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Mat Helme" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-10.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Michael Zenaty" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-5.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="James Anderson" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-7.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-                                    <a href="javascript:void(0);"
-                                       class="d-inline-block text-muted font-weight-bold ml-2">
-                                        +2 more
-                                    </a>
-                                </div>
-
-                                <!-- project progress-->
-                                <p class="mb-2 font-weight-bold">Progress <span class="float-right">100%</span></p>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 100%;">
-                                    </div><!-- /.progress-bar -->
-                                </div><!-- /.progress -->
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
-
-                    <div class="col-md-6 col-xl-3">
-                        <!-- project card -->
-                        <div class="card d-block">
-                            <!-- project-thumbnail -->
-                            <img class="card-img-top" src="/public/assets/images/projects/project-3.jpg"
-                                 alt="project image cap">
-                            <div class="card-img-overlay">
-                                <div class="badge badge-secondary p-1">Ongoing</div>
-                            </div>
-
-                            <div class="card-body position-relative">
-                                <!-- project title-->
-                                <h4 class="mt-0">
-                                    <a href="apps-projects-details.html" class="text-title">Product page redesign</a>
-                                </h4>
-
-                                <!-- project detail-->
-                                <p class="mb-3">
-                                            <span class="pr-2 text-nowrap">
-                                                <i class="mdi mdi-format-list-bulleted-type"></i>
-                                                <b>21</b> Tasks
-                                            </span>
-                                    <span class="text-nowrap">
-                                                <i class="mdi mdi-comment-multiple-outline"></i>
-                                                <b>668</b> Comments
-                                            </span>
-                                </p>
-                                <div class="mb-3">
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Mat Helme" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-6.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Michael Zenaty" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-7.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="James Anderson" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-8.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-                                    <a href="javascript:void(0);"
-                                       class="d-inline-block text-muted font-weight-bold ml-2">
-                                        +5 more
-                                    </a>
-                                </div>
-
-                                <!-- project progress-->
-                                <p class="mb-2 font-weight-bold">Progress <span class="float-right">71%</span></p>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="71" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 71%;">
-                                    </div><!-- /.progress-bar -->
-                                </div><!-- /.progress -->
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
-
-                    <div class="col-md-6 col-xl-3">
-                        <!-- project card -->
-                        <div class="card d-block">
-                            <!-- project-thumbnail -->
-                            <img class="card-img-top" src="/public/assets/images/projects/project-4.jpg"
-                                 alt="project image cap">
-                            <div class="card-img-overlay">
-                                <div class="badge badge-secondary p-1">Ongoing</div>
-                            </div>
-
-                            <div class="card-body position-relative">
-                                <!-- project title-->
-                                <h4 class="mt-0">
-                                    <a href="apps-projects-details.html" class="text-title">Coffee detail page - Main
-                                        Page</a>
-                                </h4>
-
-                                <!-- project detail-->
-                                <p class="mb-3">
-                                            <span class="pr-2 text-nowrap">
-                                                <i class="mdi mdi-format-list-bulleted-type"></i>
-                                                <b>18</b> Tasks
-                                            </span>
-                                    <span class="text-nowrap">
-                                                <i class="mdi mdi-comment-multiple-outline"></i>
-                                                <b>259</b> Comments
-                                            </span>
-                                </p>
-                                <div class="mb-3">
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Mat Helme" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-
-                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                       data-original-title="Michael Zenaty" class="d-inline-block">
-                                        <img src="/public/assets/images/users/avatar-3.jpg" class="rounded-circle avatar-xs"
-                                             alt="friend">
-                                    </a>
-                                </div>
-
-                                <!-- project progress-->
-                                <p class="mb-2 font-weight-bold">Progress <span class="float-right">52%</span></p>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="52" aria-valuemin="0"
-                                         aria-valuemax="100" style="width: 52%;">
-                                    </div><!-- /.progress-bar -->
-                                </div><!-- /.progress -->
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card-->
-                    </div> <!-- end col -->
-                </div>
+                                    </div>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col -->
+                <% if (count == 4) { count = 0; %>
+                    </div>
+                <% } %>
+                <% }) %>
                 <!-- end row-->
 
                 <div class="row">
@@ -321,6 +166,10 @@
                             </ul>
                         </nav>
                     </div>
+                </div>
+
+                <div class="row" id="demo">
+
                 </div>
 
             </div> <!-- End Content -->
@@ -351,5 +200,21 @@
 <!-- END Container -->
 
 <%- contentFor('js') %>
-<script src="/public/assets/js/pagination.min.js"></script>
-<script></script>
+<script src="/public/assets/js/pagination.js"></script>
+<script>
+    $('#demo').pagination({
+        dataSource: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        pageSize: 5,
+        className: "custom-pagination",
+        ulClassName: "pagination pagination-rounded mb-0 justify-content-end",
+        classPrefix: "page-item ",
+        callback: function(data, pagination) {
+
+        }
+    })
+
+    $("#filter-category input").click(function (e) {
+        // console.log($(this).attr('id'))
+        $(this).closest('form').submit();
+    })
+</script>

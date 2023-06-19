@@ -8,7 +8,7 @@ const ProductSchema = new Schema({
     },
     idCategory: {
         type: [Schema.Types.ObjectId],
-        ref: "categories",
+        ref: "Category",
         validate: [
             {
                 validator: function (ids) {
@@ -27,7 +27,7 @@ const ProductSchema = new Schema({
     },
     idAuthor: {
         type: [Schema.Types.ObjectId],
-        ref: "authors",
+        ref: "Author",
         validate: [
             {
                 validator: function (ids) {
@@ -46,7 +46,7 @@ const ProductSchema = new Schema({
     },
     idPublisher: {
         type: Schema.Types.ObjectId,
-        ref: "publishers",
+        ref: "Publisher",
         trim: true,
         required: [true, "Publisher is required"]
     },

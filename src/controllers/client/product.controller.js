@@ -1,11 +1,45 @@
 const {apiResponse: response, uiRender: render} = require("../../utils/customResponse");
 const categoryModel = require("../../models/category.model");
+const productModel = require("../../models/product.model");
+const mongoose = require("mongoose");
+const getPagination = require("../../utils/customPagination");
 
 class Product {
     async renderProductPage(req, res, next) {
         try {
             const categories = await categoryModel.find();
-            return render(res, "client-product", {name: "Product", category: categories});
+            // Get products
+            const pipelines = [
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "idCategory",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "authors",
+                        localField: "idAuthor",
+                        foreignField: "_id",
+                        as: "author"
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        price: 1,
+                        publishedAt: 1,
+                        "category.name": 1,
+                        "author.name": 1,
+                        image: 1
+                    }
+                }
+            ]
+            const products = await getPagination(productModel, 1, 8, pipelines);
+            console.log(products)
+            return render(res, "client-product", {name: "Product", category: categories, products});
         } catch (e) {
             next(e);
         }
