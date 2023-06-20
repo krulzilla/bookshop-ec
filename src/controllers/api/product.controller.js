@@ -1,5 +1,6 @@
 const productModel = require("../../models/product.model");
 const {apiResponse:response} = require("../../utils/customResponse");
+const customPagination = require("../../utils/customPagination");
 const {Types} = require("mongoose");
 
 class Product {
@@ -26,15 +27,60 @@ class Product {
     }
 
     async pagination(req, res) {
-        const products = await productModel.find()
-            .populate("idCategory", "name -_id")
-            .populate("idAuthor", "name -_id")
-            .populate("idPublisher", "name -_id")
-            .select("name amount price image")
-            .skip(2)
-            .limit(3);
+        // const products = await productModel.find()
+        //     .populate("idCategory", "name -_id")
+        //     .populate("idAuthor", "name -_id")
+        //     .populate("idPublisher", "name -_id")
+        //     .select("name amount price image")
+        //     .skip(2)
+        //     .limit(3);
 
-        return response(res, true, "Action success", 200, products);
+        try {
+            let {category, search = ""} = req.query;
+            category = category.map(ele => new Types.ObjectId(ele));
+            const pipelines = [
+                {
+                    $match: {
+                        name: { $regex: search, $options: "i" },
+                        idCategory: { $in: category }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "categories",
+                        localField: "idCategory",
+                        foreignField: "_id",
+                        as: "category"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "authors",
+                        localField: "idAuthor",
+                        foreignField: "_id",
+                        as: "author"
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        price: 1,
+                        amount: 1,
+                        image: 1,
+                        publishedAt: 1,
+                        "category.name": 1,
+                        "author.name": 1
+                    }
+                }
+            ]
+
+            const products = await customPagination(productModel, 1, 2, pipelines);
+            console.log(products.length)
+
+            return response(res, true, "Action success", 200, products);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
     }
 
     async create(req, res) {

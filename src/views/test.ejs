@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test</title>
+    <link rel="stylesheet" href="/public/assets/css/pagination.css">
+</head>
+<body>
+    <div id="demo"></div>
+
+    <script src="/public/assets/js/vendor.min.js"></script>
+    <script src="/public/assets/js/pagination.js"></script>
+    <script>
+        $('#demo').pagination({
+            dataSource: 'https://api.flickr.com/services/feeds/photos_public.gne?tags=cat&tagmode=any&format=json&jsoncallback=?',
+            locator: 'items',
+            totalNumberLocator: function(response) {
+                // you can return totalNumber by analyzing response content
+                return Math.floor(Math.random() * (1000 - 100)) + 100;
+            },
+            pageSize: 20,
+            ajax: {
+                beforeSend: function() {
+                    // dataContainer.html('Loading data from flickr.com ...');
+                }
+            },
+            callback: function(data, pagination) {
+                // template method of yourself
+                // var html = template(data);
+                // dataContainer.html(html);
+            }
+        })
+    </script>
+</body>
+</html>

@@ -141,7 +141,7 @@
 
       getPageLinkTag: function(index) {
         var pageLink = attributes.pageLink;
-        return pageLink ? `<a href="${pageLink}">${index}</a>` : `<a>${index}</a>`;
+        return pageLink ? `<a style="cursor:pointer" class="page-link" href="${pageLink}">${index}</a>` : `<a style="cursor:pointer" class="page-link">${index}</a>`;
       },
 
       // Generate HTML for page numbers
@@ -166,7 +166,7 @@
         if (attributes.pageRange === null) {
           for (i = 1; i <= totalPage; i++) {
             if (i == currentPage) {
-              html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a>${i}</a></li>`;
+              html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a style="cursor:pointer" class="page-link">${i}</a></li>`;
             } else {
               html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName}" data-num="${i}">${getPageLinkTag(i)}</li>`;
             }
@@ -177,7 +177,7 @@
         if (rangeStart <= 3) {
           for (i = 1; i < rangeStart; i++) {
             if (i == currentPage) {
-              html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a>${i}</a></li>`;
+              html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a style="cursor:pointer" class="page-link">${i}</a></li>`;
             } else {
               html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName}" data-num="${i}">${getPageLinkTag(i)}</li>`;
             }
@@ -186,12 +186,12 @@
           if (!attributes.hideFirstOnEllipsisShow) {
             html += `<li class="${classPrefix}-page ${classPrefix}-first J-paginationjs-page ${pageClassName}" data-num="1">${getPageLinkTag(1)}</li>`;
           }
-          html += `<li class="${classPrefix}-ellipsis ${disableClassName}"><a>${ellipsisText}</a></li>`;
+          html += `<li class="${classPrefix}-ellipsis ${disableClassName}"><a style="cursor:pointer" class="page-link">${ellipsisText}</a></li>`;
         }
 
         for (i = rangeStart; i <= rangeEnd; i++) {
           if (i == currentPage) {
-            html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a>${i}</a></li>`;
+            html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName} ${activeClassName}" data-num="${i}"><a style="cursor:pointer" class="page-link">${i}</a></li>`;
           } else {
             html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName}" data-num="${i}">${getPageLinkTag(i)}</li>`;
           }
@@ -202,7 +202,7 @@
             html += `<li class="${classPrefix}-page J-paginationjs-page ${pageClassName}" data-num="${i}">${getPageLinkTag(i)}</li>`;
           }
         } else {
-          html += `<li class="${classPrefix}-ellipsis ${disableClassName}"><a>${ellipsisText}</a></li>`;
+          html += `<li class="${classPrefix}-ellipsis ${disableClassName}"><a style="cursor:pointer" class="page-link">${ellipsisText}</a></li>`;
 
           if (!attributes.hideLastOnEllipsisShow) {
             html += `<li class="${classPrefix}-page ${classPrefix}-last J-paginationjs-page ${pageClassName}" data-num="${totalPage}">${getPageLinkTag(totalPage)}</li>`;
@@ -295,7 +295,7 @@
           if (showPrevious) {
             if (currentPage <= 1) {
               if (!autoHidePrevious) {
-                html += `<li class="${classPrefix}-prev ${disableClassName} ${prevClassName}"><a>${prevText}</a></li>`;
+                html += `<li class="${classPrefix}-prev ${disableClassName} ${prevClassName}"><a style="cursor:pointer" class="page-link">${prevText}</a></li>`;
               }
             } else {
               html += `<li class="${classPrefix}-prev J-paginationjs-previous ${prevClassName}" data-num="${currentPage - 1}" title="Previous page">${getPageLinkTag(prevText)}</li>`;
@@ -311,7 +311,7 @@
           if (showNext) {
             if (currentPage >= totalPage) {
               if (!autoHideNext) {
-                html += `<li class="${classPrefix}-next ${disableClassName} ${nextClassName}"><a>${nextText}</a></li>`;
+                html += `<li class="${classPrefix}-next ${disableClassName} ${nextClassName}"><a style="cursor:pointer" class="page-link">${nextText}</a></li>`;
               }
             } else {
               html += `<li class="${classPrefix}-next J-paginationjs-next ${nextClassName}" data-num="${currentPage + 1}" title="Next page">${getPageLinkTag(nextText)}</li>`;
@@ -986,10 +986,10 @@
     pageLink: '',
 
     // 'Previous' text
-    prevText: '&lsaquo;',
+    prevText: '&laquo;',
 
     // 'Next' text
-    nextText: '&rsaquo;',
+    nextText: '&raquo;',
 
     // Ellipsis text
     ellipsisText: '...',

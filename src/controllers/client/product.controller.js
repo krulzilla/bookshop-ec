@@ -6,6 +6,7 @@ const getPagination = require("../../utils/customPagination");
 
 class Product {
     async renderProductPage(req, res, next) {
+        const {category = []} = req.query;
         try {
             const categories = await categoryModel.find();
             // Get products
@@ -38,8 +39,12 @@ class Product {
                 }
             ]
             const products = await getPagination(productModel, 1, 8, pipelines);
-            console.log(products)
-            return render(res, "client-product", {name: "Product", category: categories, products});
+            const pagination = {
+                currentPage: 1,
+                totalPage: 3,
+                filterCategory: category
+            }
+            return render(res, "client-product", {name: "Product", category: categories, products, pagination});
         } catch (e) {
             next(e);
         }
