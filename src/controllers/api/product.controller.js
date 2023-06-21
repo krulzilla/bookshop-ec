@@ -27,22 +27,15 @@ class Product {
     }
 
     async pagination(req, res) {
-        // const products = await productModel.find()
-        //     .populate("idCategory", "name -_id")
-        //     .populate("idAuthor", "name -_id")
-        //     .populate("idPublisher", "name -_id")
-        //     .select("name amount price image")
-        //     .skip(2)
-        //     .limit(3);
-
         try {
-            let {category, search = ""} = req.query;
-            category = category.map(ele => new Types.ObjectId(ele));
+            let {category = [], search = "", pageNumber:page = 1, pageSize = 2} = req.query;
+            category = typeof category == "string" ? [new Types.ObjectId(category)] : category.map(ele => new Types.ObjectId(ele));
+            const filterCategory = category.length == 0 ? "$nin" : "$in";
             const pipelines = [
                 {
                     $match: {
                         name: { $regex: search, $options: "i" },
-                        idCategory: { $in: category }
+                        idCategory: { [filterCategory]: category }
                     }
                 },
                 {
@@ -74,8 +67,7 @@ class Product {
                 }
             ]
 
-            const products = await customPagination(productModel, 1, 2, pipelines);
-            console.log(products.length)
+            const products = await customPagination(productModel, page, +pageSize, pipelines);
 
             return response(res, true, "Action success", 200, products);
         } catch (e) {
