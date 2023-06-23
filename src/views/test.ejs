@@ -15,21 +15,20 @@
     <script src="/public/assets/js/pagination.js"></script>
     <script>
         $('#demo').pagination({
-            dataSource: '/api/product/pagination?search=gift',
+            dataSource: '/api/product/pagination',
             locator: 'data',
             totalNumberLocator: function(response) {
                 return response.data[0].pagination[0].totalRow;
             },
-            pageSize: 4,
+            pageSize: 2,
+            pageNumber: 3,
             ajax: {
                 beforeSend: function() {
                     // dataContainer.html('Loading data from flickr.com ...');
                 }
             },
             callback: function(data, pagination) {
-                // template method of yourself
-                // var html = template(data);
-                // dataContainer.html(html);
+                // alert(pagination.pageNumber)
             }
         })
     </script>

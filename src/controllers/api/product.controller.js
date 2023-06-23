@@ -28,7 +28,8 @@ class Product {
 
     async pagination(req, res) {
         try {
-            let {category = [], search = "", pageNumber:page = 1, pageSize = 2} = req.query;
+            let {category = [], search = "", page = 1, pageSize = 8} = req.query;
+            if (!category) category = [];
             category = typeof category == "string" ? [new Types.ObjectId(category)] : category.map(ele => new Types.ObjectId(ele));
             const filterCategory = category.length == 0 ? "$nin" : "$in";
             const pipelines = [

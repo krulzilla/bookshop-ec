@@ -81,68 +81,23 @@
                 </div>
                 <!-- end row-->
 
-                <%
-                let count = 0;
-                data.products.forEach(ele => {
-                    let name = ele.name.split(" ");
-                    if (name.length > 7) name = name.slice(0, 7).join(" ") + "...";
-                    else name = name.join(" ");
-                    const date = new Date(ele.publishedAt);
-                    const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
-                    if (count++ == 0) {
-                %>
+                <!-- Products -->
+                <div id="items-show">
                     <div class="row">
-                <% } %>
-                        <div class="col-md-6 col-xl-3">
-                            <!-- project card -->
-                            <div class="card d-block ribbon-box">
-                                <div class="ribbon-two ribbon-two-success"><span>In stock</span></div>
-
-                                <!-- project-thumbnail -->
-                                <img class="card-img-top" src="/public/resources/images/<%= ele.image %>"
-                                     alt="project image cap">
-
-                                <div class="card-body position-relative">
-                                    <!-- project title-->
-                                    <h4 class="mt-0">
-                                        <a href="apps-projects-details.html" class="text-title" data-toggle="tooltip" data-placement="top" title=""
-                                           data-original-title="<%= ele.name %>"><%= name %></a>
-                                    </h4>
-
-                                    <!-- project detail-->
-                                    <p class="mb-2">
-                                    <span class="pr-2 text-nowrap">
-                                        <%= ele.price.toLocaleString() %> đ
-                                    </span>
-                                    </p>
-                                    <div class="mb-2">
-                                        <% ele.category.forEach(subEle => { %>
-                                        <div class="badge badge-info p-1"><%= subEle.name %></div>
-                                        <% }) %>
-                                    </div>
-                                    <div class="mb-3">
-                                        <span class="pr-1">by</span>
-                                        <% ele.author.forEach(subEle => { %>
-                                            <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
-                                               data-original-title="<%= subEle.name %>" class="d-inline-block">
-                                                <img src="/public/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs"
-                                                     alt="friend">
-                                            </a>
-                                        <% }) %>
-                                        <span class="pl-1 text-nowrap">
-                                        | in <%= dateFormatted %>
-                                    </span>
-                                    </div>
-                                </div> <!-- end card-body-->
-                            </div> <!-- end card-->
-                        </div> <!-- end col -->
-                <% if (count == 4) { count = 0; %>
+                        <div class="col-sm-12">
+                            <div class="alert alert-warning" role="alert">
+                                <i class="mdi mdi-spin mdi-loading mx-1"></i> <strong>Products is being loaded, please wait!</strong>
+                            </div>
+                        </div>
                     </div>
-                <% } %>
-                <% }) %>
-                <!-- end row-->
+                </div>
+                <!-- End Products -->
 
-                <div class="row mb-5" id="demo"></div>
+                <!-- Pagination -->
+                <div class="row mb-5">
+                    <div class="col-sm-12" id="pagination"></div>
+                </div>
+                <!-- End Pagination -->
 
             </div> <!-- End Content -->
 
@@ -172,21 +127,118 @@
 <!-- END Container -->
 
 <%- contentFor('js') %>
-<script src="/public/assets/js/pagination.js"></script>
+<script src="/public/assets/js/custom.js"></script>
 <script>
-    $('#demo').pagination({
-        dataSource: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        pageSize: 5,
-        className: "col-md-12",
-        ulClassName: "pagination pagination-rounded mb-0 justify-content-end",
-        classPrefix: "page-item ",
-        callback: function(data, pagination) {
-            console.log(13);
-        }
+    let page = 1, pageSize = 4, categoryValues = [], search = "";     // Params for url query
+
+    $(document).ready(function (e) {
+        // Get filter values
+        const urlQuery = window.location.search.replace("?", "");
+        const queryParams = urlQuery.split("&");
+
+        queryParams.forEach(param => {
+            // example param: page=1 || pageSize=4
+            const ele = param.split("=");
+            if (ele[0] == "page") page = +ele[1];
+            if (ele[0] == "category") categoryValues.push(ele[1]);
+            if (ele[0] == "search") search = ele[1];
+        })
+
+        // Get data & render items
+        $.ajax({
+            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, categoryValues, search),
+            method: "get",
+            success: function (response) {
+                if (!response.status || response.data[0].pagination.length == 0) {
+                    notFoundAlert();
+                    return;
+                }
+
+                // Handle data into html.
+                const items = response.data[0].data;
+                const totalRow = response.data[0].pagination[0].totalRow;   // Total row of this filter (price + category + search)
+                if (items.length > 0) {
+                    let itemsHtml = ``, count = 0;
+                    items.forEach(item => {
+                        itemsHtml += `
+                    ${count == 0 ? '<div class="row">' : ''}
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card d-block ribbon-box">
+                                <div class="ribbon-two ribbon-two-success"><span>In stock</span></div>
+
+                            <img class="card-img-top" src="/public/resources/images/${item.image}"
+                                                                    alt="project image cap">
+                            <div class="card-body position-relative">
+                                <h4 class="mt-0">
+                                    <a href="apps-projects-details.html" class="text-title" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title="${item.name}">${item.name}</a>
+                                </h4>
+
+                                <p class="mb-2">
+                                    <span class="pr-2 text-nowrap">
+                                    ${item.price.toLocaleString()} đ
+                                    </span>
+                                </p>
+                                <div class="mb-2">`;
+                        item.category.forEach(subItem => {
+                            itemsHtml += `<div class="badge badge-info mr-1 p-1">${subItem.name}</div>`
+                        });
+                        itemsHtml += `</div>
+                                <div class="mb-3">
+                                    <span class="pr-1">by</span>`
+                        item.author.forEach(subItem => {
+                            itemsHtml += `
+                        <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title=""
+                                        data-original-title="${subItem.name}" class="d-inline-block">
+                                            <img src="/public/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs"
+                                            alt="friend">
+                                        </a>`;
+                        });
+                        itemsHtml += `  <span class="pl-1 text-nowrap">
+                                        | in Sep 20, 2023
+                                    </span>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    ${count == 3 ? '</div>' : ''} `;
+                        count ++;
+                        if (count == 4) count = 0;
+                    });
+                    $("#items-show").html(itemsHtml);
+                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, categoryValues, search));
+                    $('[data-toggle="tooltip"]').tooltip();
+                } else if (items.length <= 0) notFoundAlert();
+            },
+            error: function (err) {
+                notFoundAlert();
+            }
+        })
     })
 
+    // Action: Click filter category
     $("#filter-category input").click(function (e) {
-        // console.log($(this).attr('id'))
-        $(this).closest('form').submit();
+        const category = $(e.target).val();
+        if (!categoryValues.includes(category)) categoryValues.push(category);
+        else if (categoryValues.includes(category)) categoryValues.splice(categoryValues.indexOf(category), 1);
+
+        window.location.href = buildQueryUrl(1, pageSize, categoryValues, search);
     })
+
+    // Build query url
+    function buildQueryUrl(page, pageSize, category = [], search = "") {
+        return `?page=${page}&pageSize=${pageSize}&search=${search}` + category.reduce((res, ele) => res += `&category=${ele}`, "");
+    }
+
+    // Print alert no products were found
+    function notFoundAlert() {
+        $("#items-show").html(`
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="alert alert-dark text-center" role="alert">
+                            <strong>No products were found matching your selection.</strong>
+                        </div>
+                    </div>
+                </div>`);
+    }
 </script>

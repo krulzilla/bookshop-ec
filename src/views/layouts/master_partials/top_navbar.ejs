@@ -262,9 +262,9 @@
             </div>
         </a>
         <div class="app-search dropdown">
-            <form>
+            <form action="/products" method="get">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." id="top-search">
+                    <input type="text" class="form-control" name="search" placeholder="Search..." id="top-search" value="<%= data.pagination.filterSearch ?? "" %>">
                     <span class="mdi mdi-magnify search-icon"></span>
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit">Search</button>
