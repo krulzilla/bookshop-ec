@@ -19,11 +19,35 @@
                         <span>Price</span>
                     </div>
                 </li>
-                <li class="side-nav-item">
+                <li class="side-nav-item" id="filter-price">
                     <div>
+                        <div class="custom-control custom-checkbox mx-3 my-3" hidden>
+                            <input type="radio" class="custom-control-input" id="price0" value="" name="price" checked>
+                        </div>
                         <div class="custom-control custom-checkbox mx-3 my-3">
-                            <input type="checkbox" class="custom-control-input" id="1">
-                            <label class="custom-control-label" for="">100.000 d</label>
+                            <input type="radio" class="custom-control-input" id="price1" value="0-200" name="price"
+                                    <%= data.pagination.filterPrice == "0-200" ? "checked" : "" %> >
+                            <label class="custom-control-label" for="price1">0 - 200.000 đ</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mx-3 my-3">
+                            <input type="radio" class="custom-control-input" id="price2" value="200-400" name="price"
+                                    <%= data.pagination.filterPrice == "200-400" ? "checked" : "" %> >
+                            <label class="custom-control-label" for="price2">200.000 - 400.000 đ</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mx-3 my-3">
+                            <input type="radio" class="custom-control-input" id="price3" value="400-600" name="price"
+                                    <%= data.pagination.filterPrice == "400-600" ? "checked" : "" %> >
+                            <label class="custom-control-label" for="price3">400.000 - 600.000 đ</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mx-3 my-3">
+                            <input type="radio" class="custom-control-input" id="price4" value="600-1000" name="price"
+                                    <%= data.pagination.filterPrice == "600-1000" ? "checked" : "" %> >
+                            <label class="custom-control-label" for="price4">600.000 - 1.000.000 đ</label>
+                        </div>
+                        <div class="custom-control custom-checkbox mx-3 my-3">
+                            <input type="radio" class="custom-control-input" id="price5" value="1000-max" name="price"
+                                    <%= data.pagination.filterPrice == "1000-max" ? "checked" : "" %> >
+                            <label class="custom-control-label" for="price5">More than 1.000.000 đ</label>
                         </div>
                     </div>
                 </li>
@@ -129,7 +153,7 @@
 <%- contentFor('js') %>
 <script src="/public/assets/js/custom.js"></script>
 <script>
-    let page = 1, pageSize = 4, categoryValues = [], search = "";     // Params for url query
+    let page = 1, pageSize = 4, categoryValues = [], price = "", search = "";     // Params for url query
 
     $(document).ready(function (e) {
         // Get filter values
@@ -141,12 +165,13 @@
             const ele = param.split("=");
             if (ele[0] == "page") page = +ele[1];
             if (ele[0] == "category") categoryValues.push(ele[1]);
+            if (ele[0] == "price") price = ele[1];
             if (ele[0] == "search") search = ele[1];
         })
 
         // Get data & render items
         $.ajax({
-            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, categoryValues, search),
+            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, categoryValues, price, search),
             method: "get",
             success: function (response) {
                 if (!response.status || response.data[0].pagination.length == 0) {
@@ -160,6 +185,11 @@
                 if (items.length > 0) {
                     let itemsHtml = ``, count = 0;
                     items.forEach(item => {
+                        let name = item.name.split(" ");
+                        if (name.length > 7) name = name.slice(0, 7).join(" ") + "...";
+                        else name = name.join(" ");
+                        const date = new Date(item.publishedAt);
+                        const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
                         itemsHtml += `
                     ${count == 0 ? '<div class="row">' : ''}
                         <div class="col-md-6 col-xl-3">
@@ -170,8 +200,8 @@
                                                                     alt="project image cap">
                             <div class="card-body position-relative">
                                 <h4 class="mt-0">
-                                    <a href="apps-projects-details.html" class="text-title" data-toggle="tooltip" data-placement="top" title=""
-                                    data-original-title="${item.name}">${item.name}</a>
+                                    <a href="/product/${item._id}" class="text-title" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title="${item.name}">${name}</a>
                                 </h4>
 
                                 <p class="mb-2">
@@ -195,7 +225,7 @@
                                         </a>`;
                         });
                         itemsHtml += `  <span class="pl-1 text-nowrap">
-                                        | in Sep 20, 2023
+                                        | in ${dateFormatted}
                                     </span>
                                 </div>
                             </div>
@@ -206,7 +236,7 @@
                         if (count == 4) count = 0;
                     });
                     $("#items-show").html(itemsHtml);
-                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, categoryValues, search));
+                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, categoryValues, price, search));
                     $('[data-toggle="tooltip"]').tooltip();
                 } else if (items.length <= 0) notFoundAlert();
             },
@@ -216,18 +246,26 @@
         })
     })
 
+    // Action: Click filter price
+    $("#filter-price input").click(function (e) {
+        price = $(e.target).val();
+
+        window.location = buildQueryUrl(1, pageSize, categoryValues, price, search);
+    })
+
     // Action: Click filter category
     $("#filter-category input").click(function (e) {
         const category = $(e.target).val();
         if (!categoryValues.includes(category)) categoryValues.push(category);
         else if (categoryValues.includes(category)) categoryValues.splice(categoryValues.indexOf(category), 1);
 
-        window.location.href = buildQueryUrl(1, pageSize, categoryValues, search);
+        window.location.href = buildQueryUrl(1, pageSize, categoryValues, price, search);
     })
 
     // Build query url
-    function buildQueryUrl(page, pageSize, category = [], search = "") {
-        return `?page=${page}&pageSize=${pageSize}&search=${search}` + category.reduce((res, ele) => res += `&category=${ele}`, "");
+    function buildQueryUrl(page, pageSize, category = [], price = "", search = "") {
+        return `?page=${page}&pageSize=${pageSize}&search=${search}` + category.reduce((res, ele) => res += `&category=${ele}`, "")
+            + `${ price ? "&price=" + price : "" }`;
     }
 
     // Print alert no products were found

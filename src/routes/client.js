@@ -8,5 +8,6 @@ const productController = require("../controllers/client/product.controller");
 // Manage routes
 router.get("/", landingController.renderLandingPage);
 router.get("/products", productController.renderProductPage);
+router.get("/product/:id", productController.renderDetailPage);
 
 module.exports = router;

@@ -1,0 +1,8 @@
+=> No need now <= - Create Service Folder: Handle data between model & controller => CSR or SSR would be extended easily
+
+Components need restructure:
+1. Author
+2. Category
+3. Publisher
+4. Product (1st priority)
+5. Role

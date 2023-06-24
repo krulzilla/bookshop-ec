@@ -28,15 +28,25 @@ class Product {
 
     async pagination(req, res) {
         try {
-            let {category = [], search = "", page = 1, pageSize = 8} = req.query;
+            let {category = [], search = "", page = 1, pageSize = 8, price = ""} = req.query;
+            // Handle filter category
             if (!category) category = [];
             category = typeof category == "string" ? [new Types.ObjectId(category)] : category.map(ele => new Types.ObjectId(ele));
             const filterCategory = category.length == 0 ? "$nin" : "$in";
+            // Handle filter price
+            const priceParams = price.split("-");
+            let gte = 0, lt = Number.POSITIVE_INFINITY;
+            if (priceParams.length == 2) {
+                gte = +priceParams[0] * 1000;
+                if (priceParams[1] != "max") lt = +priceParams[1] * 1000;
+            }
+            // Exec query
             const pipelines = [
                 {
                     $match: {
                         name: { $regex: search, $options: "i" },
-                        idCategory: { [filterCategory]: category }
+                        idCategory: { [filterCategory]: category },
+                        price: { $gte: gte, $lt: lt }
                     }
                 },
                 {
