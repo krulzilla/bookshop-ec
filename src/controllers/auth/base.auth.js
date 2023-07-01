@@ -65,11 +65,11 @@ class BaseAuth {
         }
     }
 
-    googleAuth = async(req, res, next) => {
+    googleAuth = async (req, res, next) => {
         passport.authenticate("google", {scope: ['email', 'profile']})(req, res, next);
     }
 
-    googleAuthCallback = async(req, res, next) => {
+    googleAuthCallback = async (req, res, next) => {
         try {
             passport.authenticate("google", {session: false}, (err, user, info) => {
                 if (err || !user) return response(res, false, info.message, 401);
@@ -83,6 +83,29 @@ class BaseAuth {
                 });
                 return res.redirect("/");
             })(req, res, next)
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    githubAuth = async (req, res, next) => {
+        passport.authenticate("github", {scope: ['user']})(req, res, next);
+    }
+
+    githubAuthCallback = async (req, res, next) => {
+        try {
+            passport.authenticate("github", {session: false}, (err, user, info) => {
+                if (err || !user) return response(res, false, info.message, 401);
+
+                // Generate jwt token & set in cookie
+                const accessToken = signToken({userId: user._id});
+
+                res.cookie("accessToken", accessToken, {
+                    httpOnly: true,
+                    maxAge: 2 * 60 * 60 * 1000
+                });
+                return res.redirect("/");
+            })(req, res, next);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

@@ -19,6 +19,11 @@ const UserSchema = new Schema({
         trim: true,
         default: null
     },
+    github: {
+        type: String,
+        trim: true,
+        default: null
+    },
     fullname: {
         type: String,
         trim: true,

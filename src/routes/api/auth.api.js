@@ -6,6 +6,8 @@ router.post("/client/register", clientAuth.register);
 router.post("/client/login", clientAuth.login);
 router.get("/google", clientAuth.googleAuth);
 router.get("/google/callback", clientAuth.googleAuthCallback);
+router.get("/github", clientAuth.githubAuth);
+router.get("/github/callback", clientAuth.githubAuthCallback);
 
 router.use(clientAuth.isUser);
 
