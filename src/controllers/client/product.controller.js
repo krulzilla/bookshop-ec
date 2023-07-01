@@ -14,20 +14,24 @@ class Product {
             }
             return render(res, "client-product", {name: "Products", category: categories, search, pagination});
         } catch (e) {
-            next(e);
+            next({status: 500});
         }
     }
 
-    async renderDetailPage(req, res) {
-        const {id} = req.params;
+    async renderDetailPage(req, res, next) {
+        try {
+            const {id} = req.params;
 
-        const product = await productModel.findById(id)
-                                .populate("idCategory", "name")
-                                .populate("idAuthor", "name -_id")
-                                .populate("idPublisher", "name -_id")
-                                .select("name publishedAt amount price image description");
+            const product = await productModel.findById(id)
+                .populate("idCategory", "name")
+                .populate("idAuthor", "name -_id")
+                .populate("idPublisher", "name -_id")
+                .select("name publishedAt amount price image description");
 
-        return render(res, "client-product_detail", {name: "Product details", product});
+            return render(res, "client-product_detail", {name: "Product details", product});
+        } catch (e) {
+            next({status: 500});
+        }
     }
 }
 

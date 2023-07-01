@@ -84,7 +84,7 @@ class BaseAuth {
                 return res.redirect("/");
             })(req, res, next)
         } catch (e) {
-            return response(res, false, "Somethings went wrong!", 500);
+            next({status: 500});
         }
     }
 
@@ -107,16 +107,16 @@ class BaseAuth {
                 return res.redirect("/");
             })(req, res, next);
         } catch (e) {
-            return response(res, false, "Somethings went wrong!", 500);
+            next({status: 500});
         }
     }
 
-    isUser = async(req, res, next) => {
+    isUser = async (req, res, next) => {
         try {
             passport.authenticate("jwt", {session: false}, async (err, user, info) => {
                 if (err || !user) {
                     res.clearCookie("accessToken");
-                    return res.redirect("/");   // Change to page login after built login-page!!!
+                    return res.redirect("/login");
                 }
 
                 // Set info user to request then next
@@ -127,7 +127,26 @@ class BaseAuth {
                 next();
             })(req, res, next);
         } catch (e) {
-            return response(res, false, "Somethings went wrong!", 500);
+            next({status: 500});
+        }
+    }
+
+    isNotUser = async (req, res, next) => {
+        try {
+            passport.authenticate("jwt", {session: false}, async (err, user, info) => {
+                if (err || !user) {
+                    if (info && info.message === "invalid signature") {
+                        res.clearCookie("accessToken");
+                        return next();
+                    } else if (info && info.message === "No auth token") {
+                        return next();
+                    }
+                }
+
+                return res.redirect("/");
+            })(req, res, next);
+        } catch (e) {
+            next({status: 500});
         }
     }
 }

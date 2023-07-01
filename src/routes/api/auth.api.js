@@ -12,6 +12,12 @@ router.get("/github/callback", clientAuth.githubAuthCallback);
 router.use(clientAuth.isUser);
 
 router.get("/client/protect", (req, res) => {
+    if (req.isAuthenticated()) {
+        console.log("was authenticated");
+    }
+
+    console.log(req.user);
+
     return res.json({msg: "Test protected route!"});
 })
 

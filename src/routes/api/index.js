@@ -19,4 +19,25 @@ router.use("/publisher", publisherApi);
 router.use("/product", productApi);
 router.use("/role", roleApi);
 
+router.use((req, res, next) => {
+    next({
+        status: 404,
+        msg: "API not found"
+    })
+})
+
+router.use((err, req, res, next) => {
+    if (err.status === 404) {
+        return res.status(404).json({
+            msg: err.msg
+        })
+    }
+
+    if (err.status === 500) {
+        return res.status(500).json({
+            msg: err.msg
+        })
+    }
+})
+
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {uiRender: render} = require("../utils/customResponse");
 
 // Import routes
 const clientRoutes = require("./client");
@@ -23,15 +24,11 @@ router.use((req, res, next) => {
 
 router.use((err, req, res, next) => {
     if (err.status === 404) {
-        return res.status(404).json({
-            msg: err.msg
-        })
+        return render(res, "pages-404", [], false);
     }
-
+    console.log(err);
     if (err.status === 500) {
-        return res.status(500).json({
-            msg: err.msg
-        })
+        return render(res, "pages-500", [], false);
     }
 })
 
