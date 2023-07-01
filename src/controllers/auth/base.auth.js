@@ -1,6 +1,6 @@
 const passport = require("passport");
 const {apiResponse: response} = require("../../utils/customResponse");
-const {hashString, compareHash} = require("../../utils/helper");
+const {hashString, compareHash, signToken, verifyToken} = require("../../utils/helper");
 const roleModel = require("../../models/role.model");
 const userModel = require("../../models/user.model");
 
@@ -44,10 +44,37 @@ class BaseAuth {
     login = async(req, res, next) => {
         try {
             passport.authenticate("local", {session: false}, (err, user, info) => {
-                console.log(err, user, info);
                 if (err || !user) return response(res, false, info.message, 401);
 
-                return response(res, true, "Login success");
+                // Generate jwt token & set in cookie
+                const accessToken = signToken({userId: user._id});
+
+                res.cookie("accessToken", accessToken, {
+                    httpOnly: true,
+                    maxAge: 2 * 60 * 60 * 1000
+                });
+                return response(res, true, "Login successfully!");
+            })(req, res, next);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    isUser = async(req, res, next) => {
+        try {
+            e
+            passport.authenticate("jwt", {session: false}, async (err, user, info) => {
+                if (err || !user) {
+                    res.clearCookie("accessToken");
+                    return res.redirect("/");   // Change to page login after built login-page!!!
+                }
+
+                // Set info user to request then next
+                req.user = {
+                    _id: user._id,
+                    role: user.role.name
+                }
+                next();
             })(req, res, next);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
