@@ -26,6 +26,13 @@ class BaseAuth {
                 role: role._id
             })
 
+            // Generate jwt token & set in cookie
+            const accessToken = signToken({userId: newUser._id});
+
+            res.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                maxAge: 2 * 60 * 60 * 1000
+            });
             return response(res, true, "You registered successfully!", 201, newUser);
         } catch (e) {
             if (e.name === "ValidationError") {
@@ -62,7 +69,6 @@ class BaseAuth {
 
     isUser = async(req, res, next) => {
         try {
-            e
             passport.authenticate("jwt", {session: false}, async (err, user, info) => {
                 if (err || !user) {
                     res.clearCookie("accessToken");
