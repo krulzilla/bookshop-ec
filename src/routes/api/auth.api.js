@@ -4,6 +4,8 @@ const clientAuth = require("../../controllers/auth/client.auth");
 
 router.post("/client/register", clientAuth.register);
 router.post("/client/login", clientAuth.login);
+router.get("/google", clientAuth.googleAuth);
+router.get("/google/callback", clientAuth.googleAuthCallback);
 
 router.use(clientAuth.isUser);
 

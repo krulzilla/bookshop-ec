@@ -15,9 +15,7 @@ class BaseAuth {
 
             if (password !== rePassword) return response(res, false, "The confirm password does not match!", 400);
 
-
-            const roleName = this.role;
-            const role = await roleModel.findOne({name: roleName}).select("_id name");
+            const role = await roleModel.findOne({name: this.role}).select("_id name");
             const hashPassword = hashString(password);
 
             const newUser = await userModel.create({
@@ -62,6 +60,29 @@ class BaseAuth {
                 });
                 return response(res, true, "Login successfully!");
             })(req, res, next);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    googleAuth = async(req, res, next) => {
+        passport.authenticate("google", {scope: ['email', 'profile']})(req, res, next);
+    }
+
+    googleAuthCallback = async(req, res, next) => {
+        try {
+            passport.authenticate("google", {session: false}, (err, user, info) => {
+                if (err || !user) return response(res, false, info.message, 401);
+
+                // Generate jwt token & set in cookie
+                const accessToken = signToken({userId: user._id});
+
+                res.cookie("accessToken", accessToken, {
+                    httpOnly: true,
+                    maxAge: 2 * 60 * 60 * 1000
+                });
+                return res.redirect("/");
+            })(req, res, next)
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
