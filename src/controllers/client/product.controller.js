@@ -22,7 +22,7 @@ class Product {
         const {id} = req.params;
 
         const product = await productModel.findById(id)
-                                .populate("idCategory", "name -_id")
+                                .populate("idCategory", "name")
                                 .populate("idAuthor", "name -_id")
                                 .populate("idPublisher", "name -_id")
                                 .select("name publishedAt amount price image description");

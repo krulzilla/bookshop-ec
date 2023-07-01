@@ -26,6 +26,42 @@ class Product {
         }
     }
 
+    async getRandom(req, res) {
+        try {
+            let {category = [], size = 1} = req.query;
+            if (!category) category = [];
+            category = typeof category == "string" ? [new Types.ObjectId(category)] : category.map(ele => new Types.ObjectId(ele));
+            const filterCategory = category.length == 0 ? "$nin" : "$in";
+
+            const pipelines = [
+                {
+                    $match: {
+                        idCategory: { [filterCategory]: category },
+                    }
+                },
+                {
+                    $sample: {
+                        size: +size
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        price: 1,
+                        image: 1
+                    }
+                }
+            ];
+
+            const products = await productModel.aggregate(pipelines);
+
+            return response(res, true, "Action success!", 200, products);
+        } catch (e) {
+            console.log(e)
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
     async pagination(req, res) {
         try {
             let {category = [], search = "", page = 1, pageSize = 8, price = ""} = req.query;

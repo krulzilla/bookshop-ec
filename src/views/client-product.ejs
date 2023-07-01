@@ -204,14 +204,14 @@
                                     data-original-title="${item.name}">${name}</a>
                                 </h4>
 
-                                <p class="mb-2">
+                                <p class="mb-1">
                                     <span class="pr-2 text-nowrap">
                                     ${item.price.toLocaleString()} đ
                                     </span>
                                 </p>
                                 <div class="mb-2">`;
                         item.category.forEach(subItem => {
-                            itemsHtml += `<div class="badge badge-info mr-1 p-1">${subItem.name}</div>`
+                            itemsHtml += `<div class="badge badge-info mr-1 mt-1 p-1">${subItem.name}</div>`
                         });
                         itemsHtml += `</div>
                                 <div class="mb-3">

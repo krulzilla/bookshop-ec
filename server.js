@@ -27,6 +27,9 @@ app.use('/public' , express.static(path.join(__dirname, '/src/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Config passport
+require("./src/controllers/auth/strategies/index");
+
 // Connect Db
 const connectDb = require("./src/config/connectDB.config");
 connectDb();

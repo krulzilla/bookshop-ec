@@ -1,4 +1,4 @@
-const {Schema} = require("mongoose");
+const {Schema, model} = require("mongoose");
 
 const UserSchema = new Schema({
     username: {
@@ -17,6 +17,7 @@ const UserSchema = new Schema({
         // unique: [true, "{VALUE} has been used!"],
         // required: [true, "Email is required"],
         trim: true,
+        default: null
     },
     fullname: {
         type: String,
@@ -24,15 +25,18 @@ const UserSchema = new Schema({
         default: "Anonymous client " + Date.now().toString().slice(-4)
     },
     age: {
-        type: Number
+        type: Number,
+        default: null
     },
     address: {
         type: String,
-        trim: true
+        trim: true,
+        default: null
     },
     phone: {
         type: String,
-        trim: true
+        trim: true,
+        default: null
     },
     isActive: {
         type: Boolean,
@@ -41,6 +45,7 @@ const UserSchema = new Schema({
     role: {
         type: Schema.Types.ObjectId,
         ref: "Role",
+        required: [true, "Role is required"],
     },
     isDeleted: {
         type: Boolean,
@@ -50,4 +55,8 @@ const UserSchema = new Schema({
     timestamps: true
 });
 
-module.exports = UserSchema;
+UserSchema.pre(["find", "findOne"], function () {
+    this.where({isDeleted: false});
+});
+
+module.exports = model("User", UserSchema);
