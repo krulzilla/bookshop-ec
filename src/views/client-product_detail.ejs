@@ -103,7 +103,7 @@
                                                 <div class="d-flex">
                                                     <input type="number" min="1" value="1" class="form-control"
                                                            placeholder="Qty" style="width: 90px;">
-                                                    <button type="button" class="btn btn-danger ml-2"><i
+                                                    <button type="button" class="btn btn-danger ml-2" id="btn-addToCart"><i
                                                             class="mdi mdi-cart mr-1"></i> Add to cart
                                                     </button>
                                                 </div>
@@ -113,25 +113,6 @@
                                                 <h6 class="font-14">Returns: </h6>
                                                 <p class="text-primary">Eligible for Return, Refund or Replacement within 30 days of receipt</p>
                                             </div>
-
-                                            <!-- Product information -->
-<!--                                            <div class="mt-4">-->
-<!--                                                <div class="row">-->
-<!--                                                    <div class="col-md-4">-->
-<!--                                                        <h6 class="font-14">Available Stock:</h6>-->
-<!--                                                        <p class="text-sm lh-150">1784</p>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="col-md-4">-->
-<!--                                                        <h6 class="font-14">Number of Orders:</h6>-->
-<!--                                                        <p class="text-sm lh-150">5,458</p>-->
-<!--                                                    </div>-->
-<!--                                                    <div class="col-md-4">-->
-<!--                                                        <h6 class="font-14">Revenue:</h6>-->
-<!--                                                        <p class="text-sm lh-150">$8,57,014</p>-->
-<!--                                                    </div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-
                                         </form>
                                     </div> <!-- end col -->
                                 </div> <!-- end row-->
@@ -307,6 +288,9 @@
     const categoryValues = [<% data.product.idCategory.forEach((category, index) => { %> <%= index > 0 ? "," : ""%> "<%= category._id %>" <% }) %>];
     const size = 4;
 
+    const idProduct = "<%= data.product._id %>";
+    const idUser = "<%= data.user ? data.user._id : "" %>";
+
     $(document).ready(function () {
 
         $.ajax({
@@ -335,6 +319,29 @@
             },
             error: function (err) {
                 // Do nothing ~.~
+            }
+        })
+    })
+
+    $("#btn-addToCart").click(function (e) {
+        if (!idUser) return $.NotificationApp.send("Forget login ?", "You need login before do this action! <a href='/logn'>Login now</a>", "top-right", "rgba(0,0,0,0.2)", "warning");
+
+        $.ajax({
+            url: "/api/cart",
+            method: "post",
+            data: {
+                idUser,
+                idProduct
+            },
+            success: (response) => {
+                if (response.status) {
+                    return $.NotificationApp.send("Success", response.msg, "top-right", "rgba(0,0,0,0.2)", "success");
+                } else {
+                    return $.NotificationApp.send("Warning", response.msg, "top-right", "rgba(0,0,0,0.2)", "warning");
+                }
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
             }
         })
     })
