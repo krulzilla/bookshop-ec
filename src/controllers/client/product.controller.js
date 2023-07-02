@@ -12,7 +12,7 @@ class Product {
                 filterCategory: category,
                 filterPrice: price,
             }
-            return render(res, "client-product", {name: "Products", category: categories, search, pagination});
+            return render(res, "client-product", {name: "Products", user: req.user, category: categories, search, pagination});
         } catch (e) {
             next({status: 500});
         }
@@ -28,7 +28,7 @@ class Product {
                 .populate("idPublisher", "name -_id")
                 .select("name publishedAt amount price image description");
 
-            return render(res, "client-product_detail", {name: "Product details", product});
+            return render(res, "client-product_detail", {name: "Product details", user: req.user, product});
         } catch (e) {
             next({status: 500});
         }

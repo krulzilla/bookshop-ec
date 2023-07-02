@@ -7,21 +7,19 @@ class ClientAuth extends BaseAuth {
         // this.register = this.register.bind(this);
     }
 
-    // async login(req, res) {
-    //
-    // }
-    //
-    // async register(req, res) {
-    //     await super.register(req, res);
-    // }
+    isClient = async (req, res, next) => {
+        if (req.isAuthenticated && req.user) {
+            if (req.user.role === this.role) return next();
+        }
 
-    // async isAuthenticated(req, res) {
-    //
-    // }
-    //
-    // async isUnauthenticated(req, res) {
-    //
-    // }
+        return res.redirect("/login");
+    }
+
+    isNotClient = async (req, res, next) => {
+        if (req.isUnauthenticated && req.user === null) return next();
+
+        return res.redirect("/");
+    }
 }
 
 module.exports = new ClientAuth();

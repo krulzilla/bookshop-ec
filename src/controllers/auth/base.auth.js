@@ -111,39 +111,24 @@ class BaseAuth {
         }
     }
 
-    isUser = async (req, res, next) => {
-        try {
-            passport.authenticate("jwt", {session: false}, async (err, user, info) => {
-                if (err || !user) {
-                    res.clearCookie("accessToken");
-                    return res.redirect("/login");
-                }
-
-                // Set info user to request then next
-                req.user = {
-                    _id: user._id,
-                    role: user.role.name
-                }
-                next();
-            })(req, res, next);
-        } catch (e) {
-            next({status: 500});
-        }
-    }
-
-    isNotUser = async (req, res, next) => {
+    authenticate = async (req, res, next) => {
         try {
             passport.authenticate("jwt", {session: false}, async (err, user, info) => {
                 if (err || !user) {
                     if (info && info.message === "invalid signature") {
                         res.clearCookie("accessToken");
-                        return next();
-                    } else if (info && info.message === "No auth token") {
-                        return next();
                     }
                 }
 
-                return res.redirect("/");
+                req.user = null;
+                if (user) {
+                    req.user = {
+                        _id: user._id,
+                        fullname: user.fullname,
+                        role: user.role.name
+                    }
+                }
+                next();
             })(req, res, next);
         } catch (e) {
             next({status: 500});

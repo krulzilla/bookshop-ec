@@ -10,10 +10,13 @@ const productController = require("../controllers/client/product.controller");
 const authController = require("../controllers/client/auth.controller");
 
 // Manage routes
+router.use(authMiddleware.authenticate);
+
 router.get("/", landingController.renderLandingPage);
 router.get("/products", productController.renderProductPage);
 router.get("/product/:id", productController.renderDetailPage);
-router.get("/login", authMiddleware.isNotUser, authController.login);
-router.get("/register", authMiddleware.isNotUser, authController.register);
+router.get("/login", authMiddleware.isNotClient, authController.login);
+router.get("/register", authMiddleware.isNotClient, authController.register);
+router.get("/logout", authController.logout);
 
 module.exports = router;

@@ -16,7 +16,7 @@ module.exports = new jwtStrategy(
     },
     async (payload, done) => {
         try {
-            const user = await userModel.findById(payload.userId).populate("role", "name").select("role isActive");
+            const user = await userModel.findById(payload.userId).populate("role", "name").select("fullname role isActive");
 
             if (!user.isActive) return done(null, false, {message: "Your account is current unavailable!"});
 

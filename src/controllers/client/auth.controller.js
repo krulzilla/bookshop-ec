@@ -16,6 +16,15 @@ class Auth {
             next({status: 500});
         }
     }
+
+    logout = async (req, res, next) => {
+        try {
+            res.clearCookie("accessToken");
+            return res.redirect("/")
+        } catch (e) {
+            next({status: 500})
+        }
+    }
 }
 
 module.exports = new Auth();
