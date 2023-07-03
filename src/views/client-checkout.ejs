@@ -95,7 +95,7 @@
                                                     <div class="row">
                                                         <div class="col-12">
                                                             <div class="form-group text-right">
-                                                                <button class="btn btn-primary" id="btn-saveChange">
+                                                                <button class="btn btn-primary" id="btn-saveChange"  data-toggle="modal" data-target="#update-modal">
                                                                     <i class="mdi mdi-account-edit-outline"></i> Save changes
                                                                 </button>
                                                             </div>
@@ -536,6 +536,25 @@
 </div>
 <!-- END Container -->
 
+<!-- Modal ask before save changes -->
+<div id="update-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="warning-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-warning">
+                <h4 class="modal-title" id="warning-header-modalLabel">Save changes?</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                Are you sure to update your information ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" id="btn-save" data-dismiss="modal">Continue</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <%- contentFor('js') %>
 <script>
     let data = [];
@@ -550,7 +569,9 @@
 
     $("#btn-saveChange").click(function (e) {
         e.preventDefault();
+    })
 
+    $("#btn-save").click(function (e) {
         const fullname = $("#input-fullname").val();
         const phone = $("#input-phone").val();
         const address = $("#input-address").val();
@@ -559,7 +580,21 @@
             return $.NotificationApp.send("Warning", `Please fill out all fields before save!`, "top-right", "rgba(0,0,0,0.2)", "warning");
 
         $.ajax({
-            
+            url: "/api/user/update-info",
+            method: "put",
+            data: {
+                fullname,
+                phone,
+                address
+            },
+            success: (response) => {
+                if (response.status) {
+                    return $.NotificationApp.send("Success", `Updated your information!`, "top-right", "rgba(0,0,0,0.2)", "success");
+                }
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `Error when updating your information!`, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
         })
     })
 
