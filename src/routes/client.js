@@ -20,5 +20,6 @@ router.get("/login", authMiddleware.isNotClient, authController.login);
 router.get("/register", authMiddleware.isNotClient, authController.register);
 router.get("/logout", authController.logout);
 router.get("/cart", authMiddleware.isClient, cartController.cart);
+router.get("/checkout", authMiddleware.isClient, cartController.checkout);
 
 module.exports = router;

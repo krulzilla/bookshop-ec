@@ -10,6 +10,7 @@ const publisherApi = require("./publisher.api");
 const productApi = require("./product.api");
 const roleApi = require("./role.api");
 const cartApi = require("./cart.api");
+const typeTransportApi = require("./typeTransport.api");
 
 // Manage api routes
 router.use("/auth", authApi);
@@ -20,6 +21,7 @@ router.use("/publisher", publisherApi);
 router.use("/product", productApi);
 router.use("/role", roleApi);
 router.use("/cart", cartApi);
+router.use("/typeTransport", typeTransportApi);
 
 router.use((req, res, next) => {
     next({

@@ -48,7 +48,7 @@
                                             </div> <!-- end col -->
                                             <div class="col-sm-6">
                                                 <div class="text-sm-right">
-                                                    <a href="apps-ecommerce-checkout.html" class="btn btn-danger">
+                                                    <a href="/checkout" class="btn btn-danger">
                                                         <i class="mdi mdi-cart-plus mr-1"></i> Checkout </a>
                                                 </div>
                                             </div> <!-- end col -->
@@ -70,10 +70,6 @@
                                                     <tr>
                                                         <td>Discount :</td>
                                                         <td id="discount">-0 đ</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Estimated Tax (10%) :</td>
-                                                        <td id="tax">$19.22</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Total :</th>
@@ -199,8 +195,7 @@
 
                     // Set order summary
                     $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
-                    $("#tax").text(`${(grandTotal * 0.1).toLocaleString()} đ`);
-                    $("#total").text(`${(grandTotal * 1.1).toLocaleString()} đ`);
+                    $("#total").text(`${(grandTotal).toLocaleString()} đ`);
                 }
             },
             error: (err) => {
@@ -255,8 +250,7 @@
         }
 
         $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
-        $("#tax").text(`${(grandTotal * 0.1).toLocaleString()} đ`);
-        $("#total").text(`${(grandTotal * 1.1).toLocaleString()} đ`);
+        $("#total").text(`${(grandTotal).toLocaleString()} đ`);
     }
 
     // Click delete cart
