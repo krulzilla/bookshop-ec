@@ -8,6 +8,7 @@ const authMiddleware = require("../controllers/auth/client.auth");
 const landingController = require("../controllers/client/landing.controller");
 const productController = require("../controllers/client/product.controller");
 const authController = require("../controllers/client/auth.controller");
+const cartController = require("../controllers/client/cart.controller");
 
 // Manage routes
 router.use(authMiddleware.authenticate);
@@ -18,5 +19,6 @@ router.get("/product/:id", productController.renderDetailPage);
 router.get("/login", authMiddleware.isNotClient, authController.login);
 router.get("/register", authMiddleware.isNotClient, authController.register);
 router.get("/logout", authController.logout);
+router.get("/cart", authMiddleware.isClient, cartController.cart);
 
 module.exports = router;

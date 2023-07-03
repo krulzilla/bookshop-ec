@@ -1,0 +1,280 @@
+<!-- Start Content-->
+<div class="container-fluid">
+
+    <!-- Begin page -->
+    <div class="wrapper">
+
+        <div class="content-page">
+            <div class="content">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">Shopping Cart</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless table-centered mb-0">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total</th>
+                                                    <th style="width: 50px;"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="content-show">
+                                                </tbody>
+                                            </table>
+                                        </div> <!-- end table-responsive-->
+
+                                        <!-- action buttons-->
+                                        <div class="row mt-4">
+                                            <div class="col-sm-6">
+                                                <a href="/products"
+                                                   class="btn text-muted d-none d-sm-inline-block btn-link font-weight-semibold">
+                                                    <i class="mdi mdi-arrow-left"></i> Continue Shopping </a>
+                                            </div> <!-- end col -->
+                                            <div class="col-sm-6">
+                                                <div class="text-sm-right">
+                                                    <a href="apps-ecommerce-checkout.html" class="btn btn-danger">
+                                                        <i class="mdi mdi-cart-plus mr-1"></i> Checkout </a>
+                                                </div>
+                                            </div> <!-- end col -->
+                                        </div> <!-- end row-->
+                                    </div>
+                                    <!-- end col -->
+
+                                    <div class="col-lg-4">
+                                        <div class="border p-3 mt-4 mt-lg-0 rounded">
+                                            <h4 class="header-title mb-3">Order Summary</h4>
+
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Grand Total :</td>
+                                                        <td id="grand-total">$1571.19</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Discount :</td>
+                                                        <td id="discount">-0 đ</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Estimated Tax (10%) :</td>
+                                                        <td id="tax">$19.22</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total :</th>
+                                                        <th id="total">$1458.3</th>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- end table-responsive -->
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div> <!-- end row -->
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- End Content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            © Power by Hyper - Coderthemes.com
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-right footer-links d-none d-md-block">
+                                        <span>
+                                            <i class="uil-envelope"></i> Email: <a href="#">thanhhoa6621@gmail.com</a>
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div> <!-- content-page -->
+
+    </div> <!-- end wrapper-->
+</div>
+<!-- END Container -->
+
+<!-- Modal ask before delete -->
+<div id="delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="warning-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-warning">
+                <h4 class="modal-title" id="warning-header-modalLabel">Remove from cart</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                Are you sure to remove this item from cart ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning btn-ok">OK</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<%- contentFor('js') %>
+<script>
+    let idCart = "";
+    // Render cart
+    $(document).ready(function (e) {
+        $.ajax({
+            url: "/api/cart/<%= data.user._id %>",
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    let render = ``;
+                    const data = response.data;
+                    let grandTotal = 0;
+                    data.forEach(ele => {
+                        let nameParams = ele.product[0].name.split(" ");
+                        let name = ele.product[0].name;
+                        if (nameParams.length > 5) name = nameParams.slice(0, 5).join(" ") + " ...";
+                        let subTotal = ele.product[0].price * ele.amount;
+                        grandTotal += subTotal;
+                        render += `
+                        <tr>
+                            <td>
+                                <img src="/public/resources/images/${ele.product[0].image}%>"
+                                     alt="contact-img"
+                                     title="contact-img" class="rounded mr-3" height="64"/>
+                                <p class="m-0 d-inline-block align-middle font-16">
+                                    <a href="/product/${ele.idProduct}"
+                                       class="text-body" data-toggle="tooltip" data-placement="top" title=""
+                                       data-original-title="${ele.product[0].name}">${name}</a>
+                                    <br>
+                                    <small class="mr-2"><b>Author:</b>`;
+
+                        ele.author.forEach((subEle, i) => {
+                            render += `${i == 0 ? "" : " and"}<a href=""> ${subEle.name} %></a>`
+                        })
+
+                        render += `</small>
+                                </p>
+                            </td>
+                            <td>
+                                ${ele.product[0].price.toLocaleString()} đ
+                            </td>
+                            <td>
+                                <input type="number" min="1" value="${ele.amount}" class="form-control input-qty"
+                                       placeholder="Qty" style="width: 90px;" data="${ele._id}" product="${ele.product[0]._id}">
+                            </td>
+                            <td>
+                                ${subTotal.toLocaleString()} đ
+                            </td>
+                            <td>
+                                <a href="" class="action-icon btn-delete" data="${ele._id}" data-toggle="modal" data-target="#delete-modal"> <i
+                                            class="mdi mdi-delete"></i></a>
+                            </td>
+                        </tr>
+                        `;
+                    });
+                    $("#content-show").html(render);
+                    $('[data-toggle="tooltip"]').tooltip();
+
+                    // Set order summary
+                    $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
+                    $("#tax").text(`${(grandTotal * 0.1).toLocaleString()} đ`);
+                    $("#total").text(`${(grandTotal * 1.1).toLocaleString()} đ`);
+                }
+            },
+            error: (err) => {
+                // Do nothing 0~0
+            }
+        })
+    })
+
+    // Modify amount & price
+    $(document).on("keyup change", ".input-qty", function (e) {
+        // Get price td
+        const parent = $(this).parent().parent();
+        const priceTd = $(parent.find("td")[3]);
+        // Get amount & product id
+        const amount = $(this).val();
+        idCart = $(this).attr("data");
+        const idProduct = $(this).attr("product");
+
+        if (amount <= 0) return;
+
+        $.ajax({
+            url: `/api/cart/${idCart}`,
+            method: "put",
+            data: {
+                amount,
+                idProduct
+            },
+            success: (response) => {
+                if (response.status) {
+                    const price = amount * response.data.price;
+                    priceTd.text(`${price.toLocaleString()} đ`);
+
+                    calculateOrderSummary();
+                }
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `${err.responseJSON.msg} <br><a href="/cart">Try reload ?!</a>`, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+
+    function calculateOrderSummary() {
+        const tbody = $("#content-show").find("tr");
+        let grandTotal = 0;
+
+        for (let i = 0; i < tbody.length; i ++) {
+            const tr = $(tbody[i]);
+            let priceTd = $(tr.find("td")[3]);
+            let price = priceTd.text().trim().replace(" đ", "").split(",").join("");
+
+            grandTotal += +price;
+        }
+
+        $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
+        $("#tax").text(`${(grandTotal * 0.1).toLocaleString()} đ`);
+        $("#total").text(`${(grandTotal * 1.1).toLocaleString()} đ`);
+    }
+
+    // Click delete cart
+    $(document).on("click", ".btn-delete", function (e) {
+        idCart = $(this).attr("data");
+    })
+
+    $(".btn-ok").click(function (e) {
+        $.ajax({
+            url: `/api/cart/${idCart}`,
+            method: "delete",
+            success: (response) => {
+                if (response.status) window.location.reload();
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+</script>
+
