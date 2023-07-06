@@ -12,6 +12,7 @@ const roleApi = require("./role.api");
 const userApi = require("./user.api");
 const cartApi = require("./cart.api");
 const typeTransportApi = require("./typeTransport.api");
+const typePaymentApi = require("./typePayment.api");
 
 // Manage api routes
 router.use("/auth", authApi);
@@ -24,6 +25,7 @@ router.use("/role", roleApi);
 router.use("/user", userApi);
 router.use("/cart", cartApi);
 router.use("/typeTransport", typeTransportApi);
+router.use("/typePayment", typePaymentApi);
 
 router.use((req, res, next) => {
     next({
