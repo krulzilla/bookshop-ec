@@ -10,10 +10,23 @@ const expressLayouts = require('express-ejs-layouts');
 
 // Config libs
 app.use(helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     contentSecurityPolicy: {
         directives: {
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-            "script-src": ["'self'", "'unsafe-inline'"],
+            "default-src": ["'self'",
+                "https://www.paypal.com",
+                "https://www.sandbox.paypal.com"
+            ],
+            "img-src": ["'self'",
+                "https://www.paypalobjects.com",
+                "data:",
+                "http://www.w3.org/2000/svg"
+            ],
+            "script-src": ["'self'", "'unsafe-inline'",
+                "https://www.paypal.com",
+                "https://www.sandbox.paypal.com",
+            ],
         },
     },
 }));

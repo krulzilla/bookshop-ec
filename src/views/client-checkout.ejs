@@ -184,7 +184,7 @@
                                                                 <div class="custom-control custom-radio">
                                                                     <input type="radio" id="<%= type._id %>"
                                                                            name="billingOptions"
-                                                                           class="custom-control-input">
+                                                                           class="custom-control-input" checked>
                                                                     <label class="custom-control-label font-16 font-weight-bold"
                                                                            for="<%= type._id %>"><%= type.name %></label>
                                                                 </div>
@@ -208,10 +208,9 @@
                                                     </div> <!-- end col -->
                                                     <div class="col-sm-6">
                                                         <div class="text-sm-right">
-                                                            <a href="apps-ecommerce-checkout.html"
-                                                               class="btn btn-danger">
-                                                                <i class="mdi mdi-cash-multiple mr-1"></i> Complete
-                                                                Order </a>
+                                                            <a href=""
+                                                               class="btn btn-danger" id="btn-complete">
+                                                                <i class="mdi mdi-cash-multiple mr-1"></i> Complete Order </a>
                                                         </div>
                                                     </div> <!-- end col -->
                                                 </div> <!-- end row-->
@@ -289,7 +288,26 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div id="paypal-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="warning-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-primary">
+                <h4 class="modal-title" id="warning-header-modalLabel">Payment method: Paypal</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="paypal-button-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" id="btn-save" data-dismiss="modal">Continue</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <%- contentFor('js') %>
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 <script>
     (function () {
         let data = [];
@@ -302,6 +320,7 @@
             renderSummary();
         })
 
+        // Action: Save shipping information
         $("#btn-saveChange").click(function (e) {
             e.preventDefault();
         })
@@ -333,6 +352,71 @@
             })
         })
 
+        // Action: Complete order
+        $("#btn-complete").click(function (e) {
+            e.preventDefault();
+
+            $.post({
+                url: "/api/user/check-shipping-info",
+                success: async (response) => {
+                    $("#paypal-button-container").html("");
+                    await paypal
+                        .Buttons({
+                            // Sets up the transaction when a payment button is clicked
+                            createOrder: function () {
+                                return fetch("/api/payment/create-paypal-order", {
+                                    method: "post",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    }
+                                })
+                                    .then((response) => response.json())
+                                    .then((order) => order.id);
+                            },
+                            // Finalize the transaction after payer approval
+                            onApprove: function (data) {
+                                alert(data);
+
+                                return fetch("/api/payment/capture-paypal-order", {
+                                    method: "post",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        orderID: data.orderID,
+                                    }),
+                                })
+                                    .then((response) => response.json())
+                                    .then((orderData) => {
+                                        // Successful capture! For dev/demo purposes:
+                                        console.log(
+                                            "Capture result",
+                                            orderData,
+                                            JSON.stringify(orderData, null, 2)
+                                        );
+                                        const transaction = orderData.purchase_units[0].payments.captures[0];
+
+
+                                        // When ready to go live, remove the alert and show a success message within this page. For example:
+                                        // var element = document.getElementById('paypal-button-container');
+                                        // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                                        // Or go to another URL:  actions.redirect('thank_you.html');
+                                    });
+                            },
+                        })
+                        .render("#paypal-button-container");
+
+                    $("#paypal-modal").modal("show")
+                },
+                error: (err) => {
+                    if (!err.responseJSON.status) {
+                        return $.NotificationApp.send("Warning", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "warning");
+                    }
+                }
+            })
+        })
+
+        // Support fnc
         function renderSummary() {
             let render = ``;
             let subTotal = 0;
