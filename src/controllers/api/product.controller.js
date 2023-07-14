@@ -158,7 +158,6 @@ class Product {
             }
             return response(res, false, "Somethings went wrong!", 500);
         }
-
     }
 
     async update(req, res) {

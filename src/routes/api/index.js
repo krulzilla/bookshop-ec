@@ -14,6 +14,7 @@ const cartApi = require("./cart.api");
 const typeTransportApi = require("./typeTransport.api");
 const typePaymentApi = require("./typePayment.api");
 const paymentApi = require("./payment.api");
+const orderApi = require("./order.api");
 
 // Manage api routes
 router.use("/auth", authApi);
@@ -28,6 +29,7 @@ router.use("/cart", cartApi);
 router.use("/typeTransport", typeTransportApi);
 router.use("/typePayment", typePaymentApi);
 router.use("/payment", paymentApi);
+router.use("/order", orderApi);
 
 router.use((req, res, next) => {
     next({

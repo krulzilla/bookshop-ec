@@ -7,6 +7,12 @@ const clientRoutes = require("./client");
 const apiRoutes = require("./api");
 const testRoutes = require("./test.route");
 
+// Import middleware
+const authMiddleware = new (require("../controllers/auth/base.auth"))();
+
+// Use middleware
+router.use(authMiddleware.authenticate);
+
 // Manage routes
 router.use("/", clientRoutes);
 router.use("/api/", apiRoutes);

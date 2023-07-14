@@ -115,9 +115,10 @@ class BaseAuth {
         try {
             passport.authenticate("jwt", {session: false}, async (err, user, info) => {
                 if (err || !user) {
-                    if (info && info.message === "invalid signature") {
-                        res.clearCookie("accessToken");
-                    }
+                    // if (info && info.message === "invalid signature") {
+                    //     res.clearCookie("accessToken");
+                    // }
+                    res.clearCookie("accessToken");
                 }
 
                 req.user = null;

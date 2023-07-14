@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 const { CLIENT_ID, APP_SECRET } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 
+// Module create order
 async function createOrder(totalValue) {
     const accessToken = await generateAccessToken();
     const url = `${base}/v2/checkout/orders`;
@@ -28,6 +29,7 @@ async function createOrder(totalValue) {
     return handleResponse(response);
 }
 
+// Module capture info order after client paid
 async function capturePayment(orderId) {
     const accessToken = await generateAccessToken();
     const url = `${base}/v2/checkout/orders/${orderId}/capture`;

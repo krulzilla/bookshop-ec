@@ -8,6 +8,7 @@ class Paypal {
         try {
             const idUser = req.body.idUser ?? req.user._id;
 
+            // Get total price what client need to pay
             const cart = await cartModel.aggregate([
                 {
                     $match : {
@@ -35,6 +36,7 @@ class Paypal {
                 return res += cur.amount * cur.product[0].price;
             }, 0) / process.env.RATE_USD_TO_VND;
 
+            // Create order by request to paypal server => then return order id back to client
             const order = await createOrder(total);
             return res.json(order);
         } catch (e) {
@@ -45,6 +47,7 @@ class Paypal {
     async captureOrder(req, res) {
         const { orderID } = req.body;
         try {
+            // Get information of order which user paid
             const captureData = await capturePayment(orderID);
             return res.json(captureData);
         } catch (e) {
