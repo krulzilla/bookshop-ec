@@ -97,7 +97,6 @@ class Order {
 
             return response(res, true, "Create order successfully", 201, newOrder);
         } catch (e) {
-            console.log(e);
             if (e.name === "ValidationError") {
                 let errMsg;
                 Object.keys(e.errors).forEach((key) => {

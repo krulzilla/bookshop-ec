@@ -9,6 +9,7 @@ const landingController = require("../controllers/client/landing.controller");
 const productController = require("../controllers/client/product.controller");
 const authController = require("../controllers/client/auth.controller");
 const cartController = require("../controllers/client/cart.controller");
+const orderController = require("../controllers/client/order.controller");
 
 // Manage routes
 router.get("/", landingController.renderLandingPage);
@@ -19,5 +20,6 @@ router.get("/register", authClient.isNotClient, authController.register);
 router.get("/logout", authController.logout);
 router.get("/cart", authClient.isClient, cartController.cart);
 router.get("/checkout", authClient.isClient, cartController.checkout);
+router.get("/complete-order", authClient.isClient, orderController.completeOrder);
 
 module.exports = router;

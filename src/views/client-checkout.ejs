@@ -300,7 +300,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-warning" id="btn-save" data-dismiss="modal">Continue</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -311,6 +310,7 @@
 <script>
     (function () {
         let data = [];
+        let billingOption = "Cash On Delivery";
         $(document).ready(function () {
             btnSwitchTab();
             getOrderSummary();
@@ -352,9 +352,18 @@
             })
         })
 
+        // Action: Change billing option
+        $("input[name='billingOptions']").click(function (e) {
+            billingOption =  $(this).parent().find("label").text().trim();
+        })
+
         // Action: Complete order
         $("#btn-complete").click(function (e) {
             e.preventDefault();
+
+            if (billingOption === "Cash On Delivery") {
+                return window.location = generateUrlToCompletePage();
+            }
 
             $.post({
                 url: "/api/user/check-shipping-info",
@@ -375,8 +384,6 @@
                             },
                             // Handle after user complete payment with paypal
                             onApprove: function (data) {
-                                alert(data);
-
                                 return fetch("/api/payment/capture-paypal-order", {
                                     method: "post",
                                     headers: {
@@ -389,13 +396,7 @@
                                 .then((response) => response.json())
                                 .then((orderData) => {
                                     // Successful capture! For dev/demo purposes:
-                                    console.log(
-                                        "Capture result",
-                                        orderData,
-                                        JSON.stringify(orderData, null, 2)
-                                    );
-                                    const transaction = orderData.purchase_units[0].payments.captures[0];
-
+                                    return window.location = generateUrlToCompletePage(orderData.id);
                                 });
                             },
                         })
@@ -506,6 +507,13 @@
                 btnPayment.removeClass("active");
                 btnShipping.addClass("active");
             })
+        }
+
+        function generateUrlToCompletePage(paypalOrderId = "") {
+            const billingOptionId = $("input[name='billingOptions']:checked").attr("id");
+            const shippingOptionId = $("input[name='shippingOptions']:checked").attr("id");
+
+            return `/complete-order?billing=${billingOptionId}&shipping=${shippingOptionId}${paypalOrderId ? "&paypalOrder=" + paypalOrderId : ""}`;
         }
     })()
 </script>
