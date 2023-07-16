@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Middleware auth
 const authClient = require("../controllers/auth/client.auth");
+const cartMiddleware = require("../controllers/api/cart.controller"); // Use to check if amount of product in cart > in stock
 
 // Import routes
 const landingController = require("../controllers/client/landing.controller");
@@ -10,6 +11,7 @@ const productController = require("../controllers/client/product.controller");
 const authController = require("../controllers/client/auth.controller");
 const cartController = require("../controllers/client/cart.controller");
 const orderController = require("../controllers/client/order.controller");
+const profileController = require("../controllers/client/profile.controller");
 
 // Manage routes
 router.get("/", landingController.renderLandingPage);
@@ -19,7 +21,8 @@ router.get("/login", authClient.isNotClient, authController.login);
 router.get("/register", authClient.isNotClient, authController.register);
 router.get("/logout", authController.logout);
 router.get("/cart", authClient.isClient, cartController.cart);
-router.get("/checkout", authClient.isClient, cartController.checkout);
+router.get("/checkout", authClient.isClient, cartMiddleware.canCheckout, cartController.checkout);
 router.get("/complete-order", authClient.isClient, orderController.completeOrder);
+router.get("/profile", profileController.renderPageProfile);
 
 module.exports = router;

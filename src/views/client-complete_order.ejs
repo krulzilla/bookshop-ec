@@ -57,10 +57,48 @@
 <script src="/public/assets/js/app.min.js"></script>
 
 <script>
+(function () {
+    let typeTransport, typePayment, idPaypalInvoice;
+
     $(document).ready(function (e) {
-        const query = window.location.search;
-        console.log(query)
+        const query = window.location.search.replace("?", "");
+        const params = query.split("&");
+
+        for (let item of params) {
+            item = item.split("=");
+            const key = item[0];
+            const val = item[1];
+
+            if (key === "billing") typePayment = val;
+            if (key === "shipping") typeTransport = val;
+            if (key === "paypalOrder") idPaypalInvoice = val;
+        }
+
+        $.ajax({
+            url: "/api/order",
+            method: "post",
+            data: {
+                typeTransport,
+                typePayment,
+                idPaypalInvoice,
+            },
+            success: (response) => {
+                if (response.status) {
+                    return window.location = "/products";
+                    // Redirect to manage order when built
+                }
+            },
+            error: (err) => {
+                if (!err.responseJSON.status) {
+                    $.NotificationApp.send("Error happened!!", err.responseJSON.msg + `<br>Back to cart in 5s`, "top-right", "rgba(0,0,0,0.2)", "error");
+                    setTimeout(() => {
+                        window.location = "/cart";
+                    }, 5000);
+                }
+            }
+        })
     })
+})()
 </script>
 
 </body>

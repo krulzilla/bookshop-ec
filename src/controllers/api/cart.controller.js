@@ -101,6 +101,55 @@ class Cart {
         }
     }
 
+    async canCheckout(req, res, next) {
+        // Check if current cart can checkout => Error if amount product in cart > in stock
+        try {
+            const idUser = req.body.idUser ?? req.user._id;
+
+            const cart = await cartModel.aggregate([
+                {
+                    $match : {
+                        idUser: new Types.ObjectId(idUser)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "idProduct",
+                        foreignField: "_id",
+                        as: "product"
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        amount: 1,
+                        "product.amount": 1,
+                    }
+                }
+            ]);
+
+            let flag = false; // Check if cart was change in loop below
+
+            for (let item of cart) {
+                if (item.amount > item.product[0].amount) {
+                    flag = true;
+                    if (item.product[0].amount === 0) {
+                        await cartModel.findByIdAndDelete(item._id);
+                        continue;
+                    }
+                    await cartModel.findByIdAndUpdate(item._id, {
+                        amount: item.product[0].amount
+                    });
+                }
+            }
+
+            return flag ? res.redirect("/cart") : next();
+        } catch (e) {
+            return next({status: 500});
+        }
+    }
+
     async update(req, res) {
         try {
             const {id: idCart} = req.params;
