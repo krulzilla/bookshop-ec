@@ -4,6 +4,7 @@ const {uiRender: render} = require("../utils/customResponse");
 
 // Import routes
 const clientRoutes = require("./client");
+const adminRoutes = require("./admin");
 const apiRoutes = require("./api");
 const testRoutes = require("./test.route");
 
@@ -15,6 +16,7 @@ router.use(authMiddleware.authenticate);
 
 // Manage routes
 router.use("/", clientRoutes);
+router.use("/admincp/", adminRoutes);
 router.use("/api/", apiRoutes);
 
 // Test routes

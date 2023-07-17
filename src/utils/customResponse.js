@@ -7,6 +7,7 @@ const apiResponse = (response, status, message, code = 200, data) => {
 }
 
 const uiRender = (response, view, data, layout) => {
+    if (layout) layout = `./layouts/${layout}`;
     response.render(view, {data: data, layout: layout});
 }
 
