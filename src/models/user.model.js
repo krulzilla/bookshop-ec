@@ -52,6 +52,10 @@ const UserSchema = new Schema({
         ref: "Role",
         required: [true, "Role is required"],
     },
+    isAuthBySocial: {     // True at first time register through google || github => then false if change password at first time
+        type: Boolean,
+        default: false
+    },
     isDeleted: {
         type: Boolean,
         default: false

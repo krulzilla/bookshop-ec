@@ -175,6 +175,8 @@
                                         <form>
                                             <h5 class="mb-4 text-uppercase bg-light p-2"><i class="mdi mdi-key-outline"></i>
                                                  Manage password</h5>
+
+                                            <% if (!data.profile.isAuthBySocial) { %>
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
@@ -191,6 +193,7 @@
                                                     </div>
                                                 </div>
                                             </div> <!-- end row -->
+                                            <% } %>
 
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -274,6 +277,7 @@
 <script>
 (function () {
    const idUser = "<%= data.profile._id %>";
+   const isAuthBySocial = "<%= data.profile.isAuthBySocial %>";
 
    $("#btn-save").click(function (e) {
        e.preventDefault();
@@ -331,12 +335,12 @@
         const newPassword = $("#input-newPassword").val();
         const confirmPassword = $("#input-confirmPassword").val();
 
-        const validatePassword = $("#validate-fullname");
+        const validatePassword = $("#validate-password");
         const validateNewPassword = $("#validate-newPassword");
         const validateConfirmPassword = $("#validate-confirmPassword");
 
         // Check if information is null & newP != confirmP
-        if (!password) {
+        if (isAuthBySocial == "false" && !password) {
             return validatePassword.text("Current password cannot be null").addClass("d-block");
         } else validatePassword.removeClass("d-block");
 

@@ -30,7 +30,8 @@ module.exports = new githubStrategy(
                 email,
                 github,
                 fullname,
-                role: role._id
+                role: role._id,
+                authBySocial: true
             })
 
             return cb(null, newUser);

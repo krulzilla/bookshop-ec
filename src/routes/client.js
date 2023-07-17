@@ -23,6 +23,6 @@ router.get("/logout", authController.logout);
 router.get("/cart", authClient.isClient, cartController.cart);
 router.get("/checkout", authClient.isClient, cartMiddleware.canCheckout, cartController.checkout);
 router.get("/complete-order", authClient.isClient, orderController.completeOrder);
-router.get("/profile", profileController.renderPageProfile);
+router.get("/profile", authClient.isClient, profileController.renderPageProfile);
 
 module.exports = router;

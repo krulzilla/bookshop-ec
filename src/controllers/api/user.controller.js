@@ -30,14 +30,20 @@ class User {
             if (newPassword !== confirmPassword) return response(res, false, "Confirm password is incorrect!", 400);
 
             // Check current password is correct
-            const currentUser = await userModel.findById(idUser).select("password");
+            const currentUser = await userModel.findById(idUser).select("password isAuthBySocial");
 
-            if (!compareHash(password, currentUser.password)) return response(res, false, "Current password is incorrect!", 400);
+            let passwordUpdate = {};  // Use to update password.
+
+            if (!currentUser.isAuthBySocial) {
+                if (!compareHash(password, currentUser.password)) return response(res, false, "Current password is incorrect!", 400);
+            } else {
+                passwordUpdate.isAuthBySocial = false;
+            }
+
+            passwordUpdate.password = hashString(newPassword)
 
             // Change password
-            const newUser = await userModel.findByIdAndUpdate(idUser, {
-                password: hashString(newPassword)
-            });
+            const newUser = await userModel.findByIdAndUpdate(idUser, passwordUpdate);
 
             return response(res, true, "Change password successfully!", 200);
         } catch (e) {
