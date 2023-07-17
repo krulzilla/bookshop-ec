@@ -26,10 +26,11 @@ class TypePayment {
 
     async create(req, res) {
         try {
-            const {name, description, image} = req.body;
+            const {name, shortName, description, image} = req.body;
 
             const data = await typePaymentModel.create({
                 name,
+                shortName,
                 description,
                 image,
             });

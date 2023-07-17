@@ -3,6 +3,8 @@ const router = express.Router();
 const orderApi = require("../../controllers/api/order.controller");
 
 router.get("/", orderApi.getAll);
+router.get("/by-user/:idUser", orderApi.getByUser);
+router.get("/get-details/:id", orderApi.getDetailsById);
 router.get("/:id", orderApi.getById);
 router.post("/", orderApi.create);
 router.put("/:id", orderApi.update);

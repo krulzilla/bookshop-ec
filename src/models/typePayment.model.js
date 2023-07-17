@@ -6,6 +6,11 @@ const TypePaymentSchema = new Schema({
         trim: true,
         unique: [true, "{VALUE} is in used"],
     },
+    shortName: {
+        type: String,
+        trim: true,
+        unique: [true, "{VALUE} is in used}"],
+    },
     description: {
         type: String,
         trim: true,

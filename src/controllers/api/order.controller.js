@@ -29,6 +29,110 @@ class Order {
         }
     }
 
+    async getByUser(req, res) {
+        try {
+            const idUser = req.params.idUser;
+
+            const orders = await orderModel.find({
+                idUser
+            }).populate("typePayment", "shortName").sort({createdAt: -1});
+
+            return response(res, true, "Get all orders", 200, orders);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async getDetailsById(req, res) {
+        try {
+            const id = req.params.id;
+
+            const order = await orderModel.aggregate([
+                {
+                    $match: {
+                        _id: new Types.ObjectId(id)
+                    }
+                },
+                {
+                    $lookup : {
+                        from: "type payments",
+                        localField: "typePayment",
+                        foreignField: "_id",
+                        as: "typePayment"
+                    }
+                },
+                {
+                    $lookup : {
+                        from: "type transports",
+                        localField: "typeTransport",
+                        foreignField: "_id",
+                        as: "typeTransport"
+                    }
+                },
+                {
+                    $unwind: "$typeTransport"
+                },
+                {
+                    $unwind: "$typePayment"
+                },
+                {
+                    $lookup: {
+                        from: "order details",
+                        let: { orderId: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $eq: ["$idOrder", "$$orderId"]
+                                    }
+                                }
+                            },
+                            {
+                                $lookup: {
+                                    from: "products",
+                                    localField: "idProduct",
+                                    foreignField: "_id",
+                                    as: "product"
+                                }
+                            },
+                            {
+                                $unwind: "$product"
+                            },
+                        ],
+                        as: "orderDetails"
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        total: 1,
+                        status: 1,
+                        createdAt: 1,
+                        typeTransport: {
+                            name: 1,
+                            price: 1,
+                            description: 1
+                        },
+                        typePayment: {
+                            name: 1,
+                            shortName: 1,
+                        },
+                        orderDetails: {
+                            amount: 1,
+                            price: 1,
+                            "product.name": 1,
+                            "product.image": 1
+                        }
+                    }
+                }
+            ]);
+
+            return response(res, true, "Get order success", 200, order);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
     async create(req, res) {
         try {
             // Get parameters

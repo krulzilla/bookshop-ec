@@ -1,0 +1,435 @@
+<!-- Start Content-->
+<div class="container-fluid">
+
+    <!-- Begin page -->
+    <div class="wrapper">
+
+        <div class="content-page">
+            <div class="content">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">My Orders</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-lg-8">
+                                        <form class="form-inline">
+                                            <div class="form-group mx-sm-3 mb-2">
+                                                <label for="status-select" class="mr-2">Status</label>
+                                                <select class="custom-select" id="status-select">
+                                                    <option value="" selected>Choose...</option>
+                                                    <option value="0">Processing</option>
+                                                    <option value="1">Preparing</option>
+                                                    <option value="2">Shipping</option>
+                                                    <option value="3">Delivered</option>
+                                                    <option value="4">Cancelled</option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="text-lg-right">
+                                            <div class="form-group mb-2">
+                                                <label for="inputPassword2" class="sr-only">Search</label>
+                                                <input type="search" class="form-control" id="order-search" maxlength="4"
+                                                       placeholder="Search by 4 last character of order id...">
+                                            </div>
+                                        </div>
+                                    </div><!-- end col-->
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered mb-0">
+                                        <thead class="thead-light">
+                                            <th>Order ID</th>
+                                            <th>Date</th>
+                                            <th>Payment Status</th>
+                                            <th>Total</th>
+                                            <th>Payment Method</th>
+                                            <th>Order Status</th>
+                                            <th style="width: 125px;">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="order-show"> </tbody>
+                                    </table>
+                                </div>
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+
+            </div> <!-- End Content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            2018 - 2020 © Hyper - Coderthemes.com
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-right footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div> <!-- content-page -->
+
+    </div> <!-- end wrapper-->
+</div>
+<!-- END Container -->
+
+<div class="modal fade" id="view-order" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-primary">
+                <h5 class="modal-title" id="scrollableModalTitle">Order details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Order ID:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>12312312321</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Total:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>200.000 đ</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Type payment:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>Paypal</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Type transport:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>Fast</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Status order:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>Preparing</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Placed at:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>18:30</h5>
+                    </div>
+                </div>
+                <hr>
+                <ul class="list-unstyled">
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="/public/resources/images/1.jpg" alt="product-image-alt" class="card-img">
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Watercolor With Me in the Forest</h5>
+                                <p>600.000 đ</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5>x2</h5>
+                                <p>1.200.000 đ</p>
+                            </div>
+                        </div>
+                    </li>
+                    <hr>
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="/public/resources/images/1.jpg" alt="product-image-alt" class="card-img">
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Watercolor With Me in the Forest</h5>
+                                <p>600.000 đ</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5>x2</h5>
+                                <p>1.200.000 đ</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<%- contentFor("js") %>
+<script>
+(function (){
+    let idUser = "<%= data.user._id %>";
+    let orders = [], search = "", status = "";
+
+    $(document).ready(function (e) {
+        $.ajax({
+            url: `/api/order/by-user/${idUser}`,
+            method: "get",
+            success: (response) => {
+                orders = response.data;
+
+                renderOrder(orders);
+            },
+            error: (err) => {
+
+            }
+        })
+    })
+
+    function renderOrder(orderData) {
+        $("#order-show").empty();
+        let render = "";
+        orderData.forEach(order => {
+            const dateRaw = new Date(order.createdAt);
+            const date = `${dateRaw.toLocaleString("default", {month: "short"})} ${dateRaw.getDate()}, ${dateRaw.getFullYear()}`;
+            const time = `${dateRaw.getUTCHours()}:${dateRaw.getUTCMinutes()}`;
+            render += `
+            <tr id="${order._id}">
+                <td><a href="apps-ecommerce-orders-details.html"
+                       class="text-body font-weight-bold">
+                        ${ order._id.toString().slice(0, 2) + "..." + order._id.toString().slice(-4) }
+                    </a></td>
+                <td>
+                    ${date} <small class="text-muted">${ time } - UTC</small>
+                </td>
+                <td>`;
+
+            if (order.typePayment.shortName === "COD" && order.status !== 3) {
+                render += `<h5><span class="badge badge-info-lighten"><i
+                                    class="mdi mdi-cash"></i> Unpaid</span></h5>`;
+            } else if (order.typePayment.shortName !== "COD" && order.idPaypalInvoice) {
+                render += `<h5><span class="badge badge-success-lighten"><i
+                    class="mdi mdi-coin"></i> Paid</span></h5>`;
+            }
+            render += `
+                </td>
+                <td>
+                    ${order.total.toLocaleString() } đ
+                </td>
+                <td>
+                    ${ order.typePayment.shortName }
+                </td>
+                <td>`;
+            const status = order.status;
+            let statusBadge = "";
+            switch (status) {
+                case 0:
+                    statusBadge = `<h5><span class="badge badge-warning-lighten">Processing</span></h5>`;
+                    break;
+                case 1:
+                    statusBadge = `<h5><span class="badge badge-primary-lighten">Preparing</span></h5>`;
+                    break;
+                case 2:
+                    statusBadge = `<h5><span class="badge badge-info-lighten">Shipping</span></h5>`;
+                    break;
+                case 3:
+                    statusBadge = `<h5><span class="badge badge-success-lighten">Delivered</span></h5>`;
+                    break;
+                case 4:
+                    statusBadge = `<h5><span class="badge badge-danger-lighten">Cancelled</span></h5>`;
+                    break;
+            }
+            render += `${statusBadge}</td>
+                <td>
+                    <a href="javascript:void(0);" class="action-icon btn-view" data-toggle="tooltip" data-placement="top"
+                       data-original-title="View order"> <i
+                                class="mdi mdi-eye"></i></a>
+                    <a href="javascript:void(0);" class="action-icon" data-toggle="tooltip" data-placement="top"
+                       data-original-title="Cancel order"> <i
+                                class="mdi mdi-cancel"></i></a>
+                </td>
+            </tr>`;
+        })
+
+        $("#order-show").html(render);
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    // Filter: By status
+    $("#order-search").on("change keyup", function (e) {
+        search = $(this).val();
+        let regex = new RegExp(`^${search}.*`, "g");
+        const resArr = orders.filter(order => {
+            let id = order._id.toString().slice(-4);
+
+            return id.match(regex) && (order.status == status || status === "");
+        })
+
+        renderOrder(resArr);
+    })
+
+    // Filter: By order id
+    $("#status-select").change(function (e) {
+        status = $(this).val();
+        let regex = new RegExp(`^${search}.*`, "g");
+        const resArr = orders.filter(order => {
+            let id = order._id.toString().slice(-4);
+
+            return id.match(regex) && (order.status == status || status === "");
+        })
+
+        renderOrder(resArr);
+    })
+
+    // Click view order
+    $(document).on("click", ".btn-view", function (e) {
+        // Get id order
+        const idOrder = $(this).parent().parent().attr("id");
+
+        $.ajax({
+            url: `/api/order/get-details/${idOrder}`,
+            method: "get",
+            success: (response) => {
+                let renderDetails = "";
+
+                const details = response.data[0];
+
+                // handle date-time
+                const dateRaw = new Date(details.createdAt);
+                const date = `${dateRaw.toLocaleString("default", {month: "short"})} ${dateRaw.getDate()}, ${dateRaw.getFullYear()}`;
+                const time = `${dateRaw.getUTCHours()}:${dateRaw.getUTCMinutes()}`;
+
+                // handle status description
+                let status = "Processing";
+                if (details.status == 1) status = "Preparing";
+                if (details.status == 2) status = "Shipping";
+                if (details.status == 3) status = "Delivered";
+                if (details.status == 4) status = "Cancelled";
+
+                renderDetails += `
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Order ID:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>${details._id}</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Placed at:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>${date} <small class="text-muted">${time}</small></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Status order:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>${status}</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Type payment:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5 class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                       data-original-title="${details.typePayment.name}">${details.typePayment.shortName}</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Type transport:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5 class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                       data-original-title="${details.typeTransport.description}">${details.typeTransport.name}</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Shipping fee:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>${details.typeTransport.price.toLocaleString()} đ</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Total:</h5>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>${details.total.toLocaleString()} đ</h5>
+                    </div>
+                </div>
+                <hr>
+                <ul class="list-unstyled">
+                `;
+                details.orderDetails.forEach((item, index) => {
+                    if (index !== 0) renderDetails += "<hr>";
+                    renderDetails += `
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="/public/resources/images/${item.product.image}" alt="product-image-alt" class="card-img">
+                            </div>
+                            <div class="col-md-6">
+                                <h5>${item.product.name}</h5>
+                                <p>${item.price.toLocaleString()} đ</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5>x${item.amount}</h5>
+                                <p>${(item.price * item.amount).toLocaleString()} đ</p>
+                            </div>
+                        </div>
+                    </li>
+                    `;
+                })
+                renderDetails += `</ul>`;
+
+                $("#view-order").find(".modal-body").html(renderDetails);
+                $('[data-toggle="tooltip"]').tooltip();
+            },
+            error: (err) => {
+
+            }
+        })
+
+        $("#view-order").modal("show")
+    })
+})()
+</script>
