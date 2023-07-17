@@ -48,8 +48,14 @@ class BaseAuth {
 
     login = async(req, res, next) => {
         try {
-            passport.authenticate("local", {session: false}, (err, user, info) => {
+            passport.authenticate("local", {session: false}, async (err, user, info) => {
                 if (err || !user) return response(res, false, info.message, 401);
+
+                const role = await roleModel.findById(user.role).select("_id name");
+
+                if (this.role !== role.name) {
+                    return response(res, false, "Your role cannot access this route!", 400);
+                }
 
                 // Generate jwt token & set in cookie
                 const accessToken = signToken({userId: user._id});

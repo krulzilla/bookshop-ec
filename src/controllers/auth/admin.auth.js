@@ -1,24 +1,24 @@
 const BaseAuth = require("./base.auth");
 
-class ClientAuth extends BaseAuth {
+class AdminAuth extends BaseAuth {
     constructor() {
-        const role = "Client";
+        const role = "Admin";
         super(role);
     }
 
-    isClient = async (req, res, next) => {
+    isAdmin = async (req, res, next) => {
         if (req.isAuthenticated && req.user) {
             if (req.user.role === this.role) return next();
         }
 
-        return res.redirect("/login");
+        return res.redirect("/admincp/login");
     }
 
-    isNotClient = async (req, res, next) => {
+    isNotAdmin = async (req, res, next) => {
         if (req.isUnauthenticated && req.user === null) return next();
 
-        return res.redirect("/");
+        return res.redirect("/admincp");
     }
 }
 
-module.exports = new ClientAuth();
+module.exports = new AdminAuth();
