@@ -107,10 +107,10 @@ class Order {
                         _id: 1,
                         total: 1,
                         status: 1,
+                        shippingFee: 1,
                         createdAt: 1,
                         typeTransport: {
                             name: 1,
-                            price: 1,
                             description: 1
                         },
                         typePayment: {
@@ -177,6 +177,7 @@ class Order {
                 idUser,
                 total: totalPrice,
                 typeTransport: idTypeTransport,
+                shippingFee: typeTransportPrice,
                 typePayment: idTypePayment,
                 idPaypalInvoice
             })

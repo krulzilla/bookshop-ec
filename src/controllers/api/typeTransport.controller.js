@@ -1,5 +1,6 @@
 const typeTransportModel = require("../../models/typeTransport.model");
 const {apiResponse: response} = require("../../utils/customResponse");
+const customPagination = require("../../utils/customPagination");
 
 class TypeTransport {
     async getAll(req, res) {
@@ -19,6 +20,31 @@ class TypeTransport {
             const data = await typeTransportModel.findById(id);
 
             return response(res, true, "Get by id successfully!", 200, data);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async pagination(req, res) {
+        try {
+            let {search = "", page = 1, pageSize = 10} = req.query;
+            // Exec query
+            const pipelines = [
+                {
+                    $match: {
+                        name: { $regex: search, $options: "i" },
+                    }
+                },
+                {
+                    $sort: {
+                        createdAt: 1
+                    }
+                }
+            ]
+
+            const categories = await customPagination(typeTransportModel, page, +pageSize, pipelines);
+
+            return response(res, true, "Action success", 200, categories);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -62,6 +88,7 @@ class TypeTransport {
 
             return response(res, true, "Updated successfully!", 200, data);
         } catch (e) {
+            console.log(e)
             if (e.name === "ValidationError") {
                 let errMsg;
                 Object.keys(e.errors).forEach((key) => {

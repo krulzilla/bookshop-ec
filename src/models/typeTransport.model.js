@@ -27,4 +27,9 @@ TypeTransportSchema.pre(["find", "findOne"], function() {
     this.where({isDeleted: false});
 })
 
+TypeTransportSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: false } });
+    next();
+});
+
 module.exports = model("Type Transport", TypeTransportSchema);

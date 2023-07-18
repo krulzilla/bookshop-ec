@@ -30,6 +30,11 @@ const OrderSchema = new Schema({
         required: [true, "Type Transport is required"],
         trim: true
     },
+    shippingFee: {
+        type: Number,
+        required: [true, "Shipping fee is required"],
+        trim: true
+    },
     typePayment: {
         type: Schema.Types.ObjectId,
         ref: "Type Payment",
