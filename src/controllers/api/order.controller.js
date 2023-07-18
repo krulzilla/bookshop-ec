@@ -5,6 +5,7 @@ const typeTransportModel = require("../../models/typeTransport.model");
 const orderModel = require("../../models/order.model");
 const orderDetailModel = require("../../models/orderDetail.model");
 const {Types} = require("mongoose");
+const customPagination = require("../../utils/customPagination");
 
 class Order {
     async getAll(req, res) {
@@ -21,9 +22,9 @@ class Order {
         try {
             const {id} = req.params;
 
-            const author = await orderModel.findOne({_id: id});
+            const order = await orderModel.findOne({_id: id});
 
-            return response(res, true, "Get order successfully", 200, author);
+            return response(res, true, "Get order successfully", 200, order);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -70,10 +71,21 @@ class Order {
                     }
                 },
                 {
+                    $lookup : {
+                        from: "users",
+                        localField: "idUser",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
                     $unwind: "$typeTransport"
                 },
                 {
                     $unwind: "$typePayment"
+                },
+                {
+                    $unwind: "$user"
                 },
                 {
                     $lookup: {
@@ -117,6 +129,11 @@ class Order {
                             name: 1,
                             shortName: 1,
                         },
+                        user: {
+                            fullname: 1,
+                            phone: 1,
+                            address: 1
+                        },
                         orderDetails: {
                             amount: 1,
                             price: 1,
@@ -128,6 +145,71 @@ class Order {
             ]);
 
             return response(res, true, "Get order success", 200, order);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async pagination(req, res) {
+        try {
+            let {search = "", page = 1, pageSize = 10} = req.query;
+            // Exec query
+            const pipelines = [
+                {
+                    $addFields: {
+                        stringId: { $toString: '$_id' },
+                    },
+                },
+                {
+                    $addFields: {
+                        lastCharacter:
+                            { $substr: ['$stringId', { "$subtract": [ { "$strLenCP": "$stringId" }, 4]}, 4] },
+                    },
+                },
+                {
+                    $match: {
+                        lastCharacter: { $regex: search, $options: "i" },
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "type payments",
+                        foreignField: "_id",
+                        localField: "typePayment",
+                        as: "payment"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "type transports",
+                        foreignField: "_id",
+                        localField: "typeTransport",
+                        as: "transport"
+                    }
+                },
+                {
+                    $sort: {
+                        createdAt: -1
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        total: 1,
+                        status: 1,
+                        createdAt: 1,
+                        payment: {
+                            name: 1,
+                            shortName: 1
+                        },
+                        "transport.name": 1
+                    }
+                }
+            ]
+
+            const orders = await customPagination(orderModel, page, +pageSize, pipelines);
+
+            return response(res, true, "Action success", 200, orders);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -217,8 +299,33 @@ class Order {
 
     }
 
-    async delete(req, res) {
+    async updateStatus(req, res) {
+        try {
+            const {id} = req.params;
+            const {status} = req.body;
 
+            const updateOrder = await orderModel.findByIdAndUpdate(id, {
+                status
+            }, {new: true});
+
+            return response(res, true, "Update status success", 200, updateOrder);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async delete(req, res) {
+        try {
+            const {id} = req.params;
+
+            const deleteOrder = await orderModel.findByIdAndUpdate(id, {
+                isDeleted: true
+            }, {new: true});
+
+            return response(res, true, "Order is deleted", 200, deleteOrder);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
     }
 }
 

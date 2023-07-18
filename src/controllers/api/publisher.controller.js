@@ -37,9 +37,9 @@ class Publisher {
                 }
             ]
 
-            const categories = await customPagination(publisherModel, page, +pageSize, pipelines);
+            const publishers = await customPagination(publisherModel, page, +pageSize, pipelines);
 
-            return response(res, true, "Action success", 200, categories);
+            return response(res, true, "Action success", 200, publishers);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

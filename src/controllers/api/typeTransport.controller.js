@@ -42,9 +42,9 @@ class TypeTransport {
                 }
             ]
 
-            const categories = await customPagination(typeTransportModel, page, +pageSize, pipelines);
+            const types = await customPagination(typeTransportModel, page, +pageSize, pipelines);
 
-            return response(res, true, "Action success", 200, categories);
+            return response(res, true, "Action success", 200, types);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

@@ -6,6 +6,7 @@ const dashboardController = require("../controllers/admin/dashboard.controller")
 const authController = require("../controllers/admin/auth.controller");
 const productController = require("../controllers/admin/manageProduct.controller");
 const typeTransportController = require("../controllers/admin/typeTransport.controller");
+const orderController = require("../controllers/admin/order.controller");
 
 // Manage routes
 router.get("/", adminMiddleware.isAdmin, dashboardController.renderDashboardPage);
@@ -15,5 +16,6 @@ router.get("/category", adminMiddleware.isAdmin, productController.renderCategor
 router.get("/author", adminMiddleware.isAdmin, productController.renderAuthorPage);
 router.get("/publisher", adminMiddleware.isAdmin, productController.renderPublisherPage);
 router.get("/type-transport", adminMiddleware.isAdmin, typeTransportController.renderTransportPage);
+router.get("/order", adminMiddleware.isAdmin, orderController.renderOrderPage);
 
 module.exports = router;

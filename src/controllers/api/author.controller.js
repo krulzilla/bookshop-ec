@@ -37,9 +37,9 @@ class Author {
                 }
             ]
 
-            const categories = await customPagination(authorModel, page, +pageSize, pipelines);
+            const authors = await customPagination(authorModel, page, +pageSize, pipelines);
 
-            return response(res, true, "Action success", 200, categories);
+            return response(res, true, "Action success", 200, authors);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

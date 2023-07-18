@@ -4,7 +4,7 @@
     <div class="leftbar-user">
         <a href="javascript: void(0);">
             <img src="/public/assets/images/users/avatar-1.jpg" alt="user-image" height="42" class="rounded-circle shadow-sm">
-            <span class="leftbar-user-name">Dominic Keller</span>
+            <span class="leftbar-user-name"><%= data.user.role %>: <%= data.user.fullname %></span>
         </a>
     </div>
 
@@ -83,7 +83,7 @@
         <li class="side-nav-title side-nav-item">Manage Order & Receipt</li>
 
         <li class="side-nav-item">
-            <a href="apps-chat.html" class="side-nav-link">
+            <a href="/admincp/order" class="side-nav-link">
                 <i class="uil-clipboard-alt"></i>
                 <span> Order </span>
             </a>

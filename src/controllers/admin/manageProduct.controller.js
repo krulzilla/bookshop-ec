@@ -5,7 +5,7 @@ class ManageProduct {
         try {
             const {search = ""} = req.query;
 
-            return render(res, "admin-category", {user: req.user, search}, "admin_layout");
+            return render(res, "admin-category", {name: "Category", user: req.user, search}, "admin_layout");
         } catch (e) {
             return next({status: 500});
         }
@@ -15,7 +15,7 @@ class ManageProduct {
         try {
             const {search = ""} = req.query;
 
-            return render(res, "admin-author", {user: req.user, search}, "admin_layout");
+            return render(res, "admin-author", {name: "Author", user: req.user, search}, "admin_layout");
         } catch (e) {
             return next({status: 500});
         }
@@ -25,7 +25,7 @@ class ManageProduct {
         try {
             const {search = ""} = req.query;
 
-            return render(res, "admin-publisher", {user: req.user, search}, "admin_layout");
+            return render(res, "admin-publisher", {name: "Publisher", user: req.user, search}, "admin_layout");
         } catch (e) {
             return next({status: 500});
         }
