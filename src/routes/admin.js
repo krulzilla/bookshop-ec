@@ -7,6 +7,7 @@ const authController = require("../controllers/admin/auth.controller");
 const productController = require("../controllers/admin/manageProduct.controller");
 const typeTransportController = require("../controllers/admin/typeTransport.controller");
 const orderController = require("../controllers/admin/order.controller");
+const profileController = require("../controllers/admin/profile.controller");
 
 // Manage routes
 router.get("/", adminMiddleware.isAdmin, dashboardController.renderDashboardPage);
@@ -17,5 +18,6 @@ router.get("/author", adminMiddleware.isAdmin, productController.renderAuthorPag
 router.get("/publisher", adminMiddleware.isAdmin, productController.renderPublisherPage);
 router.get("/type-transport", adminMiddleware.isAdmin, typeTransportController.renderTransportPage);
 router.get("/order", adminMiddleware.isAdmin, orderController.renderOrderPage);
+router.get("/profile", adminMiddleware.isAdmin, profileController.renderPageProfile);
 
 module.exports = router;

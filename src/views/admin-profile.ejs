@@ -1,0 +1,318 @@
+<!-- Start Content-->
+<div class="container-fluid">
+
+    <!-- Begin page -->
+    <div class="wrapper">
+        <div class="content-page">
+            <div class="content">
+
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box">
+                            <h4 class="page-title">My Account</h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+                <div class="row">
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <img src="/public/assets/images/users/avatar-1.jpg"
+                                     class="rounded-circle avatar-lg img-thumbnail"
+                                     alt="profile-image">
+
+                                <h4 class="mb-0 mt-2"><%= data.profile.fullname %></h4>
+                                <p class="text-muted font-14"><%= data.profile.role.name %></p>
+
+                                <div class="text-left mt-3">
+                                    <h4 class="font-13 text-uppercase">About Me :</h4>
+                                    <p class="text-muted mb-2 font-13"><strong>Full Name :</strong>
+                                        <span class="ml-2"><%= data.profile.fullname %></span></p>
+
+                                    <p class="text-muted mb-2 font-13"><strong>Phone :</strong>
+                                        <span class="ml-2"><%= data.profile.phone %></span></p>
+
+                                    <p class="text-muted mb-2 font-13"><strong>Address :</strong>
+                                        <span class="ml-2"><%= data.profile.address %></span>
+                                    </p>
+
+                                    <p class="text-muted mb-2 font-13"><strong>Joined at :</strong>
+                                        <% // Handle time join
+                                            const joinedAtRaw = new Date(data.profile.createdAt);
+                                            const joinedAt = `${joinedAtRaw.toLocaleString("default", {month: "short"})} ${joinedAtRaw.getDate()}, ${joinedAtRaw.getFullYear()}`
+                                        %>
+                                        <span class="ml-2"><%= joinedAt %></span>
+                                    </p>
+                                </div>
+                            </div> <!-- end card-body -->
+                        </div> <!-- end card -->
+                    </div> <!-- end col-->
+
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                                    <li class="nav-item">
+                                        <a href="#profile" data-toggle="tab" aria-expanded="false"
+                                           class="nav-link rounded-0 active">
+                                            Edit profile
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#changePassword" data-toggle="tab" aria-expanded="false"
+                                           class="nav-link rounded-0">
+                                            Change password
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+
+                                    <div class="tab-pane show active" id="profile">
+                                        <form>
+                                            <h5 class="mb-4 text-uppercase bg-light p-2"><i class="mdi mdi-account-circle mr-1"></i>
+                                                Personal Info</h5>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="input-fullname">Full Name</label>
+                                                        <input type="text" class="form-control" id="input-fullname"
+                                                               placeholder="Enter full name" value="<%= data.profile.fullname %>">
+                                                        <p class="invalid-feedback font-13" id="validate-fullname"></p>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="input-age">Age</label>
+                                                        <input type="number" class="form-control" id="input-age" min="18"
+                                                               placeholder="Enter age" value="<%= data.profile.age %>">
+                                                        <p class="invalid-feedback font-13" id="validate-age"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="input-phone">Phone</label>
+                                                        <input type="text" class="form-control" id="input-phone"
+                                                               placeholder="Enter phone" value="<%= data.profile.phone %>">
+                                                        <p class="invalid-feedback font-13" id="validate-phone"></p>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="input-address">Address</label>
+                                                        <input type="text" class="form-control" id="input-address"
+                                                               placeholder="Enter address" value="<%= data.profile.address %>">
+                                                        <p class="invalid-feedback font-13" id="validate-address"></p>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+
+                                            <div class="text-right">
+                                                <button type="submit" class="btn btn-success mt-2" id="btn-save"><i
+                                                            class="mdi mdi-content-save"></i> Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- end profile content-->
+                                    <div class="tab-pane" id="changePassword">
+                                        <form>
+                                            <h5 class="mb-4 text-uppercase bg-light p-2"><i class="mdi mdi-key-outline"></i>
+                                                 Manage password</h5>
+
+                                            <% if (!data.profile.isAuthBySocial) { %>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="input-password">Current password</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <input type="password" id="input-password" class="form-control" placeholder="Enter current password">
+                                                            <div class="input-group-append" data-password="false">
+                                                                <div class="input-group-text">
+                                                                    <span class="password-eye"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="invalid-feedback font-13" id="validate-password"></p>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+                                            <% } %>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="input-newPassword">New password</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <input type="password" id="input-newPassword" class="form-control" placeholder="Enter new password">
+                                                            <div class="input-group-append" data-password="false">
+                                                                <div class="input-group-text">
+                                                                    <span class="password-eye"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <p class="invalid-feedback font-13" id="validate-newPassword"></p>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="input-confirmPassword">Confirm new password</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <input type="password" id="input-confirmPassword" class="form-control" placeholder="Confirm your new password">
+                                                            <div class="input-group-append" data-password="false">
+                                                                <div class="input-group-text">
+                                                                    <span class="password-eye"></span>
+                                                                </div>
+                                                            </div>
+                                                            <p class="invalid-feedback font-13" id="validate-confirmPassword"></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end row -->
+
+                                            <div class="text-right">
+                                                <button type="submit" class="btn btn-success mt-2" id="btn-changePassword"><i
+                                                            class="mdi mdi-content-save"></i> Update password
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- end change password content-->
+
+                                </div> <!-- end tab-content -->
+                            </div> <!-- end card body -->
+                        </div> <!-- end card -->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row-->
+
+            </div> <!-- End Content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            2018 - 2020 © Hyper - Coderthemes.com
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-right footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div> <!-- content-page -->
+
+    </div> <!-- end wrapper-->
+</div>
+<!-- END Container -->
+
+
+<%- contentFor('js') %>
+<script>
+(function () {
+   const idUser = "<%= data.profile._id %>";
+   const isAuthBySocial = "<%= data.profile.isAuthBySocial %>";
+
+   $("#btn-save").click(function (e) {
+       e.preventDefault();
+
+       // Get information
+       const fullname = $("#input-fullname").val();
+       const age = $("#input-age").val();
+       const phone = $("#input-phone").val();
+       const address = $("#input-address").val();
+
+       const validateFullname = $("#validate-fullname");
+       const validateAge = $("#validate-age");
+       const validatePhone = $("#validate-phone");
+       const validateAddress = $("#validate-address");
+
+       // Check if information is null
+       if (!fullname) {
+           return validateFullname.text("Fullname cannot be null").addClass("d-block");
+       } else validateFullname.removeClass("d-block");
+
+        // Ajax => update info
+       $.ajax({
+           url: "/api/user/update-info",
+           method: "put",
+           data: {
+               idUser,
+               fullname,
+               age,
+               phone,
+               address,
+           },
+           success: (response) => {
+               if (response.status) window.location = "";
+           },
+           error: (err) => {
+               return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+           }
+       })
+
+   })
+
+    $("#btn-changePassword").click(function (e) {
+        e.preventDefault();
+
+        // Get information
+        const password = $("#input-password").val();
+        const newPassword = $("#input-newPassword").val();
+        const confirmPassword = $("#input-confirmPassword").val();
+
+        const validatePassword = $("#validate-password");
+        const validateNewPassword = $("#validate-newPassword");
+        const validateConfirmPassword = $("#validate-confirmPassword");
+
+        // Check if information is null & newP != confirmP
+        if (isAuthBySocial == "false" && !password) {
+            return validatePassword.text("Current password cannot be null").addClass("d-block");
+        } else validatePassword.removeClass("d-block");
+
+        if (!newPassword) {
+            return validateNewPassword.text("New Password cannot be null").addClass("d-block");
+        } else validateNewPassword.removeClass("d-block");
+
+        if (newPassword !== confirmPassword) {
+            return validateConfirmPassword.text("Password does not match!").addClass("d-block");
+        } else validateConfirmPassword.removeClass("d-block");
+
+        $.ajax({
+            url: "/api/user/change-password",
+            method: "put",
+            data: {
+                password,
+                newPassword,
+                confirmPassword
+            },
+            success: (response) => {
+                if (response.status) {
+                    return $.NotificationApp.send("Success", "Changed password!!", "top-right", "rgba(0,0,0,0.2)", "success");
+                }
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+})()
+</script>
