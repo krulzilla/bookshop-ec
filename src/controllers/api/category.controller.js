@@ -1,5 +1,6 @@
 const categoryModel = require("../../models/category.model");
 const {apiResponse:response} = require("../../utils/customResponse");
+const customPagination = require("../../utils/customPagination");
 
 class Category {
     async getAll(req, res) {
@@ -19,6 +20,26 @@ class Category {
             const category = await categoryModel.findOne({_id: id});
 
             return response(res, true, "Get category successfully", 200, category);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async pagination(req, res) {
+        try {
+            let {search = "", page = 1, pageSize = 8} = req.query;
+            // Exec query
+            const pipelines = [
+                {
+                    $match: {
+                        name: { $regex: search, $options: "i" },
+                    }
+                }
+            ]
+
+            const categories = await customPagination(categoryModel, page, +pageSize, pipelines);
+
+            return response(res, true, "Action success", 200, categories);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
