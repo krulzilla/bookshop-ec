@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Manage Category</h4>
+                    <h4 class="page-title">Manage Publisher</h4>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn-add"><i
-                                        class="mdi mdi-plus-circle mr-2"></i> Add Category</a>
+                                        class="mdi mdi-plus-circle mr-2"></i> Add Publisher</a>
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-right">
@@ -41,7 +41,7 @@
                                             <label class="custom-control-label" for="customCheck1">&nbsp;</label>
                                         </div>
                                     </th>
-                                    <th class="all">Category</th>
+                                    <th class="all">Publisher</th>
                                     <th>Created at</th>
                                     <th style="width: 150px;">Action</th>
                                 </tr>
@@ -88,7 +88,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Add Category</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Add Publisher</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
@@ -117,7 +117,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">View Category</h4>
+                <h4 class="modal-title" id="standard-modalLabel">View Publisher</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
@@ -144,7 +144,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Edit Category</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Edit Publisher</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
@@ -173,11 +173,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Delete Category</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Delete Publisher</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <h5>Are you sure to delete this category ?</h5>
+                <h5>Are you sure to delete this publisher ?</h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
@@ -207,7 +207,7 @@
 
         // Get data & render items
         $.ajax({
-            url: "/api/category/pagination" + buildQueryUrl(page, pageSize, search),
+            url: "/api/publisher/pagination" + buildQueryUrl(page, pageSize, search),
             method: "get",
             success: function (response) {
                 if (!response.status || response.data[0].pagination.length == 0) return;
@@ -271,7 +271,7 @@
         else errorFeedback.removeClass("d-block");
 
         $.ajax({
-            url: "/api/category",
+            url: "/api/publisher",
             method: "post",
             data: {
                 name,
@@ -291,7 +291,7 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/category/${target}`,
+            url: `/api/publisher/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
@@ -308,7 +308,7 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/category/${target}`,
+            url: `/api/publisher/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
@@ -329,7 +329,7 @@
         else errorFeedback.removeClass("d-block");
 
         $.ajax({
-            url: `/api/category/${target}`,
+            url: `/api/publisher/${target}`,
             method: "put",
             data: {
                 name,
@@ -352,7 +352,7 @@
 
     $("#modal-delete button[type='submit']").click(function (e) {
         $.ajax({
-            url: `/api/category/${target}`,
+            url: `/api/publisher/${target}`,
             method: "delete",
             success: (response) => {
                 if (response.status) window.location = "";

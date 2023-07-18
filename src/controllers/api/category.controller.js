@@ -27,7 +27,7 @@ class Category {
 
     async pagination(req, res) {
         try {
-            let {search = "", page = 1, pageSize = 8} = req.query;
+            let {search = "", page = 1, pageSize = 10} = req.query;
             // Exec query
             const pipelines = [
                 {

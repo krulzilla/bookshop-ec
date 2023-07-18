@@ -1,5 +1,6 @@
 const authorModel = require("../../models/author.model");
 const {apiResponse:response} = require("../../utils/customResponse");
+const customPagination = require("../../utils/customPagination");
 
 class Author {
     async getAll(req, res) {
@@ -19,6 +20,26 @@ class Author {
             const author = await authorModel.findOne({_id: id});
 
             return response(res, true, "Get author successfully", 200, author);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async pagination(req, res) {
+        try {
+            let {search = "", page = 1, pageSize = 10} = req.query;
+            // Exec query
+            const pipelines = [
+                {
+                    $match: {
+                        name: { $regex: search, $options: "i" },
+                    }
+                }
+            ]
+
+            const categories = await customPagination(authorModel, page, +pageSize, pipelines);
+
+            return response(res, true, "Action success", 200, categories);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

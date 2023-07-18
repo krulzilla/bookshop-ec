@@ -3,6 +3,7 @@ const router = express.Router();
 const authorApi = require("../../controllers/api/author.controller");
 
 router.get("/", authorApi.getAll);
+router.get("/pagination", authorApi.pagination);
 router.get("/:id", authorApi.getById);
 router.post("/", authorApi.create);
 router.put("/:id", authorApi.update);

@@ -11,5 +11,7 @@ router.get("/", adminMiddleware.isAdmin, dashboardController.renderDashboardPage
 router.get("/login", adminMiddleware.isNotAdmin, authController.renderLoginPage);
 router.get("/logout", adminMiddleware.isAdmin, authController.logout);
 router.get("/category", adminMiddleware.isAdmin, productController.renderCategoryPage);
+router.get("/author", adminMiddleware.isAdmin, productController.renderAuthorPage);
+router.get("/publisher", adminMiddleware.isAdmin, productController.renderPublisherPage);
 
 module.exports = router;

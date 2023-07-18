@@ -3,6 +3,7 @@ const router = express.Router();
 const publisherApi = require("../../controllers/api/publisher.controller");
 
 router.get("/", publisherApi.getAll);
+router.get("/pagination", publisherApi.pagination);
 router.get("/:id", publisherApi.getById);
 router.post("/", publisherApi.create);
 router.put("/:id", publisherApi.update);

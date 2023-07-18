@@ -23,4 +23,9 @@ PublisherSchema.pre(["find", "findOne"], function () {
     this.where({isDeleted: false});
 });
 
+PublisherSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: false } });
+    next();
+});
+
 module.exports = model("Publisher", PublisherSchema);
