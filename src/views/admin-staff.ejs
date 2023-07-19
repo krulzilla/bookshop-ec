@@ -1,0 +1,527 @@
+<div class="content-page">
+    <div class="content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Manage Staff</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn-add"><i
+                                        class="mdi mdi-plus-circle mr-2"></i> Add Staff</a>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="text-sm-right">
+                                    <form>
+                                        <label for="search">Search: </label>
+                                        <input type="search" style="max-width: 250px;" class="form-control d-inline-block" name="search" placeholder="Search..."
+                                               value="<%= data.search %>">
+                                    </form>
+                                </div>
+                            </div><!-- end col-->
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th class="all" style="width: 20px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                            <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                        </div>
+                                    </th>
+                                    <th class="all">Username</th>
+                                    <th class="all">Fullname</th>
+                                    <th class="all">Phone</th>
+                                    <th class="all">Role</th>
+                                    <th class="all">Status</th>
+                                    <th>Joined at</th>
+                                    <th style="width: 150px;">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="items-show"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="row">
+                            <div class="col-sm-12" id="pagination"></div>
+                        </div>
+                        <!-- End Pagination -->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- End Content -->
+
+    <!-- Footer Start -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    2018 - 2020 © Hyper - Coderthemes.com
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-right footer-links d-none d-md-block">
+                        <a href="javascript: void(0);">About</a>
+                        <a href="javascript: void(0);">Support</a>
+                        <a href="javascript: void(0);">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
+</div> <!-- content-page -->
+
+<!-- Modal add -->
+<div id="modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Add Staff</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="add-username">Username <small class="text-danger">(*)</small></label>
+                        <input type="text" class="form-control" id="add-username" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-password">Password <small class="text-danger">(*)</small></label>
+                        <input type="password" class="form-control" id="add-password" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-fullname">Full name</label>
+                        <input type="text" class="form-control" id="add-fullname" placeholder="Enter fullname">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-age">Age</label>
+                        <input type="number" class="form-control" id="add-age" placeholder="Enter age">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-address">Address</label>
+                        <input type="text" class="form-control" id="add-address" placeholder="Enter address">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-phone">Phone</label>
+                        <input type="text" class="form-control" id="add-phone" placeholder="Enter phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-role">Role</label>
+                        <select id="add-role" class="form-control">
+                            <option value="">Choose..</option>
+                            <% data.roles.forEach(role => { %>
+                            <option value="<%= role._id %>"><%= role.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <p class="invalid-feedback font-14" id="add-error"></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal add -->
+
+<!-- Modal view -->
+<div id="modal-view" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">View Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="view-username">Username</label>
+                        <input type="text" class="form-control" id="view-username" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-role">Role</label>
+                        <input type="text" class="form-control" id="view-role" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-fullname">Full name</label>
+                        <input type="text" class="form-control" id="view-fullname" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-age">Age</label>
+                        <input type="number" class="form-control" id="view-age" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-address">Address</label>
+                        <input type="text" class="form-control" id="view-address" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-phone">Phone</label>
+                        <input type="text" class="form-control" id="view-phone" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-gmail">Gmail</label>
+                        <input type="text" class="form-control" id="view-gmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-github">Github</label>
+                        <input type="text" class="form-control" id="view-github" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal view -->
+
+<!-- Modal edit -->
+<div id="modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Edit Autor</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="edit-fullname">Full name</label>
+                        <input type="text" class="form-control" id="edit-fullname">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-age">Age</label>
+                        <input type="number" class="form-control" id="edit-age">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-address">Address</label>
+                        <input type="text" class="form-control" id="edit-address">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">Phone</label>
+                        <input type="text" class="form-control" id="edit-phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-role">Role</label>
+                        <select id="edit-role" class="form-control">
+                            <% data.roles.forEach(role => { %>
+                                <option value="<%= role._id %>"><%= role.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <p class="invalid-feedback font-14" id="edit-error"></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">Update</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal edit -->
+
+<!-- Modal change status -->
+<div id="modal-status" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Update status</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure to change status of this customer ?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">Continue</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal delete -->
+
+<!-- Modal delete -->
+<div id="modal-delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Delete Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure to delete this customer ?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">Continue</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal delete -->
+
+<%- contentFor('js') %>
+<script src="/public/assets/js/custom.js"></script>
+<script>
+(function () {
+    let page = 1, pageSize = 10, search = "", target;     // Params for url query
+
+    $(document).ready(function (e) {
+        // Get filter values
+        const urlQuery = window.location.search.replace("?", "");
+        const queryParams = urlQuery.split("&");
+
+        queryParams.forEach(param => {
+            // example param: page=1 || pageSize=4
+            const ele = param.split("=");
+            if (ele[0] == "page") page = +ele[1];
+            if (ele[0] == "search") search = ele[1];
+        })
+
+        // Get data & render items
+        $.ajax({
+            url: "/api/user/pagination-staff" + buildQueryUrl(page, pageSize, search),
+            method: "get",
+            success: function (response) {
+                if (!response.status || response.data[0].pagination.length == 0) return;
+
+                // Handle data into html.
+                const items = response.data[0].data;
+                const totalRow = response.data[0].pagination[0].totalRow;   // Total row of this filter (price + category + search)
+                if (items.length > 0) {
+                    let itemsHtml = ``;
+                    items.forEach(item => {
+                        const date = new Date(item.createdAt);
+                        const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+
+                        itemsHtml += `
+                        <tr id="${item._id}">
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                    <label class="custom-control-label" for="customCheck2">&nbsp;</label>
+                                </div>
+                            </td>
+                            <td>
+                                ${item.username}
+                            </td>
+                            <td>
+                                ${item.fullname}
+                            </td>
+                            <td>
+                                ${item.phone}
+                            </td>
+                            <td>
+                                ${item.role.name === "Admin" ? `<span class="badge badge-primary-lighten">Admin</span>` : `<span class="badge badge-info-lighten">Staff</span>`}
+                            </td>
+                            <td>
+                                ${item.isActive ? `<span class="badge badge-success-lighten">Active</span>` : `<span class="badge badge-danger-lighten">Disabled</span>`}
+                            </td>
+                            <td>
+                                ${dateFormatted}
+                            </td>
+
+                            <td class="table-action">
+                                <a href="javascript:void(0);" class="action-icon btn-view"> <i
+                                        class="mdi mdi-eye"></i></a>
+                                <a href="javascript:void(0);" class="action-icon btn-edit"> <i
+                                        class="mdi mdi-square-edit-outline"></i></a>
+                                ${ item.role.name === "Admin" ? "" : `
+                                <a href="javascript:void(0);" class="action-icon btn-status"> <i
+                                        class="mdi ${item.isActive ? "mdi-cancel" : "mdi-lock-open-variant-outline"}"></i></a>
+                                <a href="javascript:void(0);" class="action-icon btn-delete"> <i
+                                        class="mdi mdi-delete"></i></a>
+                                ` }
+                            </td>
+                        </tr>`;
+                    })
+
+                    $("#items-show").html(itemsHtml);
+                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, search));
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    })
+
+    // Action: create
+    $("#btn-add").click(function (e) {
+        $("#modal-add").modal("show");
+    })
+
+    $("#modal-add button[type='submit']").click(function (e) {
+        const username = $("#add-username").val();
+        const password = $("#add-password").val();
+        const fullname = $("#add-fullname").val();
+        const age = $("#add-age").val();
+        const phone = $("#add-phone").val();
+        const address = $("#add-address").val();
+        const role = $("#add-role").val();
+        const errorFeedback = $("#add-error");
+
+        if (!username) return errorFeedback.text("Username cannot be null!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (!password) return errorFeedback.text("Password cannot be null!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (age < 0 || age > 100) return errorFeedback.text("Age is invalid!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (!role) return errorFeedback.text("Please choose one role before continue!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        $.ajax({
+            url: "/api/user/create-staff",
+            method: "post",
+            data: {
+                username,
+                password,
+                fullname,
+                age,
+                phone,
+                address,
+                role,
+            },
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return errorFeedback.text(err.responseJSON.msg).addClass("d-block");
+            }
+        })
+    })
+
+    // Action: view
+    $(document).on("click", ".btn-view", function (e) {
+        target = $(this).parent().parent().attr("id");
+
+        $.ajax({
+            url: `/api/user/${target}`,
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    $("#view-username").val(response.data.username);
+                    $("#view-role").val(response.data.role.name);
+                    $("#view-fullname").val(response.data.fullname);
+                    $("#view-age").val(response.data.age);
+                    $("#view-phone").val(response.data.phone);
+                    $("#view-address").val(response.data.address);
+                    $("#view-gmail").val(response.data.email);
+                    $("#view-github").val(response.data.github);
+                    $("#modal-view").modal("show");
+                }
+            }
+        })
+    })
+
+    // Action: edit
+    $(document).on("click", ".btn-edit", function (e) {
+        target = $(this).parent().parent().attr("id");
+
+        $.ajax({
+            url: `/api/user/${target}`,
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    $("#edit-fullname").val(response.data.fullname);
+                    $("#edit-age").val(response.data.age);
+                    $("#edit-phone").val(response.data.phone);
+                    $("#edit-address").val(response.data.address);
+                    $(`#edit-role option[value='${response.data.role._id}']`).prop("selected", "selected");
+                    $("#modal-edit").modal("show");
+                }
+            }
+        })
+    })
+
+    $("#modal-edit button[type='submit']").click(function (e) {
+        const fullname = $("#edit-fullname").val();
+        const age = $("#edit-age").val();
+        const phone = $("#edit-phone").val();
+        const address = $("#edit-address").val();
+        const errorFeedback = $("#edit-error");
+
+        if (!fullname) return errorFeedback.text("Full name cannot be null!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        $.ajax({
+            url: `/api/user/update-info`,
+            method: "put",
+            data: {
+                idUser: target,
+                fullname,
+                age,
+                phone,
+                address,
+            },
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return errorFeedback.text(err.responseJSON.msg).addClass("d-block");
+            }
+        })
+    })
+
+    // Action: delete
+    $(document).on("click", ".btn-delete", function (e) {
+        target = $(this).parent().parent().attr("id");
+        $("#modal-delete").modal("show");
+    })
+
+    $("#modal-delete button[type='submit']").click(function (e) {
+        $.ajax({
+            url: `/api/user/${target}`,
+            method: "delete",
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `${err.responseJSON.msg}`, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+
+    // Action: change status
+    $(document).on("click", ".btn-status", function (e) {
+        target = $(this).parent().parent().attr("id");
+        $("#modal-status").modal("show");
+    })
+
+    $("#modal-status button[type='submit']").click(function (e) {
+        $.ajax({
+            url: `/api/user/change-status/${target}`,
+            method: "put",
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `${err.responseJSON.msg}`, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+
+    // Build query url
+    function buildQueryUrl(page, pageSize, search = "") {
+        return `?page=${page}&pageSize=${pageSize}${search ? `&search=${search}` : ""}`;
+    }
+})()
+</script>

@@ -9,7 +9,7 @@ class User {
         try {
             const {id} = req.params;
 
-            const user = await userModel.findById(id).select("username fullname age phone address email github isActive createdAt");
+            const user = await userModel.findById(id).populate("role", "name").select("username fullname age phone address email github isActive createdAt");
 
             return response(res, true, "Get user success!", 200, user);
         } catch (e) {
@@ -107,6 +107,92 @@ class User {
         }
     }
 
+    async paginationStaff(req, res) {
+        try {
+            let {search = "", page = 1, pageSize = 10} = req.query;
+            // Exec query
+            const pipelines = [
+                {
+                    $lookup: {
+                        from: "roles",
+                        localField: "role",
+                        foreignField: "_id",
+                        as: "role"
+                    }
+                },
+                {
+                    $unwind: "$role"
+                },{
+                    $match: {
+                        "role.name": { $ne: "Client" },
+                        username: { $regex: search, $options: "i" },
+                    }
+                },
+                {
+                    $sort: {
+                        "role.name": 1,
+                        createdAt: -1
+                    }
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        username: 1,
+                        fullname: 1,
+                        phone: 1,
+                        "role.name": 1,
+                        isActive: 1,
+                        createdAt: 1
+                    }
+                }
+            ]
+
+            const staffs = await customPagination(userModel, page, +pageSize, pipelines);
+
+            return response(res, true, "Action success", 200, staffs);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async createStaff(req, res) {
+        try {
+            const {username, password, age, address, phone, role} = req.body;
+            let {fullname} = req.body;
+
+            if (password === "") return response(res, false, "Password cannot be null!", 400);
+
+            const newStaff = new userModel({
+                username,
+                password: hashString(password),
+                age,
+                address,
+                phone,
+                role
+            })
+
+            if (fullname === "") fullname = "Anonymous client " + Date.now().toString().slice(-4);
+            newStaff.fullname = fullname;
+
+            await newStaff.save();
+
+            return response(res, true, "Create staff successfully!", 201, newStaff);
+        } catch (e) {
+            if (e.name === "MongoServerError" && e.code === 11000) {
+                const fieldDuplicated = Object.keys(e.keyPattern)[0];
+                return response(res, false, `Field ${fieldDuplicated} is in used!`, 400);
+            }
+            if (e.name === "ValidationError") {
+                let errMsg;
+                Object.keys(e.errors).forEach((key) => {
+                    errMsg = e.errors[key].message;
+                });
+                return response(res, false, errMsg, 400);
+            }
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
     async updateInfo(req, res) {
         try {
             const idUser = req.body.idUser ?? req.user._id;
@@ -159,7 +245,9 @@ class User {
         try {
             const {id} = req.params;
 
-            const user = await userModel.findById(id);
+            const user = await userModel.findById(id).populate("role", "name");
+
+            if (user.role.name === "Admin") return response(res, false, "Cannot change status of admin!", 400);
 
             user.isActive = !user.isActive;
 
@@ -192,9 +280,13 @@ class User {
         try {
             const {id} = req.params;
 
-            const deleteUser = await userModel.findByIdAndUpdate(id, {
-                isDeleted: true
-            })
+            const user = await userModel.findById(id).populate("role", "name");
+
+            if (user.role.name === "Admin") return response(res, false, "Cannot delete admin!", 400);
+
+            user.isDeleted = true;
+
+            await user.save();
 
             return response(res, true, "Delete user successfully!", 200);
         } catch (e) {

@@ -11,15 +11,18 @@ const profileController = require("../controllers/admin/profile.controller");
 const userController = require("../controllers/admin/user.controller");
 
 // Manage routes
-router.get("/", adminMiddleware.isAdmin, dashboardController.renderDashboardPage);
 router.get("/login", adminMiddleware.isNotAdmin, authController.renderLoginPage);
-router.get("/logout", adminMiddleware.isAdmin, authController.logout);
-router.get("/category", adminMiddleware.isAdmin, productController.renderCategoryPage);
-router.get("/author", adminMiddleware.isAdmin, productController.renderAuthorPage);
-router.get("/publisher", adminMiddleware.isAdmin, productController.renderPublisherPage);
-router.get("/type-transport", adminMiddleware.isAdmin, typeTransportController.renderTransportPage);
-router.get("/order", adminMiddleware.isAdmin, orderController.renderOrderPage);
-router.get("/profile", adminMiddleware.isAdmin, profileController.renderPageProfile);
-router.get("/customer", adminMiddleware.isAdmin, userController.renderCustomerPage);
+
+router.use(adminMiddleware.isAdmin);
+router.get("/", dashboardController.renderDashboardPage);
+router.get("/logout", authController.logout);
+router.get("/category", productController.renderCategoryPage);
+router.get("/author", productController.renderAuthorPage);
+router.get("/publisher", productController.renderPublisherPage);
+router.get("/type-transport", typeTransportController.renderTransportPage);
+router.get("/order", orderController.renderOrderPage);
+router.get("/profile", profileController.renderPageProfile);
+router.get("/customer", userController.renderCustomerPage);
+router.get("/staff", userController.renderStaffPage);
 
 module.exports = router;
