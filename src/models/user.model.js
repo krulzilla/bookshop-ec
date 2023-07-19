@@ -68,4 +68,9 @@ UserSchema.pre(["find", "findOne"], function () {
     this.where({isDeleted: false});
 });
 
+UserSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: false } });
+    next();
+});
+
 module.exports = model("User", UserSchema);

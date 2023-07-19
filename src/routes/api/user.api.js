@@ -1,8 +1,13 @@
 const router = require("express").Router();
 const userApi = require("../../controllers/api/user.controller");
 
+router.get("/pagination-customer", userApi.paginationCustomer);
+router.get("/:id", userApi.getById);
+router.post("/create-customer", userApi.createCustomer);
+router.post("/check-shipping-info", userApi.haveShippingInfo);
 router.put("/update-info", userApi.updateInfo);
 router.put("/change-password", userApi.changePassword);
-router.post("/check-shipping-info", userApi.haveShippingInfo);
+router.put("/change-status/:id", userApi.changeStatusUser);
+router.delete("/:id", userApi.delete);
 
 module.exports = router;
