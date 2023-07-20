@@ -18,7 +18,8 @@ class Product {
         try {
             const {id} = req.params;
 
-            const product = await productModel.findOne({_id: id});
+            const product = await productModel.findOne({_id: id}).populate("idCategory", "name")
+                .populate("idAuthor", "name").populate("idPublisher", "name");
 
             return response(res, true, "Get product successfully", 200, product);
         } catch (e) {

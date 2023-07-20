@@ -42,6 +42,7 @@
                                         </div>
                                     </th>
                                     <th class="all">Product</th>
+                                    <th>Category</th>
                                     <th>Amount</th>
                                     <th>Price</th>
                                     <th>Added at</th>
@@ -162,30 +163,70 @@
 
 <!-- Modal view -->
 <div id="modal-view" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-full-width">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">View Author</h4>
+                <h4 class="modal-title" id="standard-modalLabel">View Product</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="view-name">Name</label>
-                        <input type="text" class="form-control" id="view-name" readonly>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="view-name">Name</label>
+                                <p id="view-name"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-category">Category</label>
+                                <div id="view-category"> </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-author">Author</label>
+                                <div id="view-author"> </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-publisher">Publisher</label>
+                                <div id="view-publisher"> </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-publishedat">Published at</label>
+                                <div id="view-publishedat"> </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-price">Price</label>
+                                <p id="view-price"> </p>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-sale">Sale</label>
+                                <p id="view-sale"> </p>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-amount">Amount in stock</label>
+                                <p id="view-amount"> </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="view-image">Image</label>
+                                <div id="view-image" style="max-width: 200px"> </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="view-description">Description</label>
+                                <div id="view-description" class="p-2" style="border: 1px dashed #98a6ad"> </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="view-description">Description</label>
-                        <textarea class="form-control" id="view-description" rows="3" readonly></textarea>
-                    </div>
-                </form>
+                    <p class="invalid-feedback font-14" id="add-error"></p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create</button>
             </div>
         </div>
     </div>
-</div><!-- end modal view -->
+</div><!-- end modal add -->
 
 <!-- Modal edit -->
 <div id="modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
@@ -285,6 +326,11 @@
                                     <a href="/products/${item._id}" class="text-body" data-toggle="tooltip" data-placement="top" title=""
                                     data-original-title="${item.name}">${name}</a>
                                 </p>
+                            </td>
+                            <td>
+                                ${item.category.map(subItem => {
+                                    return `<span class="badge bg-info-lighten">${subItem.name}</span>`
+                                }).join("<br>")}
                             </td>
                             <td>
                                 ${item.amount.toLocaleString()}
@@ -389,12 +435,34 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/author/${target}`,
+            url: `/api/product/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
-                    $("#view-name").val(response.data.name);
-                    $("#view-description").val(response.data.description);
+                    const data = response.data;
+                    const date = new Date(data.publishedAt);
+                    const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+
+                    $("#view-name").text(data.name);
+                    $("#view-category").empty();
+                    data.idCategory.forEach(item => {
+                        $("#view-category").append(`<span class="badge badge-info-lighten mr-1 font-13">${item.name}</span>`);
+                    })
+                    $("#view-author").empty();
+                    data.idAuthor.forEach(item => {
+                        $("#view-author").append(`<span class="badge badge-primary-lighten mr-1 font-13">${item.name}</span>`);
+                    })
+                    $("#view-publisher").empty()
+                        .append(`<span class="badge badge-secondary-lighten mr-1 font-13">${data.idPublisher.name}</span>`);
+                    $("#view-publishedat").text(dateFormatted);
+                    $("#view-price").text(data.price.toLocaleString() + " đ");
+                    $("#view-sale").text(data.sale.toLocaleString() + " đ");
+                    $("#view-amount").text(data.amount.toLocaleString());
+                    $("#view-image").html(`
+                        <img class="card-img" src="/public/resources/images/${data.image}" alt="product-image" />
+                    `);
+
+                    $("#view-description").html(data.description);
                     $("#modal-view").modal("show");
                 }
             }
