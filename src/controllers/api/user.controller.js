@@ -211,6 +211,25 @@ class User {
         }
     }
 
+    async updateInfoStaff(req, res) {
+        try {
+            const idUser = req.body.idUser;
+            const {fullname, age, address, phone, role} = req.body;
+
+            const user = await userModel.findByIdAndUpdate(idUser, {
+                fullname,
+                age,
+                address,
+                phone,
+                role
+            });
+
+            return response(res, true, "Update information successfully!", 200);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
     async changePassword(req, res) {
         try {
             const idUser = req.body.idUser ?? req.user._id;

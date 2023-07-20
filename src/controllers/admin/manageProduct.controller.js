@@ -1,6 +1,24 @@
 const {uiRender: render} = require("../../utils/customResponse");
+const categoryModel = require("../../models/category.model");
+const authorModel = require("../../models/author.model");
+const publisherModel = require("../../models/publisher.model");
 
 class ManageProduct {
+    async renderProductPage(req, res, next) {
+        try {
+            const {search = ""} = req.query;
+
+            const [category, author, publisher] = await Promise.all([
+                categoryModel.find(),
+                authorModel.find(),
+                publisherModel.find()
+            ]);
+
+            return render(res, "admin-product", {name: "Product", user: req.user, search, category, author, publisher}, "admin_layout");
+        } catch (e) {
+            return next({status: 500});
+        }
+    }
     async renderCategoryPage(req, res, next) {
         try {
             const {search = ""} = req.query;

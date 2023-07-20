@@ -1,5 +1,5 @@
 const productModel = require("../../models/product.model");
-const {apiResponse:response} = require("../../utils/customResponse");
+const {apiResponse: response} = require("../../utils/customResponse");
 const customPagination = require("../../utils/customPagination");
 const {Types} = require("mongoose");
 
@@ -102,12 +102,18 @@ class Product {
                     }
                 },
                 {
+                    $sort: {
+                        createdAt: -1
+                    }
+                },
+                {
                     $project: {
                         name: 1,
                         price: 1,
                         amount: 1,
                         image: 1,
                         publishedAt: 1,
+                        createdAt: 1,
                         "category.name": 1,
                         "author.name": 1
                     }
@@ -132,18 +138,23 @@ class Product {
                 amount,
                 description,
                 price,
-                image} = req.body;
+                sale,
+                img_url: image} = req.body;
+
+            const categories = Array.isArray(category) ? [...category] : [category];
+            const authors = Array.isArray(author) ? [...author] : [author];
 
             // Exec insert
             const newProduct = await productModel.create({
                 name,
-                idCategory: [...category],
-                idAuthor: [...author],
+                idCategory: categories,
+                idAuthor: authors,
                 idPublisher: publisher,
                 publishedAt,
                 amount,
                 description,
                 price,
+                sale,
                 image
             });
 

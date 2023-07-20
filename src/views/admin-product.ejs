@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h4 class="page-title">Manage Staff</h4>
+                    <h4 class="page-title">Manage Product</h4>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn-add"><i
-                                        class="mdi mdi-plus-circle mr-2"></i> Add Staff</a>
+                                        class="mdi mdi-plus-circle mr-2"></i> Add Product</a>
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-right">
@@ -41,12 +41,10 @@
                                             <label class="custom-control-label" for="customCheck1">&nbsp;</label>
                                         </div>
                                     </th>
-                                    <th class="all">Username</th>
-                                    <th class="all">Fullname</th>
-                                    <th class="all">Phone</th>
-                                    <th class="all">Role</th>
-                                    <th class="all">Status</th>
-                                    <th>Joined at</th>
+                                    <th class="all">Product</th>
+                                    <th>Amount</th>
+                                    <th>Price</th>
+                                    <th>Added at</th>
                                     <th style="width: 150px;">Action</th>
                                 </tr>
                                 </thead>
@@ -89,49 +87,70 @@
 
 <!-- Modal add -->
 <div id="modal-add" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-full-width">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Add Staff</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Add Product</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="add-username">Username <small class="text-danger">(*)</small></label>
-                        <input type="text" class="form-control" id="add-username" placeholder="Enter name">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-password">Password <small class="text-danger">(*)</small></label>
-                        <input type="password" class="form-control" id="add-password" placeholder="Enter password">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-fullname">Full name</label>
-                        <input type="text" class="form-control" id="add-fullname" placeholder="Enter fullname">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-age">Age</label>
-                        <input type="number" class="form-control" id="add-age" placeholder="Enter age">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-address">Address</label>
-                        <input type="text" class="form-control" id="add-address" placeholder="Enter address">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-phone">Phone</label>
-                        <input type="text" class="form-control" id="add-phone" placeholder="Enter phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="add-role">Role</label>
-                        <select id="add-role" class="form-control">
-                            <option value="">Choose..</option>
-                            <% data.roles.forEach(role => { %>
-                            <option value="<%= role._id %>"><%= role.name %></option>
-                            <% }) %>
-                        </select>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="add-name">Name</label>
+                                <input type="text" class="form-control" id="add-name" placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label for="add-category">Category</label>
+                                <select id="add-category" class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                    <% data.category.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-author">Author</label>
+                                <select id="add-author" class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                    <% data.author.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-publisher">Publisher</label>
+                                <select id="add-publisher" class="form-control select2" data-toggle="select2">
+                                    <% data.publisher.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="add-publishedat">Published at</label>
+                                <input type="text" class="form-control date" id="add-publishedat" data-toggle="date-picker" data-single-date-picker="true">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="add-price">Price</label>
+                                <input type="text" class="form-control" value="0" id="add-price" data-toggle="input-mask" data-mask-format="000.000.000.000.000 đ" data-reverse="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="add-sale">Sale</label>
+                                <input type="text" class="form-control" value="0" id="add-sale" data-toggle="input-mask" data-mask-format="000.000.000.000.000 đ" data-reverse="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="add-image">Image</label>
+                                <input type="file" class="form-control-file" id="add-image">
+                            </div>
+                            <div class="form-group">
+                                <label for="add-description">Description</label>
+                                <textarea class="form-control" id="add-description" rows="6" placeholder="Enter description"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <p class="invalid-feedback font-14" id="add-error"></p>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
@@ -146,42 +165,18 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">View Customer</h4>
+                <h4 class="modal-title" id="standard-modalLabel">View Author</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="view-username">Username</label>
-                        <input type="text" class="form-control" id="view-username" readonly>
+                        <label for="view-name">Name</label>
+                        <input type="text" class="form-control" id="view-name" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="view-role">Role</label>
-                        <input type="text" class="form-control" id="view-role" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-fullname">Full name</label>
-                        <input type="text" class="form-control" id="view-fullname" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-age">Age</label>
-                        <input type="number" class="form-control" id="view-age" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-address">Address</label>
-                        <input type="text" class="form-control" id="view-address" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-phone">Phone</label>
-                        <input type="text" class="form-control" id="view-phone" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-gmail">Gmail</label>
-                        <input type="text" class="form-control" id="view-gmail" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="view-github">Github</label>
-                        <input type="text" class="form-control" id="view-github" readonly>
+                        <label for="view-description">Description</label>
+                        <textarea class="form-control" id="view-description" rows="3" readonly></textarea>
                     </div>
                 </form>
             </div>
@@ -203,28 +198,12 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="edit-fullname">Full name</label>
-                        <input type="text" class="form-control" id="edit-fullname">
+                        <label for="edit-name">Name</label>
+                        <input type="text" class="form-control" id="edit-name">
                     </div>
                     <div class="form-group">
-                        <label for="edit-age">Age</label>
-                        <input type="number" class="form-control" id="edit-age">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-address">Address</label>
-                        <input type="text" class="form-control" id="edit-address">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-phone">Phone</label>
-                        <input type="text" class="form-control" id="edit-phone">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-role">Role</label>
-                        <select id="edit-role" class="form-control">
-                            <% data.roles.forEach(role => { %>
-                                <option value="<%= role._id %>"><%= role.name %></option>
-                            <% }) %>
-                        </select>
+                        <label for="edit-description">Description</label>
+                        <textarea class="form-control" id="edit-description" rows="3"></textarea>
                     </div>
                     <p class="invalid-feedback font-14" id="edit-error"></p>
                 </form>
@@ -237,35 +216,16 @@
     </div>
 </div><!-- end modal edit -->
 
-<!-- Modal change status -->
-<div id="modal-status" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Update status</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-                <h5>Are you sure to change status of this customer ?</h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-warning">Continue</button>
-            </div>
-        </div>
-    </div>
-</div><!-- end modal delete -->
-
 <!-- Modal delete -->
 <div id="modal-delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Delete Customer</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Delete Author</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <h5>Are you sure to delete this customer ?</h5>
+                <h5>Are you sure to delete this author ?</h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
@@ -295,7 +255,7 @@
 
         // Get data & render items
         $.ajax({
-            url: "/api/user/pagination-staff" + buildQueryUrl(page, pageSize, search),
+            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, search),
             method: "get",
             success: function (response) {
                 if (!response.status || response.data[0].pagination.length == 0) return;
@@ -306,6 +266,8 @@
                 if (items.length > 0) {
                     let itemsHtml = ``;
                     items.forEach(item => {
+                        let name = item.name;
+                        if (name.length > 20) name = name.split("").slice(0, 20).join("") + "...";
                         const date = new Date(item.createdAt);
                         const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
 
@@ -317,20 +279,18 @@
                                     <label class="custom-control-label" for="customCheck2">&nbsp;</label>
                                 </div>
                             </td>
-                            <td>
-                                ${item.username}
+                            <td class="sorting_1">
+                                <img src="/public/resources/images/${item.image}" alt="contact-img" title="contact-img" class="rounded mr-3" height="48">
+                                <p class="m-0 d-inline-block align-middle font-16">
+                                    <a href="/products/${item._id}" class="text-body" data-toggle="tooltip" data-placement="top" title=""
+                                    data-original-title="${item.name}">${name}</a>
+                                </p>
                             </td>
                             <td>
-                                ${item.fullname}
+                                ${item.amount.toLocaleString()}
                             </td>
                             <td>
-                                ${item.phone}
-                            </td>
-                            <td>
-                                ${item.role.name === "Admin" ? `<span class="badge badge-primary-lighten">Admin</span>` : `<span class="badge badge-info-lighten">Staff</span>`}
-                            </td>
-                            <td>
-                                ${item.isActive ? `<span class="badge badge-success-lighten">Active</span>` : `<span class="badge badge-danger-lighten">Disabled</span>`}
+                                ${item.price.toLocaleString()} đ
                             </td>
                             <td>
                                 ${dateFormatted}
@@ -341,17 +301,14 @@
                                         class="mdi mdi-eye"></i></a>
                                 <a href="javascript:void(0);" class="action-icon btn-edit"> <i
                                         class="mdi mdi-square-edit-outline"></i></a>
-                                ${ item.role.name === "Admin" ? "" : `
-                                <a href="javascript:void(0);" class="action-icon btn-status"> <i
-                                        class="mdi ${item.isActive ? "mdi-cancel" : "mdi-lock-open-variant-outline"}"></i></a>
                                 <a href="javascript:void(0);" class="action-icon btn-delete"> <i
                                         class="mdi mdi-delete"></i></a>
-                                ` }
                             </td>
                         </tr>`;
                     })
 
                     $("#items-show").html(itemsHtml);
+                    $('[data-toggle="tooltip"]').tooltip();
                     renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, search));
                 }
             },
@@ -367,39 +324,57 @@
     })
 
     $("#modal-add button[type='submit']").click(function (e) {
-        const username = $("#add-username").val();
-        const password = $("#add-password").val();
-        const fullname = $("#add-fullname").val();
-        const age = $("#add-age").val();
-        const phone = $("#add-phone").val();
-        const address = $("#add-address").val();
-        const role = $("#add-role").val();
+        const name = $("#add-name").val();
+        const category = $("#add-category").val();
+        const author = $("#add-author").val();
+        const publisher = $("#add-publisher").val();
+        const publishedAt = $("#add-publishedat").val();
+        const price = $("#add-price").val().replace(" đ", "").replaceAll(".", "");
+        const sale = $("#add-sale").val().replace(" đ", "").replaceAll(".", "");
+        const image = $("#add-image")[0].files;
+        const description = $("#add-description").val();
         const errorFeedback = $("#add-error");
 
-        if (!username) return errorFeedback.text("Username cannot be null!").addClass("d-block");
+        // Validate inputs
+        if (!name) return errorFeedback.text("Name cannot be null!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
-        if (!password) return errorFeedback.text("Password cannot be null!").addClass("d-block");
+        if (category.length === 0) return errorFeedback.text("Please choose at least 1 category!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
-        if (age < 0 || age > 100) return errorFeedback.text("Age is invalid!").addClass("d-block");
+        if (author.length === 0) return errorFeedback.text("Please choose at least 1 author!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
-        if (!role) return errorFeedback.text("Please choose one role before continue!").addClass("d-block");
+        if (publisher.length === 0) return errorFeedback.text("Please choose at least 1 publisher!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
+        if (price < 0) return errorFeedback.text("Price cannot lower than 0!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (sale < 0) return errorFeedback.text("Sale cannot lower than 0!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if(image.length < 0) return errorFeedback.text("Image is required!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        let formdata = new FormData();
+        formdata.append("name", name);
+        category.forEach(item => formdata.append("category", item));
+        author.forEach(item => formdata.append("author", item));
+        formdata.append("publisher", publisher);
+        formdata.append("publishedAt", publishedAt);
+        formdata.append("price", price);
+        formdata.append("sale", sale);
+        formdata.append("image", image[0]);
+        formdata.append("description", description);
+
+        // Call api to creat product
         $.ajax({
-            url: "/api/user/create-staff",
+            url: "/api/product",
             method: "post",
-            data: {
-                username,
-                password,
-                fullname,
-                age,
-                phone,
-                address,
-                role,
-            },
+            data: formdata,
+            contentType: false,
+            processData: false,
             success: (response) => {
                 if (response.status) window.location = "";
             },
@@ -414,18 +389,12 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/user/${target}`,
+            url: `/api/author/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
-                    $("#view-username").val(response.data.username);
-                    $("#view-role").val(response.data.role.name);
-                    $("#view-fullname").val(response.data.fullname);
-                    $("#view-age").val(response.data.age);
-                    $("#view-phone").val(response.data.phone);
-                    $("#view-address").val(response.data.address);
-                    $("#view-gmail").val(response.data.email);
-                    $("#view-github").val(response.data.github);
+                    $("#view-name").val(response.data.name);
+                    $("#view-description").val(response.data.description);
                     $("#modal-view").modal("show");
                 }
             }
@@ -437,15 +406,12 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/user/${target}`,
+            url: `/api/author/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
-                    $("#edit-fullname").val(response.data.fullname);
-                    $("#edit-age").val(response.data.age);
-                    $("#edit-phone").val(response.data.phone);
-                    $("#edit-address").val(response.data.address);
-                    $(`#edit-role option[value='${response.data.role._id}']`).prop("selected", "selected");
+                    $("#edit-name").val(response.data.name);
+                    $("#edit-description").val(response.data.description);
                     $("#modal-edit").modal("show");
                 }
             }
@@ -453,26 +419,19 @@
     })
 
     $("#modal-edit button[type='submit']").click(function (e) {
-        const fullname = $("#edit-fullname").val();
-        const age = $("#edit-age").val();
-        const phone = $("#edit-phone").val();
-        const address = $("#edit-address").val();
-        const role = $("#edit-role").val();
+        const name = $("#edit-name").val();
+        const description = $("#edit-description").val();
         const errorFeedback = $("#edit-error");
 
-        if (!fullname) return errorFeedback.text("Full name cannot be null!").addClass("d-block");
+        if (!name) return errorFeedback.text("Name cannot be null!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
         $.ajax({
-            url: `/api/user/update-info-staff`,
+            url: `/api/author/${target}`,
             method: "put",
             data: {
-                idUser: target,
-                fullname,
-                age,
-                phone,
-                address,
-                role,
+                name,
+                description
             },
             success: (response) => {
                 if (response.status) window.location = "";
@@ -491,27 +450,8 @@
 
     $("#modal-delete button[type='submit']").click(function (e) {
         $.ajax({
-            url: `/api/user/${target}`,
+            url: `/api/author/${target}`,
             method: "delete",
-            success: (response) => {
-                if (response.status) window.location = "";
-            },
-            error: (err) => {
-                return $.NotificationApp.send("Error", `${err.responseJSON.msg}`, "top-right", "rgba(0,0,0,0.2)", "error");
-            }
-        })
-    })
-
-    // Action: change status
-    $(document).on("click", ".btn-status", function (e) {
-        target = $(this).parent().parent().attr("id");
-        $("#modal-status").modal("show");
-    })
-
-    $("#modal-status button[type='submit']").click(function (e) {
-        $.ajax({
-            url: `/api/user/change-status/${target}`,
-            method: "put",
             success: (response) => {
                 if (response.status) window.location = "";
             },

@@ -67,6 +67,11 @@ const ProductSchema = new Schema({
         type: Number,
         required: [true, "Price is required"]
     },
+    sale: {
+        type: Number,
+        default: 0,
+        trim: true
+    },
     image: {
         type: String,
         default: "productNoImage",

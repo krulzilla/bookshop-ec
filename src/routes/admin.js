@@ -16,6 +16,7 @@ router.get("/login", adminMiddleware.isNotAdmin, authController.renderLoginPage)
 router.use(adminMiddleware.isAdmin);
 router.get("/", dashboardController.renderDashboardPage);
 router.get("/logout", authController.logout);
+router.get("/product", productController.renderProductPage);
 router.get("/category", productController.renderCategoryPage);
 router.get("/author", productController.renderAuthorPage);
 router.get("/publisher", productController.renderPublisherPage);
