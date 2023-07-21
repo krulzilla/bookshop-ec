@@ -1,0 +1,161 @@
+<div class="content-page">
+    <div class="content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Import warehouse</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div id="add-area">
+                            <div class="row border-bottom border-secondary">
+                                <div class="col-sm-4">
+                                    <label for="">Product id</label>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="">Product name</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label for="">Amount</label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <label for="">Action</label>
+                                </div>
+                            </div>
+
+                            <div id="add-rows"></div>
+                        </div>
+
+                        <div class="row mt-2" id="add-row">
+                            <div class="col-sm-8">
+                                <select class="form-control select2" data-toggle="select2">
+                                    <option value="">Select product (id - name)</option>
+                                    <% data.products.forEach(product => { %>
+                                        <option value="<%= product._id %>" data="<%= product.name %>"><%= product._id + " - " + product.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control add-price" placeholder="Enter amount..." value="1" min="1">
+                            </div>
+                            <div class="col-sm-2">
+                                <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn-add"><i
+                                            class="mdi mdi-plus-circle mr-2"></i> Add Row</a>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-sm-12">
+                                <div class="text-sm-right">
+                                    <a href="javascript:void(0);" class="btn btn-danger mb-2" id="btn-remove"><i
+                                                class="mdi mdi-window-close mr-2"></i> Remove all</a>
+                                    <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn-import"><i
+                                                class="mdi mdi-plus-circle mr-2"></i> Import</a>
+                                </div>
+                            </div><!-- end col-->
+                        </div>
+
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- End Content -->
+
+    <!-- Footer Start -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    2018 - 2020 © Hyper - Coderthemes.com
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-right footer-links d-none d-md-block">
+                        <a href="javascript: void(0);">About</a>
+                        <a href="javascript: void(0);">Support</a>
+                        <a href="javascript: void(0);">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
+</div> <!-- content-page -->
+
+
+<%- contentFor('js') %>
+<script>
+(function () {
+    const productsAdding = [];
+    const addArea = $("#add-rows");
+    const addRow = $("#add-row");
+
+    $("#btn-add").click(function (e) {
+        const productId = addRow.find("select").val();
+        const productName = addRow.find("option:selected").attr("data");
+        const amount = addRow.find("input[type='number']").val();
+
+        if (!productId) return;
+        if (productsAdding.includes(productId)) return $.NotificationApp.send("Warning", `This product is in receipt`, "top-right", "rgba(0,0,0,0.2)", "warning");
+
+        productsAdding.push(productId);
+        addArea.append(`
+            <div class="row mt-2" id="${productId}">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="${productId}" readonly>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" value="${productName}" readonly>
+                </div>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control add-price" placeholder="Enter amount..." min="1" value="${amount}" >
+                </div>
+                <div class="col-sm-2">
+                    <a href="javascript:void(0);" class="btn-delete text-danger d-block font-20">
+                        <i class="mdi mdi-delete"></i>
+                    </a>
+                </div>
+            </div>
+        `);
+    })
+
+    $("#btn-remove").click(function (e) {
+        addArea.empty();
+        productsAdding.length = 0;
+    })
+
+    $("#btn-import").click(function (e) {
+        const rows = addArea.find("div.row");
+
+        if (rows.length === 0) return;
+
+        const products = [];
+        const amount = [];
+
+        for (let i = 0; i < rows.length; i ++) {
+            const row = rows.get(i);
+            products.push($(row).attr("id"));
+            amount.push($(row).find("input[type='number']").val());
+        }
+
+        console.log(products, amount);
+    })
+
+    $(document).on("click", ".btn-delete", function (e) {
+        const row = $(this).parent().parent();
+        const productId = row.attr("id");
+        productsAdding.splice(productsAdding.indexOf(productId), 1);
+        row.remove();
+    })
+})()
+</script>

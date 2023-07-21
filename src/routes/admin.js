@@ -9,6 +9,7 @@ const typeTransportController = require("../controllers/admin/typeTransport.cont
 const orderController = require("../controllers/admin/order.controller");
 const profileController = require("../controllers/admin/profile.controller");
 const userController = require("../controllers/admin/user.controller");
+const receiptController = require("../controllers/admin/receipt.controller");
 
 // Manage routes
 router.get("/login", adminMiddleware.isNotAdmin, authController.renderLoginPage);
@@ -25,5 +26,7 @@ router.get("/order", orderController.renderOrderPage);
 router.get("/profile", profileController.renderPageProfile);
 router.get("/customer", userController.renderCustomerPage);
 router.get("/staff", userController.renderStaffPage);
+router.get("/import-warehouse", receiptController.renderImportWarehousePage);
+router.get("/warehouse-receipt", receiptController.renderWarehouseReceiptPage);
 
 module.exports = router;
