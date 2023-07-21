@@ -2,6 +2,7 @@ const productModel = require("../../models/product.model");
 const {apiResponse: response} = require("../../utils/customResponse");
 const customPagination = require("../../utils/customPagination");
 const {Types} = require("mongoose");
+const fs = require("fs");
 
 class Product {
     async getAll(req, res) {
@@ -180,28 +181,31 @@ class Product {
                 author,
                 publisher,
                 publishedAt,
-                amount,
                 description,
                 price,
-                image} = req.body;
+                sale,
+                img_url: image} = req.body;
 
             // Exec update
             const updateData = {
                 name,
                 idPublisher: publisher,
                 publishedAt,
-                amount,
                 description,
                 price,
+                sale,
                 image
             };
-            if (category) updateData.idCategory = [...category];
-            if (author) updateData.idAuthor = [...author];
+            if (Array.isArray(category)) updateData.idCategory = [...category];
+            else updateData.idCategory = [category];
+            if (Array.isArray(author)) updateData.idAuthor = [...author];
+            else updateData.idAuthor = [author];
 
             const updateProduct = await productModel.findByIdAndUpdate(id, updateData,
-                {new: true, runValidators: true});
+                {runValidators: true});
+            if (image) fs.unlinkSync(`./src/public/resources/images/${updateProduct.image}`)
 
-            return response(res, true, "Product is updated", 200, updateProduct);
+            return response(res, true, "Product is updated", 200);
         } catch (e) {
             if (e.name === "ValidationError") {
                 let errMsg;

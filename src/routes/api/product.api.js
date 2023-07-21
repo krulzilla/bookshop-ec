@@ -3,7 +3,7 @@ const multer = require('multer');
 const router = express.Router();
 const productApi = require("../../controllers/api/product.controller");
 
-
+// Config multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './src/public/resources/images/');
@@ -22,7 +22,7 @@ router.get("/pagination", productApi.pagination);
 router.get("/random", productApi.getRandom);
 router.get("/:id", productApi.getById);
 router.post("/", upload.single("image"), productApi.create);
-router.put("/:id", productApi.update);
+router.put("/:id", upload.single("image"), productApi.update);
 router.delete("/:id", productApi.delete);
 
 module.exports = router;

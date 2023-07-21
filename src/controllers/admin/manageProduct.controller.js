@@ -6,7 +6,7 @@ const publisherModel = require("../../models/publisher.model");
 class ManageProduct {
     async renderProductPage(req, res, next) {
         try {
-            const {search = ""} = req.query;
+            const {search = "", category: categoryFilter} = req.query;
 
             const [category, author, publisher] = await Promise.all([
                 categoryModel.find(),
@@ -14,7 +14,7 @@ class ManageProduct {
                 publisherModel.find()
             ]);
 
-            return render(res, "admin-product", {name: "Product", user: req.user, search, category, author, publisher}, "admin_layout");
+            return render(res, "admin-product", {name: "Product", user: req.user, search, category, author, publisher, categoryFilter}, "admin_layout");
         } catch (e) {
             return next({status: 500});
         }

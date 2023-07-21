@@ -95,4 +95,9 @@ ProductSchema.pre(["find", "findOne"], function () {
     this.where({isDeleted: false});
 });
 
+ProductSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: false } });
+    next();
+});
+
 module.exports = model("Product", ProductSchema);

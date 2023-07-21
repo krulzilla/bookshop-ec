@@ -31,6 +31,23 @@
                             </div><!-- end col-->
                         </div>
 
+                        <div class="row mb-2">
+                            <div class="col-sm-4">
+                                <form>
+                                    <select id="filter-category" class="select2 form-control" data-toggle="select2">
+                                        <option value="">Choose filter</option>
+                                        <% data.category.forEach(item => { %>
+                                            <option value="<%= item._id %>"
+                                                <% if (data.categoryFilter) { %>
+                                                    <%= data.categoryFilter.includes(item._id) ? "selected" : "" %>
+                                                <% } %>
+                                            ><%= item.name %></option>
+                                        <% }) %>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
                                 <thead class="thead-light">
@@ -222,7 +239,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create</button>
             </div>
         </div>
     </div>
@@ -230,43 +246,89 @@
 
 <!-- Modal edit -->
 <div id="modal-edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-full-width">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Edit Autor</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Add Product</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="edit-name">Name</label>
-                        <input type="text" class="form-control" id="edit-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-description">Description</label>
-                        <textarea class="form-control" id="edit-description" rows="3"></textarea>
+                <div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit-name">Name</label>
+                                <input type="text" class="form-control" id="edit-name" placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-category">Category</label>
+                                <select id="edit-category" class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                    <% data.category.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-author">Author</label>
+                                <select id="edit-author" class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                    <% data.author.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-publisher">Publisher</label>
+                                <select id="edit-publisher" class="form-control select2" data-toggle="select2">
+                                    <% data.publisher.forEach(item => { %>
+                                        <option value="<%= item._id %>"><%= item.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-publishedat">Published at</label>
+                                <input type="text" class="form-control date" id="edit-publishedat" data-toggle="date-picker" data-single-date-picker="true">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit-price">Price</label>
+                                <input type="text" class="form-control" value="0" id="edit-price" data-toggle="input-mask" data-mask-format="000.000.000.000.000 đ" data-reverse="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-sale">Sale</label>
+                                <input type="text" class="form-control" value="0" id="edit-sale" data-toggle="input-mask" data-mask-format="000.000.000.000.000 đ" data-reverse="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-image">Image</label>
+                                <input type="file" class="form-control-file" id="edit-image">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-description">Description</label>
+                                <textarea class="form-control" id="edit-description" rows="6" placeholder="Enter description"></textarea>
+                            </div>
+                        </div>
                     </div>
                     <p class="invalid-feedback font-14" id="edit-error"></p>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-warning">Update</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </div>
         </div>
     </div>
-</div><!-- end modal edit -->
+</div><!-- end modal add -->
 
 <!-- Modal delete -->
 <div id="modal-delete" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="standard-modalLabel">Delete Author</h4>
+                <h4 class="modal-title" id="standard-modalLabel">Delete Product</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             </div>
             <div class="modal-body">
-                <h5>Are you sure to delete this author ?</h5>
+                <h5>Are you sure to delete this product ?</h5>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
@@ -280,7 +342,7 @@
 <script src="/public/assets/js/custom.js"></script>
 <script>
 (function () {
-    let page = 1, pageSize = 10, search = "", target;     // Params for url query
+    let page = 1, pageSize = 10, search = "", category = "", target;     // Params for url query
 
     $(document).ready(function (e) {
         // Get filter values
@@ -291,12 +353,13 @@
             // example param: page=1 || pageSize=4
             const ele = param.split("=");
             if (ele[0] == "page") page = +ele[1];
+            if (ele[0] == "category") category = ele[1];
             if (ele[0] == "search") search = ele[1];
         })
 
         // Get data & render items
         $.ajax({
-            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, search),
+            url: "/api/product/pagination" + buildQueryUrl(page, pageSize, search, category),
             method: "get",
             success: function (response) {
                 if (!response.status || response.data[0].pagination.length == 0) return;
@@ -355,13 +418,20 @@
 
                     $("#items-show").html(itemsHtml);
                     $('[data-toggle="tooltip"]').tooltip();
-                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, search));
+                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, search, category));
                 }
             },
             error: function (err) {
 
             }
         })
+    })
+
+    // Action: click filter category
+    $("#filter-category").change(function (e) {
+        const category = $(e.target).val();
+
+        window.location = buildQueryUrl(1, pageSize, search, category);
     })
 
     // Action: create
@@ -474,12 +544,37 @@
         target = $(this).parent().parent().attr("id");
 
         $.ajax({
-            url: `/api/author/${target}`,
+            url: `/api/product/${target}`,
             method: "get",
             success: (response) => {
                 if (response.status) {
-                    $("#edit-name").val(response.data.name);
-                    $("#edit-description").val(response.data.description);
+                    const data = response.data;
+                    $("#edit-name").val(data.name);
+                    // Set value for category multiple select
+                    $(`#edit-category option`).prop("selected", false);
+                    data.idCategory.forEach(item => {
+                        $(`#edit-category option[value='${item._id}']`).prop("selected", "selected");
+                    })
+                    $(`#edit-category`).trigger("change");
+                    // Set value for author multiple select
+                    $(`#edit-author option`).prop("selected", false);
+                    data.idAuthor.forEach(item => {
+                        $(`#edit-author option[value='${item._id}']`).prop("selected", "selected");
+                    })
+                    $(`#edit-author`).trigger("change");
+                    // Set value for publisher multiple select
+                    $(`#edit-publisher option[value='${data.idPublisher._id}']`).prop("selected", "selected");
+                    $(`#edit-publisher`).trigger("change");
+
+                    $("#edit-price").val(data.price);
+                    $("#edit-price").trigger("input");
+                    $("#edit-sale").val(data.sale);
+                    $("#edit-sale").trigger("input");
+
+                    const date = new Date(data.publishedAt);
+                    const dateFormatted = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+                    $("#edit-publishedat").val(dateFormatted);
+                    $("#edit-description").val(data.description);
                     $("#modal-edit").modal("show");
                 }
             }
@@ -488,19 +583,52 @@
 
     $("#modal-edit button[type='submit']").click(function (e) {
         const name = $("#edit-name").val();
+        const category = $("#edit-category").val();
+        const author = $("#edit-author").val();
+        const publisher = $("#edit-publisher").val();
+        const publishedAt = $("#edit-publishedat").val();
+        const price = $("#edit-price").val().replace(" đ", "").replaceAll(".", "");
+        const sale = $("#edit-sale").val().replace(" đ", "").replaceAll(".", "");
+        const image = $("#edit-image")[0].files;
         const description = $("#edit-description").val();
         const errorFeedback = $("#edit-error");
 
+        // Validate inputs
         if (!name) return errorFeedback.text("Name cannot be null!").addClass("d-block");
         else errorFeedback.removeClass("d-block");
 
+        if (category.length === 0) return errorFeedback.text("Please choose at least 1 category!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (author.length === 0) return errorFeedback.text("Please choose at least 1 author!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (publisher.length === 0) return errorFeedback.text("Please choose at least 1 publisher!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (price < 0) return errorFeedback.text("Price cannot lower than 0!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        if (sale < 0) return errorFeedback.text("Sale cannot lower than 0!").addClass("d-block");
+        else errorFeedback.removeClass("d-block");
+
+        let formdata = new FormData();
+        formdata.append("name", name);
+        category.forEach(item => formdata.append("category", item));
+        author.forEach(item => formdata.append("author", item));
+        formdata.append("publisher", publisher);
+        formdata.append("publishedAt", publishedAt);
+        formdata.append("price", price);
+        formdata.append("sale", sale);
+        if (image.length > 0) formdata.append("image", image[0]);
+        formdata.append("description", description);
+
         $.ajax({
-            url: `/api/author/${target}`,
+            url: `/api/product/${target}`,
             method: "put",
-            data: {
-                name,
-                description
-            },
+            data: formdata,
+            contentType: false,
+            processData: false,
             success: (response) => {
                 if (response.status) window.location = "";
             },
@@ -518,7 +646,7 @@
 
     $("#modal-delete button[type='submit']").click(function (e) {
         $.ajax({
-            url: `/api/author/${target}`,
+            url: `/api/product/${target}`,
             method: "delete",
             success: (response) => {
                 if (response.status) window.location = "";
@@ -530,8 +658,8 @@
     })
 
     // Build query url
-    function buildQueryUrl(page, pageSize, search = "") {
-        return `?page=${page}&pageSize=${pageSize}${search ? `&search=${search}` : ""}`;
+    function buildQueryUrl(page, pageSize, search = "", category = []) {
+        return `?page=${page}&pageSize=${pageSize}${search ? `&search=${search}` : ""}${category ? `&category=${category}` : ""}`;
     }
 })()
 </script>
