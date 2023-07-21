@@ -24,7 +24,7 @@
                                 <div class="text-sm-right">
                                     <form>
                                         <label for="search">Search: </label>
-                                        <input type="search" style="max-width: 250px;" class="form-control d-inline-block" name="search" placeholder="Search..."
+                                        <input id="search" type="search" style="max-width: 250px;" class="form-control d-inline-block" name="search" placeholder="Search..."
                                                value="<%= data.search %>">
                                     </form>
                                 </div>
@@ -432,6 +432,14 @@
         const category = $(e.target).val();
 
         window.location = buildQueryUrl(1, pageSize, search, category);
+    })
+
+    // Action: search
+    $("#search").keypress(function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            window.location = buildQueryUrl(1, pageSize, $(this).val(), category)
+        }
     })
 
     // Action: create
