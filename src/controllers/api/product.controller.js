@@ -105,7 +105,7 @@ class Product {
                 },
                 {
                     $sort: {
-                        createdAt: -1
+                        createdAt: -1,
                     }
                 },
                 {

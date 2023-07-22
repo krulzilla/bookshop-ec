@@ -1,3 +1,31 @@
 <!-- bundle -->
 <script src="/public/assets/js/vendor.min.js"></script>
 <script src="/public/assets/js/app.min.js"></script>
+// Script for search input
+<script>
+    $(document).on("change keyup focus", "#top-search", function (e) {
+        const searchValueAjax = $(this).val();
+        $.ajax({
+            url: `/api/product/pagination?page=1&pageSize=5&search=${searchValueAjax}`,
+            method: "get",
+            success: (response) => {
+                const results = response.data[0].data;
+
+                let renderHtml = ``;
+                results.forEach(result => {
+                    renderHtml += `
+                    <a href="/product/${result._id}" class="dropdown-item notify-item">
+                        <div class="media">
+                            <img class="d-flex mr-2" src="/public/resources/images/${result.image}" height="32">
+                            <div class="media-body">
+                                <h5 class="m-0 font-14">${result.name.length > 30 ? result.name.slice(0, 30) + "..." : result.name}</h5>
+                                <span class="font-12 mb-0">${result.amount > 0 ? '<div class="badge badge-success p-1">In stock</div>' : '<div class="badge badge-secondary p-1">Out of stock</div>'}</span>
+                            </div>
+                        </div>
+                    </a>`;
+                })
+                $("#top-search-show").html(renderHtml);
+            }
+        })
+    })
+</script>
