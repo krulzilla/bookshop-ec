@@ -9,7 +9,7 @@ const typeTransportController = require("../controllers/admin/typeTransport.cont
 const orderController = require("../controllers/admin/order.controller");
 const profileController = require("../controllers/admin/profile.controller");
 const userController = require("../controllers/admin/user.controller");
-const receiptController = require("../controllers/admin/receipt.controller");
+const receiptController = require("../controllers/admin/warehouse.controller");
 
 // Manage routes
 router.get("/login", adminMiddleware.isNotAdmin, authController.renderLoginPage);
