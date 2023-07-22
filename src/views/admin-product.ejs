@@ -18,7 +18,9 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn-add"><i
-                                        class="mdi mdi-plus-circle mr-2"></i> Add Product</a>
+                                        class="mdi mdi-plus-circle mr-2"></i>Add Product</a>
+                                <a href="/api/product/export-excel" class="btn btn-success mb-2" id="btn-export"><i
+                                        class="dripicons-export mr-2"></i>Export Excel</a>
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-right">
@@ -32,7 +34,9 @@
                         </div>
 
                         <div class="row mb-2">
-                            <div class="col-sm-4">
+                            <div class="col-sm-9">
+                            </div>
+                            <div class="col-sm-3">
                                 <form>
                                     <select id="filter-category" class="select2 form-control" data-toggle="select2">
                                         <option value="">Choose filter</option>
@@ -663,6 +667,11 @@
                 return $.NotificationApp.send("Error", `${err.responseJSON.msg}`, "top-right", "rgba(0,0,0,0.2)", "error");
             }
         })
+    })
+
+    // Action: export
+    $("#btn-export").click(function (e) {
+
     })
 
     // Build query url

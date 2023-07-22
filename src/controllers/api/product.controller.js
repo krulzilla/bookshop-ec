@@ -3,6 +3,7 @@ const {apiResponse: response} = require("../../utils/customResponse");
 const customPagination = require("../../utils/customPagination");
 const {Types} = require("mongoose");
 const fs = require("fs");
+const xlsx = require("xlsx");
 
 class Product {
     async getAll(req, res) {
@@ -227,6 +228,42 @@ class Product {
             }, {new: true});
 
             return response(res, true, "Product is deleted", 200, deleteProduct);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
+    async exportExcel(req, res) {
+        try {
+            const products = await productModel.find().populate("idCategory").populate("idAuthor").populate("idPublisher");
+
+            const productsToExport = products.map(product => ({
+                Id: product._id.toString(),
+                Name: product.name,
+                Category: product.idCategory.reduce((res, current) => res += current.name + "; ", "").replace(/(; )$/, ""),
+                Author: product.idAuthor.reduce((res, current) => res += current.name + "; ", "").replace(/(; )$/, ""),
+                Publisher: product.idPublisher.name,
+                PublishedAt: product.publishedAt,
+                Amount: product.amount,
+                Description: product.description,
+                Price: product.price,
+                CreatedAt: product.createdAt
+            }))
+
+            const worksheet = xlsx.utils.json_to_sheet(productsToExport);
+            const workbook = xlsx.utils.book_new();
+            xlsx.utils.book_append_sheet(workbook, worksheet, "Product");
+            const excelBuffer = xlsx.write(workbook, {type: "buffer"});
+
+            res.setHeader(
+                "Content-Disposition",
+                "attachment; filename=products.xlsx"
+            );
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            return res.send(excelBuffer);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }

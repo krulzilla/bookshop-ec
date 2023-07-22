@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get("/", productApi.getAll);
+router.get("/export-excel", productApi.exportExcel);
 router.get("/pagination", productApi.pagination);
 router.get("/random", productApi.getRandom);
 router.get("/:id", productApi.getById);

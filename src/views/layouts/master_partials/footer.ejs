@@ -3,7 +3,7 @@
 <script src="/public/assets/js/app.min.js"></script>
 // Script for search input
 <script>
-    $(document).on("change keyup focus", "#top-search", function (e) {
+    $(document).on("change keyup", "#top-search", function (e) {
         const searchValueAjax = $(this).val();
         $.ajax({
             url: `/api/product/pagination?page=1&pageSize=5&search=${searchValueAjax}`,
