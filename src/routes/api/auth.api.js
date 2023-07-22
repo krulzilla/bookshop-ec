@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const clientAuth = require("../../controllers/auth/client.auth");
 const adminAuth = require("../../controllers/auth/admin.auth");
+const staffAuth = require("../../controllers/auth/staff.auth");
 
 // Client auth
 router.post("/client/register", clientAuth.isNotClient, clientAuth.register);
@@ -12,6 +13,9 @@ router.get("/github/callback", clientAuth.isNotClient, clientAuth.githubAuthCall
 
 // Admin auth
 router.post("/admin/login", adminAuth.isNotAdmin, adminAuth.login);
+
+// Staff auth
+router.post("/staff/login", staffAuth.isNotStaff, staffAuth.login);
 
 // Test routes after authenticated
 router.get("/client/protect", clientAuth.isClient, (req, res) => {

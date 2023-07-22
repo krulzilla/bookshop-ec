@@ -1,0 +1,26 @@
+<%- include('./staff_partials/header.ejs') %>
+
+<!-- Wrapper content -->
+<%- include('./staff_partials/top_navbar.ejs') %>
+
+<!-- Start Content-->
+<div class="container-fluid">
+    <!-- Begin page -->
+    <div class="wrapper">
+
+        <%- include('./staff_partials/left_sidebar.ejs') %>
+
+        <%- body %>
+
+    </div> <!-- end wrapper-->
+</div>
+<!-- END Container -->
+
+<%- include('./staff_partials/right_sidebar.ejs') %>
+
+<%- include('./staff_partials/footer.ejs') %>
+
+<%- defineContent('js') %>
+
+</body>
+</html>

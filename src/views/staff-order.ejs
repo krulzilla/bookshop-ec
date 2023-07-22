@@ -1,0 +1,405 @@
+<div class="content-page">
+    <div class="content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Manage Order</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <div class="text-sm-right">
+                                    <form>
+                                        <label for="search">Search: </label>
+                                        <input type="search" style="max-width: 300px;" class="form-control d-inline-block" name="search" placeholder="Search by 4 last character of id..."
+                                               maxlength="4" value="<%= data.search %>">
+                                    </form>
+                                </div>
+                            </div><!-- end col-->
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th class="all" style="width: 20px;">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                            <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                        </div>
+                                    </th>
+                                    <th class="all">Order id</th>
+                                    <th class="all">Total</th>
+                                    <th class="all">Status</th>
+                                    <th class="all">Transport</th>
+                                    <th class="all">Payment</th>
+                                    <th>Placed at</th>
+                                    <th style="width: 150px;">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="items-show"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="row">
+                            <div class="col-sm-12" id="pagination"></div>
+                        </div>
+                        <!-- End Pagination -->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div> <!-- End Content -->
+
+    <!-- Footer Start -->
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    2018 - 2020 © Hyper - Coderthemes.com
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-right footer-links d-none d-md-block">
+                        <a href="javascript: void(0);">About</a>
+                        <a href="javascript: void(0);">Support</a>
+                        <a href="javascript: void(0);">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end Footer -->
+</div> <!-- content-page -->
+
+<!-- Modal view -->
+<div id="modal-view" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">View Order details</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body"> </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal view -->
+
+<!-- Modal edit -->
+<div id="modal-status" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Update status order</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="edit-status">Status</label>
+                        <select id="edit-status" class="form-control">
+                            <option value="0">Processing</option>
+                            <option value="1">Preparing</option>
+                            <option value="2">Shipping</option>
+                            <option value="3">Delivered</option>
+                            <option value="4">Cancelled</option>
+                        </select>
+                    </div>
+                    <p class="invalid-feedback font-14" id="edit-error"></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">Update</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal edit -->
+
+<%- contentFor('js') %>
+<script src="/public/assets/js/custom.js"></script>
+<script>
+(function () {
+    let page = 1, pageSize = 10, search = "", target;     // Params for url query
+
+    $(document).ready(function (e) {
+        // Get filter values
+        const urlQuery = window.location.search.replace("?", "");
+        const queryParams = urlQuery.split("&");
+
+        queryParams.forEach(param => {
+            // example param: page=1 || pageSize=4
+            const ele = param.split("=");
+            if (ele[0] == "page") page = +ele[1];
+            if (ele[0] == "search") search = ele[1];
+        })
+
+        // Get data & render items
+        $.ajax({
+            url: "/api/order/pagination" + buildQueryUrl(page, pageSize, search),
+            method: "get",
+            success: function (response) {
+                if (!response.status || response.data[0].pagination.length == 0) return;
+
+                // Handle data into html.
+                const items = response.data[0].data;
+                const totalRow = response.data[0].pagination[0].totalRow;   // Total row of this filter (price + category + search)
+                if (items.length > 0) {
+                    let itemsHtml = ``;
+                    items.forEach(item => {
+                        const date = new Date(item.createdAt);
+                        const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+
+                        // handle status description
+                        let status = "Processing";
+                        if (item.status == 1) status = "Preparing";
+                        else if (item.status == 2) status = "Shipping";
+                        else if (item.status == 3) status = "Delivered";
+                        else if (item.status == 4) status = "Cancelled";
+
+                        itemsHtml += `
+                        <tr id="${item._id}">
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                    <label class="custom-control-label" for="customCheck2">&nbsp;</label>
+                                </div>
+                            </td>
+                            <td>
+                                ${ item._id.toString().slice(0, 2) + "..." + item._id.toString().slice(-4) }
+                            </td>
+                            <td>
+                                ${item.total.toLocaleString()} đ
+                            </td>
+                            <td>
+                                ${status}
+                            </td>
+                            <td>
+                                ${item.transport[0].name}
+                            </td>
+                            <td>
+                                ${item.payment[0].shortName}
+                            </td>
+                            <td>
+                                ${dateFormatted}
+                            </td>
+
+                            <td class="table-action">
+                                <a href="javascript:void(0);" class="action-icon btn-view"> <i
+                                        class="mdi mdi-eye"></i></a>
+                                <a href="javascript:void(0);" class="action-icon btn-status"> <i
+                                        class="mdi mdi-square-edit-outline"></i></a>
+                            </td>
+                        </tr>`;
+                    })
+
+                    $("#items-show").html(itemsHtml);
+                    renderPagination("#pagination", totalRow / pageSize, page, buildQueryUrl(page, pageSize, search));
+                }
+            },
+            error: function (err) {
+
+            }
+        })
+    })
+
+    // Action: view
+    $(document).on("click", ".btn-view", function (e) {
+        target = $(this).parent().parent().attr("id");
+
+        $.ajax({
+            url: `/api/order/get-details/${target}`,
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    let renderDetails = "";
+
+                    const details = response.data[0];
+
+                    // handle date-time
+                    const dateRaw = new Date(details.createdAt);
+                    const date = `${dateRaw.toLocaleString("default", {month: "short"})} ${dateRaw.getDate()}, ${dateRaw.getFullYear()}`;
+                    const time = `${dateRaw.getUTCHours()}:${dateRaw.getUTCMinutes()}`;
+
+                    // handle status description
+                    let status = "Processing";
+                    if (details.status == 1) status = "Preparing";
+                    if (details.status == 2) status = "Shipping";
+                    if (details.status == 3) status = "Delivered";
+                    if (details.status == 4) status = "Cancelled";
+
+                    renderDetails += `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Order ID:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details._id}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Placed at:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${date} <small class="text-muted">${time}</small></h5>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Client name:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details.user.fullname}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Phone:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details.user.phone}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Address:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details.user.address}</h5>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Status order:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${status}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Type payment:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                           data-original-title="${details.typePayment.name}">${details.typePayment.shortName}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Type transport:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                           data-original-title="${details.typeTransport.description}">${details.typeTransport.name}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Shipping fee:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details.shippingFee.toLocaleString()} đ</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Total:</h5>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>${details.total.toLocaleString()} đ</h5>
+                        </div>
+                    </div>
+                    <hr>
+                    <ul class="list-unstyled">
+                    `;
+                    details.orderDetails.forEach((item, index) => {
+                        if (index !== 0) renderDetails += "<hr>";
+                        renderDetails += `
+                    <li>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="/public/resources/images/${item.product.image}" alt="product-image-alt" class="card-img">
+                            </div>
+                            <div class="col-md-6">
+                                <h5>${item.product.name}</h5>
+                                <p>${item.price.toLocaleString()} đ</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h5>x${item.amount}</h5>
+                                <p>${(item.price * item.amount).toLocaleString()} đ</p>
+                            </div>
+                        </div>
+                    </li>
+                    `;
+                    })
+                    renderDetails += `</ul>`;
+
+                    $("#modal-view").find(".modal-body").html(renderDetails);
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $("#modal-view").modal("show");
+                }
+            }
+        })
+    })
+
+    // Action: edit
+    $(document).on("click", ".btn-status", function (e) {
+        target = $(this).parent().parent().attr("id");
+
+        $.ajax({
+            url: `/api/order/${target}`,
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    const orderStatus = response.data.status;
+                    $(`#modal-status option[value='${orderStatus}']`).prop("selected", true)
+
+                    $("#modal-status").modal("show");
+                }
+            }
+        })
+    })
+
+    $("#modal-status button[type='submit']").click(function (e) {
+        const status = $("#edit-status").val();
+        const errorFeedback = $("#edit-error");
+
+        $.ajax({
+            url: `/api/order/update-status/${target}`,
+            method: "put",
+            data: {
+                status
+            },
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return errorFeedback.text(err.responseJSON.msg).addClass("d-block");
+            }
+        })
+    })
+
+    // Build query url
+    function buildQueryUrl(page, pageSize, search = "") {
+        return `?page=${page}&pageSize=${pageSize}${search ? `&search=${search}` : ""}`;
+    }
+})()
+</script>
