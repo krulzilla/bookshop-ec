@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require('multer');
 const router = express.Router();
 const productApi = require("../../controllers/api/product.controller");
+const authMiddleware = require("../../middlewares/auth.middlware");
 
 // Config multer
 const storage = multer.diskStorage({
@@ -17,13 +18,13 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-router.get("/", productApi.getAll);
-router.get("/export-excel", productApi.exportExcel);
+router.get("/", authMiddleware.isAdmin, productApi.getAll);
+router.get("/export-excel", authMiddleware.isAdmin, productApi.exportExcel);
 router.get("/pagination", productApi.pagination);
 router.get("/random", productApi.getRandom);
 router.get("/:id", productApi.getById);
-router.post("/", upload.single("image"), productApi.create);
-router.put("/:id", upload.single("image"), productApi.update);
-router.delete("/:id", productApi.delete);
+router.post("/", authMiddleware.isAdmin, upload.single("image"), productApi.create);
+router.put("/:id", authMiddleware.isAdmin, upload.single("image"), productApi.update);
+router.delete("/:id", authMiddleware.isAdmin, productApi.delete);
 
 module.exports = router;

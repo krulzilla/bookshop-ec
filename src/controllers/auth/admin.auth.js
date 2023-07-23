@@ -11,6 +11,7 @@ class AdminAuth extends BaseAuth {
             if (req.user.role === this.role) return next();
         }
 
+        res.clearCookie("accessToken");
         return res.redirect("/admincp/login");
     }
 

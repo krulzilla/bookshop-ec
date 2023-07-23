@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../../middlewares/auth.middlware");
 
 // Import api routes
 const authApi = require("./auth.api");
@@ -20,15 +21,15 @@ const warehouseApi = require("./warehouse.api");
 // Manage api routes
 router.use("/auth", authApi);
 
-router.use("/category", categoryApi);
-router.use("/author", authorApi);
-router.use("/publisher", publisherApi);
+router.use("/category", authMiddleware.isAdmin, categoryApi);
+router.use("/author", authMiddleware.isAdmin, authorApi);
+router.use("/publisher", authMiddleware.isAdmin, publisherApi);
 router.use("/product", productApi);
-router.use("/role", roleApi);
+router.use("/role", authMiddleware.isAdmin, roleApi);
 router.use("/user", userApi);
 router.use("/cart", cartApi);
-router.use("/typeTransport", typeTransportApi);
-router.use("/typePayment", typePaymentApi);
+router.use("/typeTransport", authMiddleware.isAdmin, typeTransportApi);
+router.use("/typePayment", authMiddleware.isAdmin, typePaymentApi);
 router.use("/payment", paymentApi);
 router.use("/order", orderApi);
 router.use("/warehouse", warehouseApi);

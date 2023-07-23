@@ -7,7 +7,6 @@ const clientRoutes = require("./client");
 const adminRoutes = require("./admin");
 const staffRoutes = require("./staff");
 const apiRoutes = require("./api");
-const testRoutes = require("./test.route");
 
 // Import middleware
 const authMiddleware = new (require("../controllers/auth/base.auth"))();
@@ -21,9 +20,6 @@ router.use("/admincp/", adminRoutes);
 router.use("/staffcp/", staffRoutes);
 router.use("/api/", apiRoutes);
 
-// Test routes
-router.use("/test/", testRoutes);
-
 // Handle err & page not found
 router.use((req, res, next) => {
     next({
@@ -36,7 +32,6 @@ router.use((err, req, res, next) => {
     if (err.status === 404) {
         return render(res, "pages-404", [], false);
     }
-    console.log(err);
     if (err.status === 500) {
         return render(res, "pages-500", [], false);
     }

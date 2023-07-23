@@ -35,12 +35,8 @@
                             <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
                                 <thead class="thead-light">
                                 <tr>
-                                    <th class="all" style="width: 20px;">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                            <label class="custom-control-label" for="customCheck1">&nbsp;</label>
-                                        </div>
-                                    </th>
+                                    <th class="all">#</th>
+
                                     <th class="all">Author</th>
                                     <th>Created at</th>
                                     <th style="width: 150px;">Action</th>
@@ -213,6 +209,7 @@
                 if (!response.status || response.data[0].pagination.length == 0) return;
 
                 // Handle data into html.
+                let index = (page - 1) * pageSize;
                 const items = response.data[0].data;
                 const totalRow = response.data[0].pagination[0].totalRow;   // Total row of this filter (price + category + search)
                 if (items.length > 0) {
@@ -224,10 +221,7 @@
                         itemsHtml += `
                         <tr id="${item._id}">
                             <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                    <label class="custom-control-label" for="customCheck2">&nbsp;</label>
-                                </div>
+                                <b>${++index}</b>
                             </td>
                             <td>
                                 ${item.name}

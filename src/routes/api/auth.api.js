@@ -17,15 +17,4 @@ router.post("/admin/login", adminAuth.isNotAdmin, adminAuth.login);
 // Staff auth
 router.post("/staff/login", staffAuth.isNotStaff, staffAuth.login);
 
-// Test routes after authenticated
-router.get("/client/protect", clientAuth.isClient, (req, res) => {
-    if (req.isAuthenticated()) {
-        console.log("was authenticated");
-    }
-
-    console.log(req.user);
-
-    return res.json({msg: "Test protected route!"});
-})
-
 module.exports = router;
