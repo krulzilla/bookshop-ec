@@ -308,212 +308,221 @@
 <%- contentFor('js') %>
 <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 <script>
-    (function () {
-        let data = [];
-        let billingOption = "Cash On Delivery";
-        $(document).ready(function () {
-            btnSwitchTab();
-            getOrderSummary();
-        })
+(function () {
+    let data = [];
+    let billingOption = "Cash On Delivery";
+    $(document).ready(function () {
+        btnSwitchTab();
+        getOrderSummary();
+    })
 
-        $(document).on("click", "#shipping-method-show input", function (e) {
-            renderSummary();
-        })
+    $(document).on("click", "#shipping-method-show input", function (e) {
+        renderSummary();
+    })
 
-        // Action: Save shipping information
-        $("#btn-saveChange").click(function (e) {
-            e.preventDefault();
-        })
+    // Action: Save shipping information
+    $("#btn-saveChange").click(function (e) {
+        e.preventDefault();
+    })
 
-        $("#btn-save").click(function (e) {
-            const fullname = $("#input-fullname").val();
-            const phone = $("#input-phone").val();
-            const address = $("#input-address").val();
+    $("#btn-save").click(function (e) {
+        const fullname = $("#input-fullname").val();
+        const phone = $("#input-phone").val();
+        const address = $("#input-address").val();
 
-            if (!fullname || !phone || !address)
-                return $.NotificationApp.send("Warning", `Please fill out all fields before save!`, "top-right", "rgba(0,0,0,0.2)", "warning");
+        if (!fullname || !phone || !address)
+            return $.NotificationApp.send("Warning", `Please fill out all fields before save!`, "top-right", "rgba(0,0,0,0.2)", "warning");
 
-            $.ajax({
-                url: "/api/user/update-info",
-                method: "put",
-                data: {
-                    fullname,
-                    phone,
-                    address
-                },
-                success: (response) => {
-                    if (response.status) {
-                        return $.NotificationApp.send("Success", `Updated your information!`, "top-right", "rgba(0,0,0,0.2)", "success");
-                    }
-                },
-                error: (err) => {
-                    return $.NotificationApp.send("Error", `Error when updating your information!`, "top-right", "rgba(0,0,0,0.2)", "error");
+        $.ajax({
+            url: "/api/user/update-info",
+            method: "put",
+            data: {
+                fullname,
+                phone,
+                address
+            },
+            success: (response) => {
+                if (response.status) {
+                    return $.NotificationApp.send("Success", `Updated your information!`, "top-right", "rgba(0,0,0,0.2)", "success");
                 }
-            })
-        })
-
-        // Action: Change billing option
-        $("input[name='billingOptions']").click(function (e) {
-            billingOption =  $(this).parent().find("label").text().trim();
-        })
-
-        // Action: Complete order
-        $("#btn-complete").click(function (e) {
-            e.preventDefault();
-
-            if (billingOption === "Cash On Delivery") {
-                return window.location = generateUrlToCompletePage();
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `Error when updating your information!`, "top-right", "rgba(0,0,0,0.2)", "error");
             }
+        })
+    })
 
-            $.post({
-                url: "/api/user/check-shipping-info",
-                success: async (response) => {
-                    $("#paypal-button-container").html("");
-                    await paypal
-                        .Buttons({
-                            // Sets up the transaction when a payment button is clicked
-                            createOrder: function () {
-                                return fetch("/api/payment/create-paypal-order", {
-                                    method: "post",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    }
-                                })
-                                .then((response) => response.json())
-                                .then((order) => order.id);
-                            },
-                            // Handle after user complete payment with paypal
-                            onApprove: function (data) {
-                                return fetch("/api/payment/capture-paypal-order", {
-                                    method: "post",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                        orderID: data.orderID,
-                                    }),
-                                })
-                                .then((response) => response.json())
-                                .then((orderData) => {
-                                    // Successful capture! For dev/demo purposes:
-                                    return window.location = generateUrlToCompletePage(orderData.id);
-                                });
-                            },
-                        })
-                        .render("#paypal-button-container");
+    // Action: Change billing option
+    $("input[name='billingOptions']").click(function (e) {
+        billingOption =  $(this).parent().find("label").text().trim();
+    })
 
-                    $("#paypal-modal").modal("show")
-                },
-                error: (err) => {
-                    if (!err.responseJSON.status) {
-                        return $.NotificationApp.send("Warning", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "warning");
-                    }
+    // Action: Complete order
+    $("#btn-complete").click(function (e) {
+        e.preventDefault();
+
+        if (billingOption === "Cash On Delivery") {
+            return window.location = generateUrlToCompletePage();
+        }
+
+        $.post({
+            url: "/api/user/check-shipping-info",
+            success: async (response) => {
+                $("#paypal-button-container").html("");
+                await paypal
+                    .Buttons({
+                        // Sets up the transaction when a payment button is clicked
+                        createOrder: function () {
+                            return fetch("/api/payment/create-paypal-order", {
+                                method: "post",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                }
+                            })
+                            .then((response) => response.json())
+                            .then((order) => order.id);
+                        },
+                        // Handle after user complete payment with paypal
+                        onApprove: function (data) {
+                            return fetch("/api/payment/capture-paypal-order", {
+                                method: "post",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    orderID: data.orderID,
+                                }),
+                            })
+                            .then((response) => response.json())
+                            .then((orderData) => {
+                                // Successful capture! For dev/demo purposes:
+                                return window.location = generateUrlToCompletePage(orderData.id);
+                            });
+                        },
+                    })
+                    .render("#paypal-button-container");
+
+                $("#paypal-modal").modal("show")
+            },
+            error: (err) => {
+                if (!err.responseJSON.status) {
+                    return $.NotificationApp.send("Warning", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "warning");
                 }
-            })
+            }
+        })
+    })
+
+    // Support fnc
+    function renderSummary() {
+        let render = ``;
+        let subTotal = 0, discount = 0;
+        let shippingFee = getShippingFee();
+        data.forEach(ele => {
+            let nameParams = ele.product[0].name.split("");
+            let name = ele.product[0].name;
+            if (nameParams.length > 20) name = nameParams.slice(0, 20).join("") + " ...";
+            let totalPerOne = ele.product[0].price * ele.amount;
+            subTotal += totalPerOne;
+            discount += ele.product[0].sale * ele.amount;
+            render += `
+            <tr>
+                <td>
+                    <img src="/public/resources/images/${ele.product[0].image}" alt="contact-img" title="contact-img" class="rounded mr-2" height="48">
+                    <p class="m-0 d-inline-block align-middle">
+                        <a href="/product/${ele.product[0]._id}" class="text-body font-weight-semibold"
+                             data-toggle="tooltip" data-placement="top" data-original-title="${ele.product[0].name}">${name}</a>
+                        <br>
+                        <small>${ele.amount.toLocaleString()} x ${ele.product[0].price.toLocaleString()} đ</small>
+                    </p>
+                </td>
+                <td class="text-right">
+                    ${totalPerOne.toLocaleString()} đ
+                </td>
+            </tr>`;
+        });
+        render += `
+                    <tr class="text-right">
+                        <td>
+                            <h6 class="m-0">Total:</h6>
+                        </td>
+                        <td class="text-right">
+                            ${subTotal.toLocaleString()} đ
+                        </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td>
+                            <h6 class="m-0">Discount:</h6>
+                        </td>
+                        <td class="text-right">
+                            -${discount.toLocaleString()} đ
+                        </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td>
+                            <h6 class="m-0">Shipping fee:</h6>
+                        </td>
+                        <td class="text-right">
+                            ${shippingFee.toLocaleString()} đ
+                        </td>
+                    </tr>
+                    <tr class="text-right">
+                        <td>
+                            <h6 class="m-0">Final:</h6>
+                        </td>
+                        <td class="text-right">
+                            ${(subTotal+shippingFee-discount).toLocaleString()} đ
+                        </td>
+                    </tr>`;
+        $("#summary-1").html(render);
+        $("#summary-2").html(render);
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    function getOrderSummary() {
+        $.ajax({
+            url: "/api/cart/<%= data.user._id %>",
+            method: "get",
+            success: (response) => {
+                if (response.status) {
+                    data = response.data;
+                    renderSummary()
+                }
+            },
+            error: (err) => {
+
+            }
+        })
+    }
+
+    function getShippingFee() {
+        const input = $("#shipping-method-show").find("input:checked");
+        return +input.attr("data");
+    }
+
+    function btnSwitchTab() {
+        const btnShipping = $("#btn-shipping");
+        const btnPayment = $("#btn-payment");
+        const btnContinue = $("#btn-continue");
+        const btnBackShipping = $("#btn-backShipping");
+
+        btnContinue.click(function (e) {
+            btnContinue.removeClass("active");
+            btnShipping.removeClass("active");
+            btnPayment.addClass("active");
         })
 
-        // Support fnc
-        function renderSummary() {
-            let render = ``;
-            let subTotal = 0;
-            let shippingFee = getShippingFee();
-            data.forEach(ele => {
-                let nameParams = ele.product[0].name.split("");
-                let name = ele.product[0].name;
-                if (nameParams.length > 20) name = nameParams.slice(0, 20).join("") + " ...";
-                let totalPerOne = ele.product[0].price * ele.amount;
-                subTotal += totalPerOne;
-                render += `
-                <tr>
-                    <td>
-                        <img src="/public/resources/images/${ele.product[0].image}" alt="contact-img" title="contact-img" class="rounded mr-2" height="48">
-                        <p class="m-0 d-inline-block align-middle">
-                            <a href="/product/${ele.product[0]._id}" class="text-body font-weight-semibold"
-                                 data-toggle="tooltip" data-placement="top" data-original-title="${ele.product[0].name}">${name}</a>
-                            <br>
-                            <small>${ele.amount.toLocaleString()} x ${ele.product[0].price.toLocaleString()} đ</small>
-                        </p>
-                    </td>
-                    <td class="text-right">
-                        ${totalPerOne.toLocaleString()} đ
-                    </td>
-                </tr>`;
-            });
-            render += `
-                        <tr class="text-right">
-                            <td>
-                                <h6 class="m-0">Sub Total:</h6>
-                            </td>
-                            <td class="text-right">
-                                ${subTotal.toLocaleString()} đ
-                            </td>
-                        </tr>
-                        <tr class="text-right">
-                            <td>
-                                <h6 class="m-0">Shipping fee:</h6>
-                            </td>
-                            <td class="text-right">
-                                ${shippingFee.toLocaleString()} đ
-                            </td>
-                        </tr>
-                        <tr class="text-right">
-                            <td>
-                                <h6 class="m-0">Sub Total:</h6>
-                            </td>
-                            <td class="text-right">
-                                ${(subTotal+shippingFee).toLocaleString()} đ
-                            </td>
-                        </tr>`;
-            $("#summary-1").html(render);
-            $("#summary-2").html(render);
-            $('[data-toggle="tooltip"]').tooltip();
-        }
+        btnBackShipping.click(function (e) {
+            btnBackShipping.removeClass("active");
+            btnPayment.removeClass("active");
+            btnShipping.addClass("active");
+        })
+    }
 
-        function getOrderSummary() {
-            $.ajax({
-                url: "/api/cart/<%= data.user._id %>",
-                method: "get",
-                success: (response) => {
-                    if (response.status) {
-                        data = response.data;
-                        renderSummary()
-                    }
-                },
-                error: (err) => {
+    function generateUrlToCompletePage(paypalOrderId = "") {
+        const billingOptionId = $("input[name='billingOptions']:checked").attr("id");
+        const shippingOptionId = $("input[name='shippingOptions']:checked").attr("id");
 
-                }
-            })
-        }
-
-        function getShippingFee() {
-            const input = $("#shipping-method-show").find("input:checked");
-            return +input.attr("data");
-        }
-
-        function btnSwitchTab() {
-            const btnShipping = $("#btn-shipping");
-            const btnPayment = $("#btn-payment");
-            const btnContinue = $("#btn-continue");
-            const btnBackShipping = $("#btn-backShipping");
-
-            btnContinue.click(function (e) {
-                btnContinue.removeClass("active");
-                btnShipping.removeClass("active");
-                btnPayment.addClass("active");
-            })
-
-            btnBackShipping.click(function (e) {
-                btnBackShipping.removeClass("active");
-                btnPayment.removeClass("active");
-                btnShipping.addClass("active");
-            })
-        }
-
-        function generateUrlToCompletePage(paypalOrderId = "") {
-            const billingOptionId = $("input[name='billingOptions']:checked").attr("id");
-            const shippingOptionId = $("input[name='shippingOptions']:checked").attr("id");
-
-            return `/complete-order?billing=${billingOptionId}&shipping=${shippingOptionId}${paypalOrderId ? "&paypalOrder=" + paypalOrderId : ""}`;
-        }
-    })()
+        return `/complete-order?billing=${billingOptionId}&shipping=${shippingOptionId}${paypalOrderId ? "&paypalOrder=" + paypalOrderId : ""}`;
+    }
+})()
 </script>

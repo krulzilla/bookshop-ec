@@ -87,7 +87,7 @@ class BaseAuth {
                     httpOnly: true,
                     maxAge: 2 * 60 * 60 * 1000
                 });
-                return res.redirect("/");
+                return res.redirect("/products");
             })(req, res, next)
         } catch (e) {
             next({status: 500});
@@ -110,7 +110,7 @@ class BaseAuth {
                     httpOnly: true,
                     maxAge: 2 * 60 * 60 * 1000
                 });
-                return res.redirect("/");
+                return res.redirect("/products");
             })(req, res, next);
         } catch (e) {
             next({status: 500});

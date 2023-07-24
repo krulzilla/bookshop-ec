@@ -206,10 +206,14 @@
                                 </h4>
 
                                 <p class="mb-1">
-                                    <span class="pr-2 text-nowrap">
-                                    ${item.price.toLocaleString()} đ
-                                    </span>
-                                </p>
+                                    <span class="pr-2 text-nowrap">`;
+                        if (item.sale === 0) {
+                            itemsHtml += `${item.price.toLocaleString()} đ`;
+                        } else if (item.sale > 0) {
+                            itemsHtml += `<small><del>${item.price.toLocaleString()} đ</del></small>
+                                        <b class="text-primary">${(item.price - item.sale).toLocaleString()} đ</b>`;
+                        }
+                        itemsHtml += `</span></p>
                                 <div class="mb-2">`;
                         item.category.forEach(subItem => {
                             itemsHtml += `<div class="badge badge-info mr-1 mt-1 p-1">${subItem.name}</div>`

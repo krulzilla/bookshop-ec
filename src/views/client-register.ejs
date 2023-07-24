@@ -119,7 +119,7 @@
                     },
                     success: (response) => {
                         if (response.status) {
-                            window.location = "/";
+                            window.location = "/products";
                         } else {
                             signupFeedback.text(response.msg).css("display", "block");
                         }

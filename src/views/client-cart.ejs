@@ -147,13 +147,15 @@
                 if (response.status) {
                     let render = ``;
                     const data = response.data;
-                    let grandTotal = 0;
+                    let grandTotal = 0, discount = 0;
                     data.forEach(ele => {
                         let nameParams = ele.product[0].name.split(" ");
                         let name = ele.product[0].name;
                         if (nameParams.length > 5) name = nameParams.slice(0, 5).join(" ") + " ...";
-                        let subTotal = ele.product[0].price * ele.amount;
-                        grandTotal += subTotal;
+                        const lastPrice = ele.product[0].price - ele.product[0].sale;
+                        let subTotal = lastPrice * ele.amount;
+                        discount += ele.product[0].sale * ele.amount;
+                        grandTotal += ele.product[0].price * ele.amount;
                         render += `
                         <tr>
                             <td>
@@ -174,9 +176,14 @@
                         render += `</small>
                                 </p>
                             </td>
-                            <td>
-                                ${ele.product[0].price.toLocaleString()} đ
-                            </td>
+                            <td>`
+                        if (ele.product[0].sale === 0) {
+                            render += `${lastPrice.toLocaleString()} đ`;
+                        } else {
+                            render += `<small><del>${ele.product[0].price.toLocaleString()} đ</del></small>
+                                <p class="text-primary font-weight-bold">${lastPrice.toLocaleString()} đ</p>`;
+                        }
+                        render += `</td>
                             <td>
                                 <input type="number" min="1" value="${ele.amount}" class="form-control input-qty"
                                        placeholder="Qty" style="width: 90px;" data="${ele._id}" product="${ele.product[0]._id}">
@@ -196,7 +203,8 @@
 
                     // Set order summary
                     $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
-                    $("#total").text(`${(grandTotal).toLocaleString()} đ`);
+                    $("#discount").text(`-${discount.toLocaleString()} đ`);
+                    $("#total").text(`${(grandTotal - discount).toLocaleString()} đ`);
                 }
             },
             error: (err) => {
@@ -226,7 +234,7 @@
             },
             success: (response) => {
                 if (response.status) {
-                    const price = amount * response.data.price;
+                    const price = amount * (response.data.price - response.data.sale);
                     priceTd.text(`${price.toLocaleString()} đ`);
 
                     calculateOrderSummary();
@@ -240,18 +248,31 @@
 
     function calculateOrderSummary() {
         const tbody = $("#content-show").find("tr");
-        let grandTotal = 0;
+        let discount = 0, total = 0;
 
         for (let i = 0; i < tbody.length; i ++) {
             const tr = $(tbody[i]);
-            let priceTd = $(tr.find("td")[3]);
-            let price = priceTd.text().trim().replace(" đ", "").split(",").join("");
+            let priceTd = $(tr.find("td")[1]);
+            let totalTd = $(tr.find("td")[3]);
+            let amount = $(tr.find("input")).val();
+            let price = 0, discountPrice = 0;
 
-            grandTotal += +price;
+            if (priceTd.find("del").length === 0) {
+                price = priceTd.text().trim().replace(" đ", "").split(",").join("");
+            } else {
+                price = priceTd.find("del").text().trim().replace(" đ", "").split(",").join("");
+                discountPrice = priceTd.find("p").text().trim().replace(" đ", "").split(",").join("");
+                discountPrice = price - discountPrice;
+            }
+            let totalPrice = totalTd.text().trim().replace(" đ", "").split(",").join("");
+
+            discount += +discountPrice * amount;
+            total += +totalPrice;
         }
 
-        $("#grand-total").text(`${grandTotal.toLocaleString()} đ`);
-        $("#total").text(`${(grandTotal).toLocaleString()} đ`);
+        $("#grand-total").text(`${(total+discount).toLocaleString()} đ`);
+        $("#discount").text(`-${discount.toLocaleString()} đ`);
+        $("#total").text(`${total.toLocaleString()} đ`);
     }
 
     // Click delete cart

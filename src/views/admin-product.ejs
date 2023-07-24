@@ -396,7 +396,8 @@
                                 ${item.amount.toLocaleString()}
                             </td>
                             <td>
-                                ${item.price.toLocaleString()} đ
+                                <small><del>${item.price.toLocaleString()} đ</del></small>
+                                <p class="text-danger">${(item.price - item.sale).toLocaleString()} đ</p>
                             </td>
                             <td>
                                 ${dateFormatted}
@@ -660,11 +661,6 @@
                 return $.NotificationApp.send("Error", `${err.responseJSON.msg}`, "top-right", "rgba(0,0,0,0.2)", "error");
             }
         })
-    })
-
-    // Action: export
-    $("#btn-export").click(function (e) {
-
     })
 
     // Build query url

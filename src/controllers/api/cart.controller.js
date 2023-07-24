@@ -50,6 +50,7 @@ class Cart {
                         "product._id": 1,
                         "product.name": 1,
                         "product.price": 1,
+                        "product.sale": 1,
                         "product.image": 1,
                         "author.name": 1
                     }
@@ -162,7 +163,7 @@ class Cart {
             const {idProduct, amount} = req.body;
 
             if (amount < 1) return response(res, false, "Amount must larger than 1!", 400);
-            const product = await productModel.findById(idProduct).select("amount price");
+            const product = await productModel.findById(idProduct).select("amount price sale");
             if (!product) return response(res, false, "Product id is invalid!", 400);
 
             if (amount > product.amount) return response(res, false, `Not enough stock to add (${product.amount} remaining)!`, 400);
