@@ -1,0 +1,172 @@
+<div class="content-page">
+    <div class="content">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">Dashboard</h4>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-lg-3 col-xl-3">
+                <div class="card widget-flat">
+                    <div class="card-body">
+                        <div class="float-right">
+                            <i class="mdi mdi-account-multiple widget-icon"></i>
+                        </div>
+                        <h5 class="text-muted font-weight-normal mt-0" title="Number of Customers">
+                            Customers</h5>
+                        <h3 class="mt-3 mb-3"><%= data.figure.customers.toLocaleString() %></h3>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-lg-3 col-xl-3">
+                <div class="card widget-flat">
+                    <div class="card-body">
+                        <div class="float-right">
+                            <i class="mdi mdi-cart-plus widget-icon bg-warning-lighten text-warning"></i>
+                        </div>
+                        <h5 class="text-muted font-weight-normal mt-0" title="Number of Orders">Orders</h5>
+                        <h3 class="mt-3 mb-3"><%= data.figure.orders.toLocaleString() %></h3>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-lg-3 col-xl-3">
+                <div class="card widget-flat">
+                    <div class="card-body">
+                        <div class="float-right">
+                            <i class="mdi mdi-currency-usd widget-icon bg-success-lighten text-success"></i>
+                        </div>
+                        <h5 class="text-muted font-weight-normal mt-0" title="Average Revenue">Estimate Revenue</h5>
+                        <h3 class="mt-3 mb-3"><%= data.figure.estimateRevenue.toLocaleString() %> đ</h3>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-lg-3 col-xl-3">
+                <div class="card widget-flat">
+                    <div class="card-body">
+                        <div class="float-right">
+                            <i class="mdi mdi-pulse widget-icon bg-info-lighten text-info"></i>
+                        </div>
+                        <h5 class="text-muted font-weight-normal mt-0" title="Growth">Real Income</h5>
+                        <h3 class="mt-3 mb-3"><%= data.figure.realRevenue.toLocaleString() %> đ</h3>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+        </div>
+        <!-- end row -->
+
+        <div class="row">
+            <div class="col-xl-8 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-2 mb-3">Top Selling Products</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered table-nowrap table-hover mb-0">
+                                <tbody>
+                                <% data.topSelling.forEach(item => {
+                                    const date = new Date(item.product.createdAt);
+                                    const dateCreated = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+                                %>
+                                <tr>
+                                    <td>
+                                        <img src="/public/resources/images/<%= item.product.image %>" style="max-width: 40px" class="rounded">
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal"><%= item.product.name.slice(0, 10) %></h5>
+                                        <span class="text-muted font-13"><%= dateCreated %></span>
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal"><%= item.avgPrice.toLocaleString() %> đ</h5>
+                                        <span class="text-muted font-13">Price</span>
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal"><%= item.totalQuantity.toLocaleString() %></h5>
+                                        <span class="text-muted font-13">Quantity</span>
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal"><%= (item.avgPrice * item.totalQuantity).toLocaleString() %> đ</h5>
+                                        <span class="text-muted font-13">Amount</span>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-xl-4 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mb-2">Recent Activity</h4>
+
+                        <div data-simplebar style="max-height: 424px;">
+                            <div class="timeline-alt pb-0">
+                                <% data.orderActivity.forEach(item => {
+                                    let textStatus, textColor, textTime, icon;
+                                    const now = new Date();
+                                    const timeDifference = now - item.updatedAt;
+                                    const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+                                    const hoursDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+
+                                    if (minutesDifference === 0) textTime = `Just now`;
+                                    else if (minutesDifference < 60) textTime = `${minutesDifference} minutes ago`;
+                                    else textTime = textTime = `${hoursDifference} hours ago`;
+
+                                    let status = item.status;
+                                    if (status === 0) {
+                                        icon = `<i class="mdi mdi-download bg-warning-lighten text-warning timeline-icon"></i>`;
+                                        textColor = "text-warning";
+                                        textStatus = "Notice !! Customer has placed an order";
+                                    } else if (status === 1) {
+                                        icon = `<i class="uil-box bg-primary-lighten text-primary timeline-icon"></i>`;
+                                        textColor = "text-primary";
+                                        textStatus = "Order is being prepared!";
+                                    } else if (status === 2) {
+                                        icon = `<i class="mdi mdi-truck-fast-outline bg-info-lighten text-info timeline-icon"></i>`;
+                                        textColor = "text-info";
+                                        textStatus = "Order is being shipping!";
+                                    } else if (status === 3) {
+                                        icon = `<i class="mdi mdi-cash bg-success-lighten text-success timeline-icon"></i>`;
+                                        textColor = "text-success";
+                                        textStatus = "Yay !~ Order is delivered successfully to customer";
+                                    } else if (status === 4) {
+                                        icon = `<i class="mdi mdi-window-close bg-danger-lighten text-danger timeline-icon"></i>`;
+                                        textColor = "text-danger";
+                                        textStatus = "Oh no !! Order has been cancelled";
+                                    }
+                                %>
+                                <div class="timeline-item">
+                                    <%- icon %>
+                                    <div class="timeline-item-info">
+                                        <a href="/admincp/order" class="<%= textColor %> font-weight-bold mb-1 d-block">Order <%= item._id %></a>
+                                        <small><%= textStatus %></small>
+                                        <p class="mb-0 pb-2">
+                                            <small class="text-muted"><%= textTime %></small>
+                                        </p>
+                                    </div>
+                                </div>
+                                <% }) %>
+                            </div>
+                            <!-- end timeline -->
+                        </div> <!-- end slimscroll -->
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!-- end card-->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div> <!-- End Content -->
+</div> <!-- content-page -->

@@ -125,6 +125,7 @@ class Cart {
                         _id: 1,
                         amount: 1,
                         "product.amount": 1,
+                        "product.isDeleted": 1,
                     }
                 }
             ]);
@@ -141,6 +142,11 @@ class Cart {
                     await cartModel.findByIdAndUpdate(item._id, {
                         amount: item.product[0].amount
                     });
+                }
+
+                if (item.product[0].isDeleted) {  // if product was deleted by admin, remove from cart
+                    flag = true;
+                    await cartModel.findByIdAndDelete(item._id);
                 }
             }
 
