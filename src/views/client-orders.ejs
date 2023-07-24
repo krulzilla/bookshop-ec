@@ -95,6 +95,7 @@
 </div>
 <!-- END Container -->
 
+<!-- Modal view -->
 <div class="modal fade" id="view-order" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -195,11 +196,30 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- Modal cancel -->
+<div id="modal-cancel" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="standard-modalLabel">Cancel Order</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <h5>Are you sure to cancel this order ?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">Continue</button>
+            </div>
+        </div>
+    </div>
+</div><!-- end modal delete -->
+
 <%- contentFor("js") %>
 <script>
 (function (){
     let idUser = "<%= data.user._id %>";
-    let orders = [], search = "", status = "";
+    let orders = [], search = "", status = "", idOrder;
 
     $(document).ready(function (e) {
         $.ajax({
@@ -237,7 +257,7 @@
             if (order.typePayment.shortName === "COD" && order.status !== 3) {
                 render += `<h5><span class="badge badge-info-lighten"><i
                                     class="mdi mdi-cash"></i> Unpaid</span></h5>`;
-            } else if (order.typePayment.shortName !== "COD" && order.idPaypalInvoice) {
+            } else if ((order.typePayment.shortName === "Paypal" && order.idPaypalInvoice) || (order.typePayment.shortName === "COD" && order.status === 3)) {
                 render += `<h5><span class="badge badge-success-lighten"><i
                     class="mdi mdi-coin"></i> Paid</span></h5>`;
             }
@@ -273,11 +293,13 @@
                 <td>
                     <a href="javascript:void(0);" class="action-icon btn-view" data-toggle="tooltip" data-placement="top"
                        data-original-title="View order"> <i
-                                class="mdi mdi-eye"></i></a>
-                    <a href="javascript:void(0);" class="action-icon" data-toggle="tooltip" data-placement="top"
+                                class="mdi mdi-eye"></i></a>`;
+            if (![3, 4].includes(order.status)) {
+                render += `<a href="javascript:void(0);" class="action-icon btn-cancel" data-toggle="tooltip" data-placement="top"
                        data-original-title="Cancel order"> <i
-                                class="mdi mdi-cancel"></i></a>
-                </td>
+                                class="mdi mdi-cancel"></i></a>`
+            }
+            render += `</td>
             </tr>`;
         })
 
@@ -429,6 +451,27 @@
         })
 
         $("#view-order").modal("show")
+    })
+
+    // Click btn cancel order
+    $(document).on("click", ".btn-cancel", function (e) {
+        idOrder = $(this).parent().parent().attr("id");
+        $("#modal-cancel").modal("show");
+    })
+
+    // Click cancel order
+    $("#modal-cancel button[type='submit']").click(function (e) {
+        $.ajax({
+            url: `/api/order/cancel/${idOrder}`,
+            method: "post",
+            success: (response) => {
+                if (response.status) return window.location = "";
+            },
+            error: (err) => {
+                $("#modal-cancel").modal("hide");
+                return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
     })
 })()
 </script>

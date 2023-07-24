@@ -314,6 +314,30 @@ class Order {
         }
     }
 
+    async cancelOrder(req, res) {
+        try {
+            const {id: idOrder} = req.params;
+            const idUser = req.user._id;
+
+            const order = await orderModel.findOne({
+                _id: idOrder,
+                idUser: idUser
+            });
+
+            if (!order) return response(res, false, "Order does not exist!", 400);
+            if (order.status === 2) return response(res, false, "Order cannot cancel when being shipped!", 400);
+            if (order.status === 3) return response(res, false, "Order cannot cancel when delivered success!", 400);
+            if (order.status === 4) return response(res, false, "Order was cancelled!", 400);
+
+            order.status = 4;
+            order.save();
+
+            return response(res, true, "Cancel order success", 200);
+        } catch (e) {
+            return response(res, false, "Somethings went wrong!", 500);
+        }
+    }
+
     async delete(req, res) {
         try {
             const {id} = req.params;

@@ -71,7 +71,7 @@ class Cart {
 
             const product = await productModel.findById(idProduct).select("amount");
             if (!product) return response(res, false,  "Product id is invalid!", 400);
-
+            if (product.amount === 0) return response(res, false,  "This product is currently out of stock!", 400);
 
             const cart = await cartModel.findOne({
                 idUser,
