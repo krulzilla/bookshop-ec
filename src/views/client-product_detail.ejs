@@ -15,7 +15,7 @@
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
                                     <li class="breadcrumb-item"><a href="/products">Product</a></li>
-                                    <li class="breadcrumb-item active">Details</li>
+                                    <li class="breadcrumb-item active"><%= data.product.name %></li>
                                 </ol>
                             </div>
                             <!--                                    <h4 class="page-title">Product Details</h4>-->
@@ -35,24 +35,6 @@
                                             <img src="/public/resources/images/<%= data.product.image %>" class="img-fluid"
                                                  style="max-width: 280px;" alt="Product-img"/>
                                         </a>
-
-                                        <div class="d-lg-flex d-none justify-content-center">
-                                            <a href="javascript: void(0);">
-                                                <img src="/public/assets/images/products/product-1.jpg"
-                                                     class="img-fluid img-thumbnail p-2" style="max-width: 75px;"
-                                                     alt="Product-img"/>
-                                            </a>
-                                            <a href="javascript: void(0);" class="ml-2">
-                                                <img src="/public/assets/images/products/product-6.jpg"
-                                                     class="img-fluid img-thumbnail p-2" style="max-width: 75px;"
-                                                     alt="Product-img"/>
-                                            </a>
-                                            <a href="javascript: void(0);" class="ml-2">
-                                                <img src="/public/assets/images/products/product-3.jpg"
-                                                     class="img-fluid img-thumbnail p-2" style="max-width: 75px;"
-                                                     alt="Product-img"/>
-                                            </a>
-                                        </div>
                                     </div> <!-- end col -->
                                     <div class="col-lg-7">
                                         <form class="pl-lg-4">
@@ -74,12 +56,7 @@
                                             </div>
 
                                             <p class="font-16">
-                                                <span class="text-warning mdi mdi-star"></span>
-                                                <span class="text-warning mdi mdi-star"></span>
-                                                <span class="text-warning mdi mdi-star"></span>
-                                                <span class="text-warning mdi mdi-star"></span>
-                                                <span class="text-warning mdi mdi-star"></span>
-                                                <span>( 90 sold )</span>
+                                                <span><%= data.amountSold.toLocaleString() %> sold - <a href="#comments"><%= data.amountComment.toLocaleString() %> comment</a></span>
                                             </p>
 
                                             <!-- Product stock -->
@@ -165,92 +142,14 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" id="comments">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <!-- Feedback -->
                                 <h6 class="font-14">Feedback:</h6>
 
-                                <div class="row mt-2">
-                                    <div class="col-lg-10 m-lg-auto">
-                                        <div class="media">
-                                            <img class="mr-2 rounded" src="/public/assets/images/users/avatar-5.jpg"
-                                                 alt="Generic placeholder image" height="32">
-                                            <div class="media-body">
-                                                <div class="dropdown float-right text-warning">
-                                                    <h5>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star-half"></i>
-                                                    </h5>
-                                                </div>
-                                                <h5 class="m-0">Jon Snow</h5>
-                                                <p class="text-muted"><small>20 min ago <span class="mx-1">⚬</span>
-                                                    <span>Public</span></small></p>
-                                            </div> <!-- end media body-->
-                                        </div> <!-- end media -->
-
-                                        <div class="my-1">
-                                            <p>"Feeling awesome at the wall!"</p>
-                                        </div>
-                                        <hr class="m-0"/>
-
-                                    </div> <!-- end card-body -->
-                                </div> <!-- end card -->
-                                <div class="row mt-2">
-                                    <div class="col-lg-10 m-lg-auto">
-                                        <div class="media">
-                                            <img class="mr-2 rounded" src="/public/assets/images/users/avatar-5.jpg"
-                                                 alt="Generic placeholder image" height="32">
-                                            <div class="media-body">
-                                                <div class="dropdown float-right text-warning">
-                                                    <h5>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star"></i>
-                                                        <i class="mdi mdi-star-half"></i>
-                                                    </h5>
-                                                </div>
-                                                <h5 class="m-0">Jon Snow</h5>
-                                                <p class="text-muted"><small>20 min ago <span class="mx-1">⚬</span>
-                                                    <span>Public</span></small></p>
-                                            </div> <!-- end media body-->
-                                        </div> <!-- end media -->
-
-                                        <div class="my-1">
-                                            <p>"Feeling awesome at the wall!"</p>
-                                        </div>
-                                        <hr class="m-0"/>
-
-                                    </div> <!-- end card-body -->
-                                </div> <!-- end card -->
-                                <div class="text-center my-2">
-                                    <a href="javascript:void(0);" class="text-danger">Load more </a>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-10 m-lg-auto">
-                                        <textarea class="form-control form-control-light mb-2"
-                                                  placeholder="Write message" id="example-textarea" rows="3"></textarea>
-                                        <div class="text-right">
-                                            <div class="btn-group mb-2 text-warning">
-                                                <h5>
-                                                    <i class="mdi mdi-star"></i>
-                                                    <i class="mdi mdi-star"></i>
-                                                    <i class="mdi mdi-star"></i>
-                                                    <i class="mdi mdi-star"></i>
-                                                    <i class="mdi mdi-star text-muted"></i>
-                                                </h5>
-                                            </div>
-                                            <div class="btn-group mb-2 ml-2">
-                                                <button type="button" class="btn btn-primary btn-sm">Send</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div id="comment-show"> </div>
                             </div>
                         </div>
                     </div>
@@ -263,14 +162,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            © Power by Hyper - Coderthemes.com
-                        </div>
-                        <div class="col-md-6">
-                            <div class="text-md-right footer-links d-none d-md-block">
-                                        <span>
-                                            <i class="uil-envelope"></i> Email: <a href="#">thanhhoa6621@gmail.com</a>
-                                        </span>
-                            </div>
+                            © krulzilla
                         </div>
                     </div>
                 </div>
@@ -285,14 +177,15 @@
 
 <%- contentFor('js') %>
 <script>
+(function () {
     const categoryValues = [<% data.product.idCategory.forEach((category, index) => { %> <%= index > 0 ? "," : ""%> "<%= category._id %>" <% }) %>];
     const size = 4;
+    let commentLoadCount = 1;
 
     const idProduct = "<%= data.product._id %>";
     const idUser = "<%= data.user ? data.user._id : "" %>";
 
     $(document).ready(function () {
-
         $.ajax({
             url: `/api/product/random?size=${size}${categoryValues.reduce((res, ele) => res += `&category=${ele}`, "")}`,
             method: "get",
@@ -321,8 +214,11 @@
                 // Do nothing ~.~
             }
         })
+
+        loadComment();
     })
 
+    // Action: Click add-to-cart
     $("#btn-addToCart").click(function (e) {
         if (!idUser) return $.NotificationApp.send("Forget login ?", "You need login before do this action! <a href='/logn'>Login now</a>", "top-right", "rgba(0,0,0,0.2)", "warning");
 
@@ -345,4 +241,64 @@
             }
         })
     })
+
+    // Action: Click load more comments
+    $(document).on("click", ".btn-load", function (e) {
+        commentLoadCount += 1;
+        $(".btn-load").remove();
+        loadComment();
+    })
+
+    function loadComment() {
+        $.ajax({
+            url: `/api/feedback/pagination/${idProduct}?page=${commentLoadCount}&pageSize=${10}`,
+            method: "get",
+            success: (response) => {
+                const data = response.data[0].data;
+                const totalRow = response.data[0].pagination[0].totalRow;
+                let renderHtml = "";
+
+                data.forEach(comment => {
+                    // Get the current time
+                    const now = new Date();
+                    const createdAt = new Date(comment.createdAt)
+                    const timeDifference = now - createdAt;
+                    let textTime = Math.floor(timeDifference / (1000 * 60));
+                    if (textTime <= 1) textTime = "Just now"
+                    else if (textTime > 59) textTime = Math.floor(timeDifference / (1000 * 60 * 60)) + " hours ago";
+                    else if (textTime > 23) textTime = Math.floor(timeDifference / (1000 * 60 * 60 * 24)) + " days ago";
+                    else textTime + " minutes ago";
+                    renderHtml += `
+                    <div class="row mt-2">
+                        <div class="col-lg-10 m-lg-auto">
+                            <div class="media">
+                                <img class="mr-2 rounded" src="/public/assets/images/users/avatar-5.jpg"
+                                     alt="Generic placeholder image" height="32">
+                                <div class="media-body">
+                                    <h5 class="m-0">${comment.user.fullname}</h5>
+                                    <p class="text-muted"><small>${textTime}</small></p>
+                                </div> <!-- end media body-->
+                            </div> <!-- end media -->
+
+                            <div class="my-1">
+                                <p>"${comment.comment}"</p>
+                            </div>
+                            <hr class="m-0"/>
+
+                        </div> <!-- end card-body -->
+                    </div>
+                    `;
+                })
+
+                if (commentLoadCount * 10 < totalRow) {
+                    renderHtml += `
+                        <div class="text-center my-2">
+                            <a href="javascript:void(0);" class="text-danger btn-load">Load more </a>
+                        </div>`;
+                }
+                $("#comment-show").append(renderHtml);
+            }
+        })
+    }
+})()
 </script>

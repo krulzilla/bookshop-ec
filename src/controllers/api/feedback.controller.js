@@ -1,4 +1,3 @@
-const authorModel = require("../../models/author.model");
 const feedbackModel = require("../../models/feedback.model");
 const productModel = require("../../models/product.model");
 const orderModel = require("../../models/order.model");
@@ -10,9 +9,9 @@ const mongoose = require("mongoose");
 class Feedback {
     async getAll(req, res) {
         try {
-            const authors = await authorModel.find({});
+            const feedbacks = await feedbackModel.find({});
 
-            return response(res, true, "Get authors successfully", 200, authors);
+            return response(res, true, "Get feedbacks successfully", 200, feedbacks);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -22,9 +21,9 @@ class Feedback {
         try {
             const {id} = req.params;
 
-            const author = await authorModel.findOne({_id: id});
+            const feedback = await feedbackModel.findOne({_id: id});
 
-            return response(res, true, "Get author successfully", 200, author);
+            return response(res, true, "Get feedback successfully", 200, feedback);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
@@ -46,19 +45,49 @@ class Feedback {
 
     async pagination(req, res) {
         try {
-            let {search = "", page = 1, pageSize = 10} = req.query;
+            const {id: idProduct} = req.params;
+            let {page = 1, pageSize = 10} = req.query;
             // Exec query
             const pipelines = [
                 {
                     $match: {
-                        name: { $regex: search, $options: "i" },
+                        idProduct: new mongoose.Types.ObjectId(idProduct)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "orders",
+                        localField: "idOrder",
+                        foreignField: "_id",
+                        as: "order"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "order.idUser",
+                        foreignField: "_id",
+                        as: "user"
+                    }
+                },
+                {
+                    $unwind: "$order"
+                },
+                {
+                    $unwind: "$user"
+                },
+                {
+                    $project: {
+                        comment: 1,
+                        createdAt: 1,
+                        "user.fullname": 1
                     }
                 }
             ]
 
-            const authors = await customPagination(authorModel, page, +pageSize, pipelines);
+            const feedbacks = await customPagination(feedbackModel, page, +pageSize, pipelines);
 
-            return response(res, true, "Action success", 200, authors);
+            return response(res, true, "Action success", 200, feedbacks);
         } catch (e) {
             return response(res, false, "Somethings went wrong!", 500);
         }
