@@ -17,6 +17,7 @@ const typePaymentApi = require("./typePayment.api");
 const paymentApi = require("./payment.api");
 const orderApi = require("./order.api");
 const warehouseApi = require("./warehouse.api");
+const feedbackApi = require("./feedback.api");
 
 // Manage api routes
 router.use("/auth", authApi);
@@ -33,6 +34,7 @@ router.use("/typePayment", authMiddleware.isAdmin, typePaymentApi);
 router.use("/payment", paymentApi);
 router.use("/order", orderApi);
 router.use("/warehouse", warehouseApi);
+router.use("/feedback", feedbackApi);
 
 router.use((req, res, next) => {
     next({

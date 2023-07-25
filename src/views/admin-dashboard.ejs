@@ -81,7 +81,8 @@
                                         <img src="/public/resources/images/<%= item.product.image %>" style="max-width: 40px" class="rounded">
                                     </td>
                                     <td>
-                                        <h5 class="font-14 my-1 font-weight-normal"><%= item.product.name.slice(0, 10) %></h5>
+                                        <h5 class="font-14 my-1 font-weight-normal" data-toggle="tooltip" data-placement="top" title=""
+                                            data-original-title="<%= item.product.name %>"><%= item.product.name.slice(0, 10) + "..." %></h5>
                                         <span class="text-muted font-13"><%= dateCreated %></span>
                                     </td>
                                     <td>

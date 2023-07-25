@@ -215,11 +215,29 @@
     </div>
 </div><!-- end modal delete -->
 
+<!-- Modal comment -->
+<div id="modal-comment" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="fullWidthModalLabel">Rate order</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <%- contentFor("js") %>
+<script src="/public/assets/js/vendor/jquery.rateit.min.js"></script>
 <script>
 (function (){
     let idUser = "<%= data.user._id %>";
-    let orders = [], search = "", status = "", idOrder;
+    let orders = [], search = "", status = "", idOrder, flagComment = true;
 
     $(document).ready(function (e) {
         $.ajax({
@@ -297,7 +315,12 @@
             if (![3, 4].includes(order.status)) {
                 render += `<a href="javascript:void(0);" class="action-icon btn-cancel" data-toggle="tooltip" data-placement="top"
                        data-original-title="Cancel order"> <i
-                                class="mdi mdi-cancel"></i></a>`
+                                class="mdi mdi-cancel"></i></a>`;
+            }
+            if (order.status === 3) {
+                render += `<a href="javascript:void(0);" class="action-icon btn-comment" data-toggle="tooltip" data-placement="top"
+                       data-original-title="Rate product"> <i
+                                class="mdi mdi-comment"></i></a>`;
             }
             render += `</td>
             </tr>`;
@@ -470,6 +493,109 @@
             error: (err) => {
                 $("#modal-cancel").modal("hide");
                 return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+
+    // Click rate product
+    $(document).on("click", ".btn-comment", async function (e) {
+        // Get id order
+        idOrder = $(this).parent().parent().attr("id");
+
+        await $.ajax({
+            url: `/api/feedback/order/${idOrder}`,
+            method: "get",
+            success: (response) => {
+                flagComment = false;
+                let renderHtml = "";
+                response.data.forEach(item => {
+                    const date = new Date(item.createdAt);
+                    const dateFormatted = `${date.toLocaleString("default", {month: "short"})} ${date.getDate()}, ${date.getFullYear()}`;
+                    renderHtml += `
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <img src="/public/resources/images/${item.idProduct.image}" alt="" class="img-fluid" style="max-width: 100px; max-height: 150px">
+                        </div>
+                        <div class="col-md-3">
+                            <h5>${item.idProduct.name}</h5>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-lg-10 m-lg-auto">
+                                <textarea class="form-control form-control-light mb-2" rows="4" readonly>${item.comment}</textarea>
+                                <p class="text-right"><small>${dateFormatted}</small></p>
+                            </div>
+                        </div>
+                    </div>`;
+                    $("#modal-comment .modal-body").empty().html(renderHtml);
+                })
+            }
+        })
+
+        if (flagComment) {
+            await $.ajax({
+                url: `/api/order/get-details/${idOrder}`,
+                method: "get",
+                success: (response) => {
+                    const details = response.data[0];
+
+                    let renderHtml = "";
+                    details.orderDetails.forEach(item => {
+                        renderHtml += `
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <img src="/public/resources/images/${item.product.image}" alt="" class="img-fluid" style="max-width: 100px; max-height: 150px">
+                        </div>
+                        <div class="col-md-3">
+                            <h5>${item.product.name}</h5>
+                            <p>x${item.amount}</p>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-lg-10 m-lg-auto">
+                                <textarea class="form-control form-control-light mb-2 input-comment"
+                                          placeholder="Write comment..." id="${item.product._id}" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>`;
+                    });
+                    $("#modal-comment .modal-body").empty().html(renderHtml);
+                },
+                error: (err) => {
+
+                }
+            })
+        }
+        $("#modal-comment").modal("show");
+    })
+
+    $("#modal-comment button[type='submit']").click(function (e) {
+        if (!flagComment) return $.NotificationApp.send("Warning", `You has rated this order already!`, "top-right", "rgba(0,0,0,0.2)", "warning");;
+
+        const textareaTd = $("#modal-comment .modal-body textarea");
+        const idProduct = [], comment = [];
+
+        // Get comments
+        for (let i = 0; i < textareaTd.length; i ++) {
+            const textarea = $(textareaTd.get(i));
+            const product = textarea.attr("id");
+            const input = textarea.val();
+
+            idProduct.push(product);
+            comment.push(input);
+        }
+
+        // Submit comments
+        $.ajax({
+            url: `/api/feedback/${idOrder}`,
+            method: "post",
+            data: {
+                idProduct,
+                comment
+            },
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", `${err.responseJSON.msg}<br>Try reload ?!`, "top-right", "rgba(0,0,0,0.2)", "error");
             }
         })
     })

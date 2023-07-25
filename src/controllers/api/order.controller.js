@@ -137,6 +137,7 @@ class Order {
                         orderDetails: {
                             amount: 1,
                             price: 1,
+                            "product._id": 1,
                             "product.name": 1,
                             "product.image": 1
                         }
