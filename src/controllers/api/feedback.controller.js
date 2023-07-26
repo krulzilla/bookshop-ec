@@ -77,6 +77,11 @@ class Feedback {
                     $unwind: "$user"
                 },
                 {
+                    $sort: {
+                        createdAt: -1
+                    }
+                },
+                {
                     $project: {
                         comment: 1,
                         createdAt: 1,

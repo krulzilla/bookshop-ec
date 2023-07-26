@@ -4,7 +4,7 @@ const productModel = require("../../models/product.model");
 const typeTransportModel = require("../../models/typeTransport.model");
 const orderModel = require("../../models/order.model");
 const orderDetailModel = require("../../models/orderDetail.model");
-const {Types} = require("mongoose");
+const {Types, mongoose} = require("mongoose");
 const customPagination = require("../../utils/customPagination");
 
 class Order {
@@ -217,6 +217,9 @@ class Order {
     }
 
     async create(req, res) {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        let newOrder;
         try {
             // Get parameters
             const {typeTransport: idTypeTransport, typePayment: idTypePayment, idPaypalInvoice} = req.body;
@@ -250,13 +253,15 @@ class Order {
                 (typeTransportModel.findById(idTypeTransport))
             ]);
 
+            if (!typeTransport) return response(res, false, "Type transport is invalid", 400);
+
             const typeTransportPrice = typeTransport.price;
             const totalPrice = typeTransportPrice + cart.reduce((res, current) => {
                 return res += (current.amount * current.product[0].price);
             }, 0);
 
             // Create order & order detail => then remove cart & decrease amount product
-            const newOrder = await orderModel.create({
+            newOrder = await orderModel.create({
                 idUser,
                 total: totalPrice,
                 typeTransport: idTypeTransport,
@@ -269,22 +274,31 @@ class Order {
                 // Decrease amount of product
                 await productModel.findByIdAndUpdate(item.product[0]._id, {
                     $inc: {amount: -item.amount}
-                })
+                }, {session});
 
                 // Create order detail
-                orderDetailModel.create({
+                await orderDetailModel.create({
                     idOrder: newOrder._id,
                     idProduct: item.product[0]._id,
                     amount: item.amount,
                     price: item.product[0].price
-                })
+                }, {session})
             })
 
             // Remove cart
-            await cartModel.deleteMany({idUser: idUser});
+            await cartModel.deleteMany({idUser: idUser}, {session});
 
+            await session.commitTransaction();
+            await session.endSession();
             return response(res, true, "Create order successfully", 201, newOrder);
         } catch (e) {
+            await session.abortTransaction();
+            await session.endSession();
+
+            if (newOrder) {
+                await orderModel.findByIdAndDelete(newOrder._id);
+            }
+
             if (e.name === "ValidationError") {
                 let errMsg;
                 Object.keys(e.errors).forEach((key) => {
@@ -294,10 +308,6 @@ class Order {
             }
             return response(res, false, "Somethings went wrong!", 500);
         }
-    }
-
-    async update(req, res) {
-
     }
 
     async updateStatus(req, res) {

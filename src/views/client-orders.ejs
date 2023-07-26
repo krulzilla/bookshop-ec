@@ -500,13 +500,18 @@
     // Click rate product
     $(document).on("click", ".btn-comment", async function (e) {
         // Get id order
-        idOrder = $(this).parent().parent().attr("id");
-
+        const idOrderCurrent = $(this).parent().parent().attr("id");
+        if (idOrder !== idOrderCurrent) {
+            flagComment = true;
+        }
+        idOrder = idOrderCurrent;
         await $.ajax({
             url: `/api/feedback/order/${idOrder}`,
             method: "get",
             success: (response) => {
-                flagComment = false;
+                if (response.data.length > 0) {
+                    flagComment = false;
+                }
                 let renderHtml = "";
                 response.data.forEach(item => {
                     const date = new Date(item.createdAt);

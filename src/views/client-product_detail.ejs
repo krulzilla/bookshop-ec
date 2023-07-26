@@ -78,7 +78,7 @@
                                             <div class="mt-4">
                                                 <h6 class="font-14">Quantity</h6>
                                                 <div class="d-flex">
-                                                    <input type="number" min="1" value="1" class="form-control"
+                                                    <input type="number" min="1" value="1" class="form-control" id="input-amount"
                                                            placeholder="Qty" style="width: 90px;">
                                                     <button type="button" class="btn btn-danger ml-2" id="btn-addToCart"><i
                                                             class="mdi mdi-cart mr-1"></i> Add to cart
@@ -221,13 +221,15 @@
     // Action: Click add-to-cart
     $("#btn-addToCart").click(function (e) {
         if (!idUser) return $.NotificationApp.send("Forget login ?", "You need login before do this action! <a href='/logn'>Login now</a>", "top-right", "rgba(0,0,0,0.2)", "warning");
+        const amount = $("#input-amount").val();
 
         $.ajax({
             url: "/api/cart",
             method: "post",
             data: {
                 idUser,
-                idProduct
+                idProduct,
+                amount
             },
             success: (response) => {
                 if (response.status) {
@@ -267,7 +269,7 @@
                     if (textTime <= 1) textTime = "Just now"
                     else if (textTime > 59) textTime = Math.floor(timeDifference / (1000 * 60 * 60)) + " hours ago";
                     else if (textTime > 23) textTime = Math.floor(timeDifference / (1000 * 60 * 60 * 24)) + " days ago";
-                    else textTime + " minutes ago";
+                    else textTime += " minutes ago";
                     renderHtml += `
                     <div class="row mt-2">
                         <div class="col-lg-10 m-lg-auto">

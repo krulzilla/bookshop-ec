@@ -11,7 +11,6 @@ router.get("/:id", authMiddleware.isUser, orderApi.getById);
 router.post("/", authMiddleware.isClient, orderApi.create);
 router.post("/cancel/:id", authMiddleware.isClient, orderApi.cancelOrder);
 router.put("/update-status/:id",authMiddleware.isAdminOrStaff, orderApi.updateStatus);
-// router.put("/:id", orderApi.update);
 router.delete("/:id", authMiddleware.isAdmin, orderApi.delete);
 
 module.exports = router;
