@@ -102,6 +102,21 @@ class Cart {
         }
     }
 
+    async cartHasProduct(req, res, next) {
+        try {
+            const idUser = req.body.idUser ?? req.user._id;
+
+            const itemAmount = await cartModel.findOne({
+                idUser: new Types.ObjectId(idUser)
+            }).count();
+
+            if (itemAmount === 0) return res.redirect("/products");
+            else return next();
+        } catch (e) {
+            return next({status: 500});
+        }
+    }
+
     async canCheckout(req, res, next) {
         // Check if current cart can checkout => Error if amount product in cart > in stock
         try {

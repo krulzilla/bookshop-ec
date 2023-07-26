@@ -247,6 +247,7 @@ class Order {
                             amount: 1,
                             "product._id": 1,
                             "product.price": 1,
+                            "product.sale": 1,
                         }
                     }
                 ]),
@@ -258,7 +259,8 @@ class Order {
             // Calculate total price to store in order
             const typeTransportPrice = typeTransport.price;
             const totalPrice = typeTransportPrice + cart.reduce((res, current) => {
-                return res += (current.amount * current.product[0].price);
+                const priceProduct = current.product[0].price - current.product[0].sale;
+                return res += (current.amount * priceProduct);
             }, 0);
 
             // Create order & order detail => then remove cart & decrease amount product
@@ -283,7 +285,7 @@ class Order {
                     idOrder: newOrder._id,
                     idProduct: item.product[0]._id,
                     amount: item.amount,
-                    price: item.product[0].price
+                    price: item.product[0].price - item.product[0].sale
                 });
             }
 
