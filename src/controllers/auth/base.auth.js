@@ -77,17 +77,53 @@ class BaseAuth {
 
     googleAuthCallback = async (req, res, next) => {
         try {
-            passport.authenticate("google", {session: false}, (err, user, info) => {
-                if (err || !user) return response(res, false, info.message, 401);
+            passport.authenticate("google", {session: false}, async (err, profile, info) => {
+                if (err || !profile) return response(res, false, info.message, 401);
 
-                // Generate jwt token & set in cookie
-                const accessToken = signToken({userId: user._id});
+                const email = profile.email;
 
-                res.cookie("accessToken", accessToken, {
-                    httpOnly: true,
-                    maxAge: 2 * 60 * 60 * 1000
-                });
-                return res.redirect("/products");
+                // Handle when user login or register
+                if (!req.user) {
+                    let user = await userModel.findOne({email});
+
+                    if (!user) {
+                        // If user didn't register before
+                        const username = "anonymous_user_" + Date.now().toString().slice(-4) + Math.ceil(Math.random() * 10000);
+                        const password = Math.ceil(Math.random() * 10000) + Date.now().toString().slice(-6);
+                        const fullname = profile.displayName;
+                        const role = await roleModel.findOne({name: "Client"}).select("_id");
+
+                        user = await userModel.create({
+                            username,
+                            password: hashString(password),
+                            email,
+                            fullname,
+                            role: role._id,
+                            isAuthBySocial: true
+                        })
+                    } else {
+                        if (!user.isActive) return response(res, false, 'Your account is currently unavailable!', 400);
+                    }
+
+                    // Generate jwt token & set in cookie
+                    const accessToken = signToken({userId: user._id});
+
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        maxAge: 2 * 60 * 60 * 1000
+                    });
+                    return res.redirect("/products");
+                } else {
+                    // Handle to link user account with google
+                    const idUser = req.user._id;
+
+                    // Check if google is in used ?
+                    const userCheck = await userModel.findOne({email});
+                    if (userCheck) return response(res, false, "Your google is currently linking with other account!", 400);
+
+                    await userModel.findByIdAndUpdate(idUser, {email});
+                    return res.redirect("/profile");
+                }
             })(req, res, next)
         } catch (e) {
             next({status: 500});
@@ -100,17 +136,57 @@ class BaseAuth {
 
     githubAuthCallback = async (req, res, next) => {
         try {
-            passport.authenticate("github", {session: false}, (err, user, info) => {
-                if (err || !user) return response(res, false, info.message, 401);
+            passport.authenticate("github", {session: false}, async (err, profile, info) => {
+                if (err || !profile) return response(res, false, info.message, 401);
 
-                // Generate jwt token & set in cookie
-                const accessToken = signToken({userId: user._id});
+                const github = profile.github;
+                const email = profile.email;
 
-                res.cookie("accessToken", accessToken, {
-                    httpOnly: true,
-                    maxAge: 2 * 60 * 60 * 1000
-                });
-                return res.redirect("/products");
+                // Handle when user login or register
+                if (!req.user) {
+                    let user = await userModel.findOne({
+                        $or: [{github}, {email}]
+                    })
+
+                    if (!user) {
+                        // If user didn't register before
+                        const username = "anonymous_user_" + Date.now().toString().slice(-4) + Math.ceil(Math.random() * 10000);
+                        const password = Math.ceil(Math.random() * 10000) + Date.now().toString().slice(-6);
+                        const fullname = profile.displayName;
+                        const role = await roleModel.findOne({name: "Client"}).select("_id");
+
+                        user = await userModel.create({
+                            username,
+                            password: hashString(password),
+                            email,
+                            github,
+                            fullname,
+                            role: role._id,
+                            isAuthBySocial: true
+                        })
+                    } else {
+                        if (!user.isActive) return response(res, false, "Your account is currently unavailable!", 401);
+                        if (!user.github) user = await userModel.findByIdAndUpdate(user._id, {github}, {new: true});
+                    }
+                    // Generate jwt token & set in cookie
+                    const accessToken = signToken({userId: user._id});
+
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        maxAge: 2 * 60 * 60 * 1000
+                    });
+                    return res.redirect("/products");
+                } else {
+                    // Handle to link user account with github
+                    const idUser = req.user._id;
+
+                    // Check if github is in used ?
+                    const userCheck = await userModel.findOne({github});
+                    if (userCheck) return response(res, false, "Your github is currently linking with other account!", 400);
+
+                    await userModel.findByIdAndUpdate(idUser, {github});
+                    return res.redirect("/profile");
+                }
             })(req, res, next);
         } catch (e) {
             next({status: 500});

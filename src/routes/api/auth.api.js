@@ -6,10 +6,14 @@ const staffAuth = require("../../controllers/auth/staff.auth");
 // Client auth
 router.post("/client/register", clientAuth.isNotClient, clientAuth.register);
 router.post("/client/login", clientAuth.isNotClient, clientAuth.login);
-router.get("/google", clientAuth.isNotClient, clientAuth.googleAuth);
-router.get("/google/callback", clientAuth.isNotClient, clientAuth.googleAuthCallback);
-router.get("/github", clientAuth.isNotClient, clientAuth.githubAuth);
-router.get("/github/callback", clientAuth.isNotClient, clientAuth.githubAuthCallback);
+// router.get("/google", clientAuth.isNotClient, clientAuth.googleAuth);
+// router.get("/google/callback", clientAuth.isNotClient, clientAuth.googleAuthCallback);
+router.get("/google", clientAuth.googleAuth);
+router.get("/google/callback", clientAuth.googleAuthCallback);
+// router.get("/github", clientAuth.isNotClient, clientAuth.githubAuth);
+// router.get("/github/callback", clientAuth.isNotClient, clientAuth.githubAuthCallback);
+router.get("/github", clientAuth.githubAuth);
+router.get("/github/callback", clientAuth.githubAuthCallback);
 
 // Admin auth
 router.post("/admin/login", adminAuth.isNotAdmin, adminAuth.login);

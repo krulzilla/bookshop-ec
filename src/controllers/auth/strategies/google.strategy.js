@@ -10,31 +10,41 @@ module.exports = new googleStrategy(
         callbackURL: "/api/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, cb) => {
-        const email = profile.emails[0].value;
+        // const email = profile.emails[0].value;
 
-        const user = await userModel.findOne({email});
-
-        if (!user) {
-            // If user didn't register before
-            const username = "anonymous_user_" + Date.now().toString().slice(-4) + Math.ceil(Math.random() * 10000);
-            const password = Math.ceil(Math.random() * 10000) + Date.now().toString().slice(-6);
-            const fullname = profile.displayName ?? null;
-            const role = await roleModel.findOne({name: "Client"}).select("_id");
-
-            const newUser = await userModel.create({
-                username,
-                password: hashString(password),
-                email,
-                fullname,
-                role: role._id,
-                authBySocial: true
-            })
-
-            return cb(null, newUser);
-        } else {
-            if (!user.isActive) return cb(null, false, {message: "Your account is currently unavailable!"});
-
-            return cb(null, user);
+        let email = "";
+        if (profile.emails) {
+            email = profile.emails[0].value;
         }
+
+        return cb(null, {
+            email: email,
+            displayName: profile.displayName ?? null,
+        })
+
+        // const user = await userModel.findOne({email});
+        //
+        // if (!user) {
+        //     // If user didn't register before
+        //     const username = "anonymous_user_" + Date.now().toString().slice(-4) + Math.ceil(Math.random() * 10000);
+        //     const password = Math.ceil(Math.random() * 10000) + Date.now().toString().slice(-6);
+        //     const fullname = profile.displayName ?? null;
+        //     const role = await roleModel.findOne({name: "Client"}).select("_id");
+        //
+        //     const newUser = await userModel.create({
+        //         username,
+        //         password: hashString(password),
+        //         email,
+        //         fullname,
+        //         role: role._id,
+        //         authBySocial: true
+        //     })
+        //
+        //     return cb(null, newUser);
+        // } else {
+        //     if (!user.isActive) return cb(null, false, {message: "Your account is currently unavailable!"});
+        //
+        //     return cb(null, user);
+        // }
     }
 )
