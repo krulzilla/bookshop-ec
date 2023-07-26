@@ -395,10 +395,15 @@
                             <td>
                                 ${item.amount.toLocaleString()}
                             </td>
-                            <td>
-                                <small><del>${item.price.toLocaleString()} đ</del></small>
-                                <p class="text-danger">${(item.price - item.sale).toLocaleString()} đ</p>
-                            </td>
+                            <td>`;
+                        if (item.sale > 0) {
+                            itemsHtml += `<small><del>${item.price.toLocaleString()} đ</del></small>
+                                <p class="text-danger">${(item.price - item.sale).toLocaleString()} đ</p>`;
+                        } else {
+                            itemsHtml += `${item.price.toLocaleString()} đ`;
+                        }
+
+                        itemsHtml += `</td>
                             <td>
                                 ${dateFormatted}
                             </td>

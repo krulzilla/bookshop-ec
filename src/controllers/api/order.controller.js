@@ -217,13 +217,13 @@ class Order {
     }
 
     async create(req, res) {
+        // Create mongodb session for transaction
         const session = await mongoose.startSession();
         session.startTransaction();
         let newOrder;
         try {
             // Get parameters
             const {typeTransport: idTypeTransport, typePayment: idTypePayment, idPaypalInvoice} = req.body;
-
             const idUser = req.body.idUser || req.user._id;
 
             // Find cart of user & get price type transport
@@ -255,6 +255,7 @@ class Order {
 
             if (!typeTransport) return response(res, false, "Type transport is invalid", 400);
 
+            // Calculate total price to store in order
             const typeTransportPrice = typeTransport.price;
             const totalPrice = typeTransportPrice + cart.reduce((res, current) => {
                 return res += (current.amount * current.product[0].price);
@@ -270,23 +271,25 @@ class Order {
                 idPaypalInvoice
             })
 
-            cart.forEach(async (item) => {
-                // Decrease amount of product
+            const orderDetails = [];
+
+            for (const item of cart) {
+                // Decrease amount product
                 await productModel.findByIdAndUpdate(item.product[0]._id, {
                     $inc: {amount: -item.amount}
                 }, {session});
 
-                // Create order detail
-                await orderDetailModel.create({
+                orderDetails.push({
                     idOrder: newOrder._id,
                     idProduct: item.product[0]._id,
                     amount: item.amount,
                     price: item.product[0].price
-                }, {session})
-            })
+                });
+            }
 
-            // Remove cart
+            // Remove cart & create order details
             await cartModel.deleteMany({idUser: idUser}, {session});
+            await orderDetailModel.insertMany(orderDetails, {session});
 
             await session.commitTransaction();
             await session.endSession();

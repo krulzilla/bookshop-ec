@@ -29,7 +29,7 @@ class Product {
                 .populate("idCategory", "name")
                 .populate("idAuthor", "name -_id")
                 .populate("idPublisher", "name -_id")
-                .select("name publishedAt amount price image description");
+                .select("name publishedAt amount price sale image description");
 
             const productSold = await orderDetailModel.aggregate([
                 {
@@ -52,7 +52,6 @@ class Product {
 
             return render(res, "client-product_detail", {name: "Product details", user: req.user, product, amountSold, amountComment});
         } catch (e) {
-            console.log(e);
             next({status: 500});
         }
     }

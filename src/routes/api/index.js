@@ -18,6 +18,7 @@ const paymentApi = require("./payment.api");
 const orderApi = require("./order.api");
 const warehouseApi = require("./warehouse.api");
 const feedbackApi = require("./feedback.api");
+const wishlistApi = require("./wishlist.api");
 
 // Manage api routes
 router.use("/auth", authApi);
@@ -35,6 +36,7 @@ router.use("/payment", paymentApi);
 router.use("/order", orderApi);
 router.use("/warehouse", warehouseApi);
 router.use("/feedback", feedbackApi);
+router.use("/wishlist", wishlistApi);
 
 router.use((req, res, next) => {
     next({

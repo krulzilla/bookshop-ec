@@ -51,6 +51,7 @@ class Product {
                     $project: {
                         name: 1,
                         price: 1,
+                        sale: 1,
                         image: 1
                     }
                 }

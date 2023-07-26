@@ -12,6 +12,7 @@ const authController = require("../controllers/client/auth.controller");
 const cartController = require("../controllers/client/cart.controller");
 const orderController = require("../controllers/client/order.controller");
 const profileController = require("../controllers/client/profile.controller");
+const wishlistController = require("../controllers/client/wishlist.controller");
 
 // Manage routes
 router.get("/", landingController.renderLandingPage);
@@ -25,5 +26,6 @@ router.get("/checkout", authClient.isClient, cartMiddleware.canCheckout, cartCon
 router.get("/complete-order", authClient.isClient, orderController.completeOrder);
 router.get("/my-orders", authClient.isClient, orderController.renderMyOrderPage);
 router.get("/profile", authClient.isClient, profileController.renderPageProfile);
+router.get("/my-wishlist", authClient.isClient, wishlistController.renderWishlistProfile);
 
 module.exports = router;

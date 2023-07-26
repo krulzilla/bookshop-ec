@@ -118,7 +118,13 @@
                                 style="height: 200px">
                             <h5 class="mt-3 f-17"><%= product.name %></h5>
                             <span><%= product.author.reduce((res, current) => res += current.name + ", ", "").replace(/(, )$/, "") %></span>
-                            <h5><%= product.price.toLocaleString() %> đ</h5>
+                            <h5>
+                                <% if (product.sale > 0) { %>
+                                <del><%= product.price.toLocaleString() %> đ</del> <font class="text-danger"><%= (product.price - product.sale).toLocaleString() %> đ</font>
+                                <% } else { %>
+                                <%= product.price.toLocaleString() %> đ
+                                <% } %>
+                            </h5>
                         </a>
                     </div>
                 </div>

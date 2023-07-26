@@ -1,0 +1,101 @@
+<!-- Start Content-->
+<div class="container-fluid">
+
+    <!-- Begin page -->
+    <div class="wrapper">
+        <div class="content-page">
+
+            <div class="content my-5">
+
+                <% if (data.wishlist.length === 0) { %>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="alert alert-secondary" role="alert">
+                                <i class="mdi mdi-emoticon-sad-outline mx-1 font-18"></i> <strong>Your wishlist is empty!! Wanna add something !?
+                                    <a href="/products">Go to our products page</a></strong>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <% let count = 0; data.wishlist.forEach(item => { count++; if (count === 1) { %>
+                    <div class="row">
+                <% } %>
+                <div class="col-md-6 col-xl-2">
+                    <div class="card d-block ribbon-box">
+                        <div class="ribbon-two ribbon-two-success"><span>In stock</span></div>
+
+                        <img class="card-img-top" src="/public/resources/images/<%= item.product.image %>" alt="project image cap">
+                        <div class="card-body position-relative">
+                            <h4 class="mt-0">
+                                <a href="/product/<%= item.product._id %>" class="text-title" data-toggle="tooltip" data-placement="top" title="" data-original-title="<%= item.product.name %>"><%= item.product.name %></a>
+                            </h4>
+
+                            <% if (item.product.sale > 0) { %>
+                            <p class="mb-1">
+                            <span class="pr-2 text-nowrap"><small><del><%= item.product.price.toLocaleString() %> đ</del></small>
+                                <b class="text-primary"><%= (item.product.price - item.product.sale).toLocaleString() %> đ</b></span></p>
+
+                            <% } else { %>
+                                <p class="mb-1"><span class="pr-2 text-nowrap"><%= item.product.price.toLocaleString() %> đ</span></p>
+                            <% }  %>
+
+                            <div class="mb-2">
+                            <% item.product.category.forEach(subItem => { %>
+                                <div class="badge badge-info mr-1 mt-1 p-1"><%= subItem.name %></div>
+                            <% }) %>
+                            </div>
+                            <div class="mb-2">
+                                <span class="pr-1">by</span>
+                                <% item.product.author.forEach(subItem => { %>
+                                    <a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" data-original-title="<%= subItem.name %>" class="d-inline-block">
+                                        <img src="/public/assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="friend">
+                                    </a>
+                                <% }) %>
+                                <div class="text-right">
+                                    <a href="javascript:void(0)" data="<%= item.product._id %>" class="btn-remove" data-toggle="tooltip" data-placement="top" data-original-title="Remove from wishlist"><i class="mdi mdi-delete"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% if (count === 6) { %> </div> <% count = 0; }  %>
+                <% }) %>
+                <% if (count !== 0) { %> </div> <% } %>
+            </div> <!-- End Content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            © krulzilla
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div> <!-- content-page -->
+
+    </div> <!-- end wrapper-->
+</div>
+<!-- END Container -->
+
+<%- contentFor('js') %>
+<script>
+    $(".btn-remove").click(function (e) {
+        const idProduct = $(this).attr("data");
+
+        $.ajax({
+            url: `/api/wishlist/${idProduct}`,
+            method: "delete",
+            success: (response) => {
+                if (response.status) window.location = "";
+            },
+            error: (err) => {
+                return $.NotificationApp.send("Error", err.responseJSON.msg, "top-right", "rgba(0,0,0,0.2)", "error");
+            }
+        })
+    })
+</script>

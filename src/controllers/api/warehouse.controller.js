@@ -74,7 +74,6 @@ class Warehouse {
 
             return response(res, true, "Get receipt success", 200, receipt);
         } catch (e) {
-            console.log(e);
             return response(res, false, "Somethings went wrong!", 500);
         }
     }
