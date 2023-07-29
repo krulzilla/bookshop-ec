@@ -75,7 +75,7 @@ const ProductSchema = new Schema({
     },
     image: {
         type: String,
-        default: "productNoImage",
+        default: "",
         trim: true,
         validate: {
             validator: function (img) {

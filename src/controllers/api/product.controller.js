@@ -213,9 +213,14 @@ class Product {
 
             const updateProduct = await productModel.findByIdAndUpdate(id, updateData,
                 {runValidators: true});
+            // Exec to remove old image
             // if (image) fs.unlinkSync(`./src/public/resources/images/${updateProduct.image}`)
-
-            // await cloudinary.uploader.destroy()
+            if (updateProduct.image) {
+                const oldImage = updateProduct.image;
+                const oldImage_params = oldImage.split("/");
+                const oldImage_publicId = oldImage_params[oldImage_params.length - 1].replace(/\.jpg|\.png|\.jpeg/, "");
+                await cloudinary.uploader.destroy(oldImage_publicId);
+            }
 
             return response(res, true, "Product is updated", 200);
         } catch (e) {
