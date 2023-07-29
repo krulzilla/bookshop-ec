@@ -13,7 +13,7 @@
                         <div class="page-title-box">
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
+                                    <li class="breadcrumb-item"><a href="/">K-zilla</a></li>
                                     <li class="breadcrumb-item"><a href="/products">Product</a></li>
                                     <li class="breadcrumb-item active"><%= data.product.name %></li>
                                 </ol>
@@ -32,7 +32,7 @@
                                     <div class="col-lg-5">
                                         <!-- Product image -->
                                         <a href="javascript: void(0);" class="text-center d-block mb-4">
-                                            <img src="/public/resources/images/<%= data.product.image %>" class="img-fluid"
+                                            <img src="<%= data.product.image %>" class="img-fluid"
                                                  style="max-width: 280px;" alt="Product-img"/>
                                         </a>
                                     </div> <!-- end col -->
@@ -202,7 +202,7 @@
                         <div class="col-md-6 col-xl-3">
                             <div class="card d-block">
                                 <div class="text-center">
-                                    <img class="card-img-top" src="/public/resources/images/${item.image}" alt="Image of ${item._id}"
+                                    <img class="card-img-top" src="${item.image}" alt="Image of ${item._id}"
                                          style="max-width: 200px">
                                 </div>
                                 <div class="card-body">

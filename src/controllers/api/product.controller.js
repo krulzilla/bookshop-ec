@@ -2,6 +2,7 @@ const productModel = require("../../models/product.model");
 const {apiResponse: response} = require("../../utils/customResponse");
 const customPagination = require("../../utils/customPagination");
 const {Types} = require("mongoose");
+const {v2: cloudinary} = require("cloudinary");
 const fs = require("fs");
 const xlsx = require("xlsx");
 
@@ -143,11 +144,14 @@ class Product {
                 amount,
                 description,
                 price,
-                sale,
-                img_url: image} = req.body;
+                sale} = req.body;
 
             const categories = Array.isArray(category) ? [...category] : [category];
             const authors = Array.isArray(author) ? [...author] : [author];
+
+            // Upload image to cloud server
+            const imageUpload = await cloudinary.uploader.upload(req.file.path);
+            const image = imageUpload.secure_url;
 
             // Exec insert
             const newProduct = await productModel.create({
@@ -186,8 +190,11 @@ class Product {
                 publishedAt,
                 description,
                 price,
-                sale,
-                img_url: image} = req.body;
+                sale} = req.body;
+
+            // Upload image to cloud server
+            const imageUpload = await cloudinary.uploader.upload(req.file.path);
+            const image = imageUpload.secure_url;
 
             // Exec update
             const updateData = {
@@ -206,7 +213,9 @@ class Product {
 
             const updateProduct = await productModel.findByIdAndUpdate(id, updateData,
                 {runValidators: true});
-            if (image) fs.unlinkSync(`./src/public/resources/images/${updateProduct.image}`)
+            // if (image) fs.unlinkSync(`./src/public/resources/images/${updateProduct.image}`)
+
+            // await cloudinary.uploader.destroy()
 
             return response(res, true, "Product is updated", 200);
         } catch (e) {

@@ -13,8 +13,8 @@
                         <div class="page-title-box">
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">eCommerce</a></li>
+                                    <li class="breadcrumb-item"><a href="/">K-zilla</a></li>
+                                    <li class="breadcrumb-item"><a href="/cart">Cart</a></li>
                                     <li class="breadcrumb-item active">Checkout</li>
                                 </ol>
                             </div>
@@ -420,7 +420,7 @@
             render += `
             <tr>
                 <td>
-                    <img src="/public/resources/images/${ele.product[0].image}" alt="contact-img" title="contact-img" class="rounded mr-2" height="48">
+                    <img src="${ele.product[0].image}" alt="contact-img" title="contact-img" class="rounded mr-2" height="48">
                     <p class="m-0 d-inline-block align-middle">
                         <a href="/product/${ele.product[0]._id}" class="text-body font-weight-semibold"
                              data-toggle="tooltip" data-placement="top" data-original-title="${ele.product[0].name}">${name}</a>

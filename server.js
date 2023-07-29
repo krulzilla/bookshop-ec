@@ -7,6 +7,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const expressLayouts = require('express-ejs-layouts');
+// import {v2 as cloudinary} from 'cloudinary';
+const {v2: cloudinary} = require("cloudinary");
 
 // Config libs
 app.use(helmet({
@@ -21,7 +23,8 @@ app.use(helmet({
             "img-src": ["'self'",
                 "https://www.paypalobjects.com",
                 "data:",
-                "http://www.w3.org/2000/svg"
+                "http://www.w3.org/2000/svg",
+                "https://res.cloudinary.com",
             ],
             "script-src": ["'self'", "'unsafe-inline'",
                 "https://www.paypal.com",
@@ -30,6 +33,11 @@ app.use(helmet({
         },
     },
 }));
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set('layout', 'layouts/master_layout');

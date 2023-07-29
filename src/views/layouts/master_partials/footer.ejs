@@ -17,7 +17,7 @@
                     renderHtml += `
                     <a href="/product/${result._id}" class="dropdown-item notify-item">
                         <div class="media">
-                            <img class="d-flex mr-2" src="/public/resources/images/${result.image}" height="32">
+                            <img class="d-flex mr-2" src="${result.image}" height="32">
                             <div class="media-body">
                                 <h5 class="m-0 font-14">${result.name.length > 30 ? result.name.slice(0, 30) + "..." : result.name}</h5>
                                 <span class="font-12 mb-0">${result.amount > 0 ? '<div class="badge badge-success p-1">In stock</div>' : '<div class="badge badge-secondary p-1">Out of stock</div>'}</span>

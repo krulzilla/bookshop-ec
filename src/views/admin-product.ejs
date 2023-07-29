@@ -374,7 +374,7 @@
                                 <b>${++index}</b>
                             </td>
                             <td class="sorting_1">
-                                <img src="/public/resources/images/${item.image}" alt="contact-img" title="contact-img" class="rounded mr-3" height="48">
+                                <img src="${item.image}" alt="img-product" class="rounded mr-3" height="48">
                                 <p class="m-0 d-inline-block align-middle font-16">
                                     <a href="/product/${item._id}" class="text-body" data-toggle="tooltip" data-placement="top" title=""
                                     data-original-title="${item.name}">${name}</a>
@@ -533,7 +533,7 @@
                     $("#view-sale").text(data.sale.toLocaleString() + " đ");
                     $("#view-amount").text(data.amount.toLocaleString());
                     $("#view-image").html(`
-                        <img class="card-img" src="/public/resources/images/${data.image}" alt="product-image" />
+                        <img class="card-img" src="${data.image}" alt="product-image" />
                     `);
 
                     $("#view-description").html(data.description);
