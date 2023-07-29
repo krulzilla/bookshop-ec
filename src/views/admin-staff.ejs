@@ -325,9 +325,9 @@
                             <td class="table-action">
                                 <a href="javascript:void(0);" class="action-icon btn-view"> <i
                                         class="mdi mdi-eye"></i></a>
+                                ${ item.role.name === "Admin" ? "" : `
                                 <a href="javascript:void(0);" class="action-icon btn-edit"> <i
                                         class="mdi mdi-square-edit-outline"></i></a>
-                                ${ item.role.name === "Admin" ? "" : `
                                 <a href="javascript:void(0);" class="action-icon btn-status"> <i
                                         class="mdi ${item.isActive ? "mdi-cancel" : "mdi-lock-open-variant-outline"}"></i></a>
                                 <a href="javascript:void(0);" class="action-icon btn-delete"> <i

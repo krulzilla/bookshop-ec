@@ -288,7 +288,7 @@
                                 ${item.fullname}
                             </td>
                             <td>
-                                ${item.phone}
+                                ${item.phone === null ? "" : item.phone}
                             </td>
                             <td>
                                 ${item.isActive ? `<span class="badge badge-success-lighten">Active</span>` : `<span class="badge badge-danger-lighten">Disabled</span>`}
