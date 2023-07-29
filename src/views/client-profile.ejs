@@ -355,7 +355,7 @@
             },
             success: (response) => {
                 if (response.status) {
-                    return $.NotificationApp.send("Success", "Changed password!!", "top-right", "rgba(0,0,0,0.2)", "success");
+                    return window.location = "";
                 }
             },
             error: (err) => {

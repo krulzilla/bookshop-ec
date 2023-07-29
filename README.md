@@ -51,7 +51,7 @@ Project inludes:
 * Admin side ("/admincp")
 * Staff side ("/staffcp")
 
-More details you can read <a href="https://docs.google.com/document/d/1Irczckadw9leeAo0T4ZUQEMM3F3VKEfYb8peqNJKiWk/edit">here</a>
+More details you can read <a href="https://docs.google.com/document/d/1Irczckadw9leeAo0T4ZUQEMM3F3VKEfYb8peqNJKiWk/edit?usp=sharing">here</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
